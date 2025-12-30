@@ -12,9 +12,9 @@ theme, version 4.3.1. You can find the documentation for the overall package
  * [Color palette definition](src/assets/scss/base/_root.scss)
  * [Home page](src/pages/index.astro)
  * [Services page](src/pages/about/services.astro)
- * [Donate page](src/pages/donate)
- * [Volunteer page](src/pages/volunteer)
- * [Contact page](src/pages/contact)
+ * [Give page](src/pages/give.astro)
+ * [Volunteer page](src/pages/volunteer.astro)
+ * [Contact page](src/pages/contact.astro)
 
 ## Why Astro?
 
