@@ -1,0 +1,97 @@
+---
+import DefaultLayout from '@layouts/DefaultLayout.astro'
+import PageHeader from '@components/PageHeader.astro'
+import { Form, Input, Button, Textarea, Heading, Link } from 'accessible-astro-components'
+import { Icon } from 'astro-icon/components'
+---
+
+<DefaultLayout title="Contact">
+  <PageHeader title="Contact" subtitle="Have a question? Get in touch with us!" bgType="neutral" />
+  <section class="container my-16">
+    <div class="grid grid-cols-1 gap-32 md:grid-cols-2">
+      <div class="space-content">
+        <Form name="contact" action="/thank-you" method="post">
+          <Input name="name" label="Name" required autocomplete="name" />
+
+          <Input name="email" label="Email address" type="email" required autocomplete="email" />
+
+          <!-- Custom validation with pattern -->
+          <Input name="phone" label="Phone number" type="tel" required autocomplete="tel" />
+
+          <Input name="subject" label="Subject" required />
+
+          <Textarea name="message" label="Message" required />
+
+          <Button htmlType="submit" type="primary">Send Message</Button>
+        </Form>
+      </div>
+      <div class="space-content">
+        <Heading level="h3">Hi there, neighbor</Heading>
+
+        <p class="text-lg">
+          Whether you're looking for furnishings, need a ramp built, or just have a question,
+          we'd love to hear from you. Please make sure to give us good contact info so we can
+          follow up.
+        </p>
+        <p>
+          If you contact us outside of office hours (see below), we might not be able to get
+          back to you until we've returned to our desks. Sorry!
+        </p>
+
+        <div class="gap-2xs flex items-center">
+          <Icon aria-hidden="true" name="lucide:phone" size={20} class="flex-shrink-0" />
+          <p>
+            <span class="font-bold">Phone:</span>
+            <Link href="tel:+13523581768">(352) 358-1768</Link>
+            <span>(voice or text)</span>
+          </p>
+        </div>
+
+        <div class="gap-2xs flex items-center">
+          <Icon aria-hidden="true" name="lucide:mail" size={20} class="flex-shrink-0" />
+          <p>
+            <span class="font-bold">Email:</span>
+            <Link href="mailto:office@cccgainesville.org">office@cccgainesville.org</Link>
+          </p>
+        </div>
+
+        <div class="gap-2xs flex items-center">
+          <Icon aria-hidden="true" name="lucide:map-pin" size={20} class="flex-shrink-0" />
+          <p>
+            <span class="font-bold">Address:</span>
+            PO Box 358173, Gainesville, FL 32653
+          </p>
+        </div>
+
+        <div class="gap-2xs flex items-center">
+          <Icon aria-hidden="true" name="lucide:clock" size={20} class="flex-shrink-0" />
+          <p>
+            <span class="font-bold">Office Hours:</span>
+            Tuesday - Thursday, 10:00 AM - 3:00 PM
+          </p>
+        </div>
+
+        <ul class="flex flex-wrap gap-4">
+          <li>
+            <Link href="https://facebook.com/cccgainesville" isButton isExternal hideIcon animateOnHover animationType="boop">
+              <Icon aria-hidden="true" name="facebook" size={32} />
+              <span class="sr-only">Go to our Facebook page, opens in a new tab</span>
+            </Link>
+          </li>
+          <li>
+            <Link href="https://instagram.com/cccmainoffice" isButton isExternal hideIcon animateOnHover animationType="boop">
+              <Icon aria-hidden="true" name="instagram" size={32} />
+              <span class="sr-only">Go to our Instagram page, opens in a new tab</span>
+            </Link>
+          </li>
+          <li>
+            <Link href="https://cccgainesville.org/ns" isButton type="secondary" animateOnHover animationType="boop">
+              <Icon aria-hidden="true" name="lucide:mail-plus" size={32} />
+              Newsletter Signup
+            </Link>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</DefaultLayout>

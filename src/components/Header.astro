@@ -1,0 +1,81 @@
+---
+import Navigation from '../components/Navigation.astro'
+import { DarkMode, Link, SkipLink } from 'accessible-astro-components'
+import { Icon } from 'astro-icon/components'
+
+/**
+ * Header Component
+ *
+ * @description A component that displays the header of the website
+ */
+---
+
+<header>
+  <SkipLink />
+  <Navigation>
+    <li class="menu-item">
+      <Link href="/">Home</Link>
+    </li>
+    <li class="menu-item">
+      <Link href="/give/">Give</Link>
+    </li>
+    <li class="menu-item">
+      <Link href="/volunteer/">Volunteer</Link>
+    </li>
+    <li class="menu-item has-dropdown">
+      <button aria-haspopup="true" aria-expanded="false">
+        About
+        <Icon aria-hidden="true" name="lucide:chevrons-down" size="17" />
+      </button>
+      <ul class="dropdown-menu">
+        <li class="submenu-item">
+          <Link href="/about/services">Services</Link>
+        </li>
+        <li class="submenu-item">
+          <Link href="/about/our-values">Our Values</Link>
+        </li>
+        <li class="submenu-item">
+          <Link href="/about/news">News</Link>
+        </li>
+        <li class="submenu-item">
+          <Link href="/about/docs">Documents</Link>
+        </li>
+      </ul>
+    </li>
+    <li class="menu-item">
+      <Link href="/contact/">Contact</Link>
+    </li>
+    <li class="menu-item type-icon animate-rotate">
+      <Link href="https://facebook.com/cccgainesville" isExternal hideIcon>
+        <Icon aria-hidden="true" name="facebook"/>
+        <span class="sr-only">Go to our Facebook page, opens in a new tab</span>
+      </Link>
+    </li>
+    <li class="menu-item type-icon animate-rotate">
+      <Link href="https://instagram.com/cccmainoffice" isExternal hideIcon>
+        <Icon aria-hidden="true" name="instagram"/>
+        <span class="sr-only">Go to our Instagram page, opens in a new tab</span>
+      </Link>
+    </li>
+    <li class="menu-item type-icon animate-rotate">
+      <DarkMode>
+        <Icon aria-hidden="true" name="lucide:moon" slot="light" />
+        <Icon aria-hidden="true" name="lucide:sun" slot="dark" />
+      </DarkMode>
+    </li>
+  </Navigation>
+</header>
+
+<style lang="scss" is:global>
+  header {
+    .type-icon {
+      display: block;
+      margin-inline: -7px;
+
+      svg {
+        inline-size: 30px;
+        block-size: 30px;
+      }
+    }
+  }
+</style>

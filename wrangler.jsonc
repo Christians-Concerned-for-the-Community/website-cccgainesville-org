@@ -1,0 +1,21 @@
+/**
+ * For more details on how to configure Wrangler, refer to:
+ * https://developers.cloudflare.com/workers/wrangler/configuration/
+ */
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "website-cccgainesville-org",
+	"compatibility_date": "2025-12-27",
+	"assets": {
+		"directory": "./dist"
+	},
+
+	"route": "new.cccgainesville.org",
+
+	// If we're running a staging build, host it at a different URL.
+	"env": {
+		"staging": {
+			"route": "staging.cccgainesville.org"
+		}
+	}
+}

@@ -1,0 +1,82 @@
+---
+import '../styles/tailwind.css'
+import '../assets/scss/index.scss'
+import SiteMeta from '@components/SiteMeta.astro'
+import Header from '@components/Header.astro'
+import Footer from '@components/Footer.astro'
+import { ClientRouter } from 'astro:transitions'
+
+import logo_symbol from '@assets/logo-symbol.svg'
+
+const {
+  title = 'Christians Concerned for the Community',
+  description = 'CCC is a Christian charity based in Gainesville, FL that provides used furniture and builds wheelchair ramps for our neighbors in Alachua County.',
+  author = 'Christians Concerned for the Community',
+} = Astro.props
+---
+
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+    <!-- favicon -->
+    <link rel="icon" type="image/svg+xml" href={logo_symbol.src} />
+    <!-- sitemap hint -->
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <SiteMeta
+      title={title}
+      description={description}
+      url={Astro.site?.toString() || "cccgainesville.org"}
+      image='social-preview.png'
+      author={author}
+    />
+
+    <!-- Enable Astro View Transitions for all browsers -->
+    <ClientRouter />
+  </head>
+  <body>
+    <Header />
+    <main id="main-content" transition:animate="fade">
+      <slot />
+    </main>
+    <Footer />
+    <style lang="scss" is:global>
+      @use '../assets/scss/base/mixins' as *;
+
+      // sticky footer on low content pages
+      html,
+      body {
+        height: 100%;
+      }
+
+      body {
+        display: flex;
+        flex-direction: column;
+        overflow-x: clip;
+
+        main {
+          flex: 1 0 auto;
+        }
+
+        footer {
+          flex-shrink: 0;
+        }
+      }
+
+      pre {
+        border: 2px solid var(--link-color);
+        border-radius: 0.35rem;
+        padding: 1rem;
+      }
+
+      .card {
+        a {
+          @include text-decoration(transparent, var(--foreground-color), 4px, 2px);
+        }
+      }
+    </style>
+  </body>
+</html>

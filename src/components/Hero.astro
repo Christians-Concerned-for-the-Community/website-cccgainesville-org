@@ -1,0 +1,60 @@
+---
+import { Link } from 'accessible-astro-components'
+import { Icon } from 'astro-icon/components'
+import { Image } from 'astro:assets'
+
+import Collage from '../assets/collage.jpg'
+
+---
+
+<section class="hero my-24">
+  <div class="container">
+    <div class="grid grid-cols-1 items-center gap-24 lg:grid-cols-2">
+      <div class="flex flex-col items-center gap-8 md:items-start">
+        <h1 class="text-center text-6xl md:text-left lg:text-8xl">
+          <slot><span class="text-gradient">Neighbors</span> Helping Neighbors</slot>
+        </h1>
+        <div class="flex flex-col gap-3 min-[500px]:flex-row">
+          <Link
+            href="/about/services"
+            isButton
+            type="primary"
+            animateOnHover
+            animationType="boop"
+          >
+            <Icon aria-hidden="true" name="lucide:heart-handshake" size="1.5rem" />
+            Our Services
+          </Link>
+          <Link
+            href="https://cccgainesville.org/ns"
+            isButton
+            type="secondary"
+            animateOnHover
+            animationType="boop"
+          >
+            <Icon aria-hidden="true" name="lucide:mail-plus" size="1.5rem" />
+            Newsletter Signup
+          </Link>
+        </div>
+      </div>
+      <Image class="lg:block rounded-lg" src={Collage} alt="A collage showing various projects: ramp builds, furniture deliveries, and yard work." loading="eager" />
+    </div>
+  </div>
+</section>
+
+<style lang="scss">
+  h1 {
+    text-wrap: unset;
+  }
+
+  .text-gradient {
+    background: linear-gradient(
+      315deg,
+      light-dark(var(--color-neutral-700), var(--color-secondary-100)) 25%,
+      light-dark(var(--color-primary-300), var(--color-primary-200))
+    );
+    background-clip: border-box;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+</style>

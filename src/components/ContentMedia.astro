@@ -1,0 +1,62 @@
+---
+import { Media } from 'accessible-astro-components'
+
+/**
+ * ContentMedia Component
+ *
+ * @description A component that displays content alongside media, with the option to reverse the image position
+ */
+interface Props {
+  /**
+   * The source URL for the image
+   */
+  imgSrc: string
+  /**
+   * Whether to display the image on the right side instead of the left
+   * @default false
+   */
+  reverseImg?: boolean
+}
+
+const { imgSrc, reverseImg = false }: Props = Astro.props
+
+/* 
+  Only allow the order to be reversed on medium screens or larger.
+
+  This allows us to have a nice alternating pattern when the media and slot
+  are shown side-by-side, but reverts to the original order on small screens
+  where everything is smooshed into one column.
+
+  For example, if we're displaying pictures and text:
+
+  Medium screen or larger:
+    [image]  [text]   -- ContentMedia #1 (normal)
+    
+    [text]   [image]  -- ContentMedia #2 (reversed)
+    
+    [image]  [text]   -- ContentMedia #3 (normal)
+  
+  Small screen:
+    [image]     -- Content Media #1
+    [text]
+
+    [image]     -- Content Media #2 (reversal ignored)
+    [text]
+
+    [image]     -- Content Media #3
+    [text]
+ */
+const mediaPos = reverseImg? " md:order-2":"";
+const slotPos  = reverseImg? " md:order-1":"";
+---
+
+<section class="my-64">
+  <div class="container">
+    <div class="grid grid-cols-1 gap-24 md:grid-cols-2">
+      <Media class={"rounded-lg" + mediaPos} src={imgSrc} />
+      <div class={"space-content flex flex-col justify-center" + slotPos}>
+        <slot />
+      </div>
+    </div>
+  </div>
+</section>

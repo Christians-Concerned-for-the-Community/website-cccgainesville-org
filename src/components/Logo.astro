@@ -1,0 +1,27 @@
+---
+import { Link } from 'accessible-astro-components'
+import logo_light from '@assets/logo-wide-light.svg'
+import logo_dark from '@assets/logo-wide-dark.svg'
+
+/**
+ * Logo Component
+ *
+ * @description Logo description
+ */
+interface Props {
+  /**
+   * Whether to load the image eagerly or lazily
+   * @default 'eager'
+   */
+  loading?: 'eager' | 'lazy'
+}
+
+const { loading = 'eager' }: Props = Astro.props
+---
+
+<Link href="/" class="flex items-center gap-2">
+  <img alt="CCC Logo" width="284" loading={loading}
+     src={logo_light.src} class="block dark:hidden"/>
+  <img alt="CCC Logo" width="284" loading={loading}
+     src={logo_dark.src} class="hidden dark:block"/>
+</Link>
