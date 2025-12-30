@@ -33,7 +33,7 @@ into, no plugins, nothing but the site itself.
 ## Why Accessible Astro?
 
 This theme was built to help comply with web accessibility rules, such as
-[WCAG 2.2 AA](https://www.w3.org/TR/WCAG22/](https://www.levelaccess.com/blog/wcag-2-2-aa-summary-and-checklist-for-website-owners/),
+[WCAG 2.2 AA](https://www.levelaccess.com/blog/wcag-2-2-aa-summary-and-checklist-for-website-owners/),
 the [European Accessibility Act](https://www.levelaccess.com/compliance-overview/european-accessibility-act-eaa/),
 and modern web standards in general. This makes it easier for neighbors to use screen readers and
 keyboard shortcuts when viewing our website, and the theme includes tools to make sure the color contrasts
