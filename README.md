@@ -55,3 +55,41 @@ rebuild the site, and upload it to the internet for us.
 Commits made to the main branch of the repo will be displayed at "staging.cccgainesville.org". Once
 you've made sure the new version of the website displays correctly, and you've fixed any bugs, rebase
 the "production" branch on the main branch to update the main website at "cccgainesville.org".
+
+## Setup - Local Development
+
+Follow these instructions if you're a developer and need to make a lot of changes. They're written
+for the development setup I use (Visual Studio Code and Ubuntu via WSL on Windows), but you can use
+whatever setup you want - you just have to modify Step 1 for your OS.
+
+1. Set up the development environment.
+```console
+$ sudo apt update && sudo apt install nvm gh git
+$ nvm install node && nvm alias default node
+$ gh auth login
+```
+
+2. Check out the code, install dependencies, and open visual studio code to make edits.
+```console
+$ git clone https://github.com/Christians-Concerned-for-the-Community/website-cccgainesville.org.git
+$ cd website-cccgainesville.org
+$ npm install
+$ code .
+```
+
+3. Build the website and deploy it on localhost, so you can test it locally.
+```console
+$ npm run preview
+```
+
+4. Commit changes to the main branch (automatically deploys to https://staging.cccgainesville.org).
+```console
+$ git add .
+$ git commit -m "describe your changes here"
+$ git push
+```
+
+5. Upload to the production branch (automatically deploys to https://cccgainesville.org).
+```console
+$ git checkout production && git pull --rebase origin main && git push && git checkout -
+```
