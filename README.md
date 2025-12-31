@@ -64,32 +64,32 @@ whatever setup you want - you just have to modify Step 1 for your OS.
 
 1. Set up the development environment.
 ```console
-$ sudo apt update && sudo apt install nvm gh git
-$ nvm install node && nvm alias default node
-$ gh auth login
+sudo apt update && sudo apt install nvm gh git
+nvm install node && nvm alias default node
+gh auth login
 ```
 
 2. Check out the code, install dependencies, and open visual studio code to make edits.
 ```console
-$ git clone https://github.com/Christians-Concerned-for-the-Community/website-cccgainesville.org.git
-$ cd website-cccgainesville.org
-$ npm install
-$ code .
+git clone https://github.com/Christians-Concerned-for-the-Community/website-cccgainesville.org.git
+cd website-cccgainesville.org
+npm install
+code .
 ```
 
 3. Build the website and deploy it on localhost, so you can test it locally.
 ```console
-$ npm run preview
+npm run preview
 ```
 
 4. Commit changes to the main branch (automatically deploys to https://staging.cccgainesville.org).
 ```console
-$ git add .
-$ git commit -m "describe your changes here"
-$ git push
+git add .
+git commit -m "describe your changes here"
+git push
 ```
 
 5. Upload to the production branch (automatically deploys to https://cccgainesville.org).
 ```console
-$ git checkout production && git pull --rebase origin main && git push && git checkout -
+git checkout production && git pull --rebase origin main && git push && git checkout -
 ```
