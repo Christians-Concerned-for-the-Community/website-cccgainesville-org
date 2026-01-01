@@ -3,6 +3,8 @@
 ## https://staging.cccgainesville.org (staging)
 
 [![Built with Astro](https://astro.badg.es/v2/built-with-astro/small.svg)](https://astro.build)
+[![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![Cloudflare](https://img.shields.io/badge/Cloudflare-F38020?style=for-the-badge&logo=Cloudflare&logoColor=white)](https://developers.cloudflare.com/workers/framework-guides/web-apps/astro/)
 
 This website is based on the [Accessible Astro Starter](https://github.com/incluud/accessible-astro-starter)
 theme, version 4.3.1. You can find the documentation for the theme and components
