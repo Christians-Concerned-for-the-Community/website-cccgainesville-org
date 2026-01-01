@@ -19,6 +19,11 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
 
+    <!-- for staging builds, tell robots not to index this page, even if crawled -->
+    {Astro.site?.hostname.startsWith("staging") &&
+      <meta name="robots" content="noindex, nofollow">
+    }
+
     <!-- favicon stuff -->
     <!-- https://dev.to/masakudamatsu/favicon-nightmare-how-to-maintain-sanity-3al7 -->
     <link rel="icon" href="/favicon.ico" sizes="48x48" >
