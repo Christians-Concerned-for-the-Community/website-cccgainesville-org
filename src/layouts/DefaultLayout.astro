@@ -6,8 +6,6 @@ import Header from '@components/Header.astro'
 import Footer from '@components/Footer.astro'
 import { ClientRouter } from 'astro:transitions'
 
-import logo_symbol from '@assets/logo-symbol.svg'
-
 const {
   title = 'Christians Concerned for the Community',
   description = 'CCC is a Christian charity based in Gainesville, FL that provides used furniture and builds wheelchair ramps for our neighbors in Alachua County.',
@@ -21,8 +19,13 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
 
-    <!-- favicon -->
-    <link rel="icon" type="image/svg+xml" href={logo_symbol.src} />
+    <!-- favicon stuff -->
+    <!-- https://dev.to/masakudamatsu/favicon-nightmare-how-to-maintain-sanity-3al7 -->
+    <link rel="icon" href="/favicon.ico" sizes="48x48" >
+    <link rel="icon" href="/favicon.svg" sizes="any" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+    <link rel="manifest" href="/site.webmanifest" />
+    
     <!-- sitemap hint -->
     <link rel="sitemap" href="/sitemap-index.xml" />
 
