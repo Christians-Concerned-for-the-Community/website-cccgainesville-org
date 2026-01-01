@@ -5,7 +5,7 @@
 [![Built with Astro](https://astro.badg.es/v2/built-with-astro/small.svg)](https://astro.build)
 
 This website is based on the [Accessible Astro Starter](https://github.com/incluud/accessible-astro-starter)
-theme, version 4.3.1. You can find the documentation for the overall package
+theme, version 4.3.1. You can find the documentation for the theme and components
 [here](https://accessible-astro.incluud.dev/getting-started/introduction/).
 
 ## Shortcuts
@@ -67,6 +67,8 @@ whatever setup you want - you just have to modify Step 1 for your OS.
 sudo apt update && sudo apt install nvm gh git
 nvm install node && nvm alias default node
 gh auth login
+git config --global user.email "your.email@cccgainesville.org"
+git config --global user.name "Your Name"
 ```
 
 2. Check out the code, install dependencies, and open visual studio code to make edits.
