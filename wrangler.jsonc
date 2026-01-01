@@ -5,17 +5,17 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "website-cccgainesville-org",
-	"compatibility_date": "2025-12-27",
+	"compatibility_date": "2026-01-01",
 	"assets": {
 		"directory": "./dist"
 	},
 
-	"route": "new.cccgainesville.org",
+	"route": "staging.cccgainesville.org",
 
-	// If we're running a staging build, host it at a different URL.
+	// If we're running a production build, host it at the real URL.
 	"env": {
-		"staging": {
-			"route": "staging.cccgainesville.org"
+		"production": {
+			"route": "cccgainesville.org"
 		}
 	}
 }
