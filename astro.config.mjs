@@ -88,7 +88,7 @@ if (isLinked) {
 //       (we do this for staging builds)
 export default defineConfig({
   compressHTML: true,
-  site: 'https://new.cccgainesville.org',
+  site: 'https://staging.cccgainesville.org',
   integrations: [
     compress(),
     icon(),
