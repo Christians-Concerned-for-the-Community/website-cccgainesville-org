@@ -103,6 +103,8 @@ export default defineConfig({
   ],
   vite: viteConfig,
   image: {
+    // Enable responsive images:
+    layout: 'constrained',
     responsiveStyles: true,
   },
 })
