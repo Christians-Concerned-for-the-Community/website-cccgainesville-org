@@ -20,8 +20,8 @@ const { loading = 'eager' }: Props = Astro.props
 ---
 
 <Link href="/" class="flex items-center gap-2">
-  <img alt="CCC Logo" width={272} height={67} loading={loading}
-     src={logo_light.src} class="block dark:hidden"/>
-  <img alt="CCC Logo" width={272} height={67} loading={loading}
-     src={logo_dark.src} class="hidden dark:block"/>
+  <img alt="CCC Logo" loading={loading} src={logo_light.src}
+    class="block dark:hidden w-60 sm:w-72 h-full"/>
+  <img alt="CCC Logo" loading={loading} src={logo_dark.src}
+    class="hidden dark:block w-60 sm:w-72 h-full"/>
 </Link>
