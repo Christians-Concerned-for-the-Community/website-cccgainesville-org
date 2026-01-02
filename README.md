@@ -10,13 +10,14 @@ This website is based on the [Accessible Astro Starter](https://github.com/inclu
 theme, version 4.3.1. You can find the documentation for the theme and components
 [here](https://accessible-astro.incluud.dev/getting-started/introduction/).
 
-## Shortcuts
- * [Color palette definition](src/assets/scss/base/_root.scss)
+## Common Places to Make Edits
  * [Home page](src/pages/index.astro)
  * [Services page](src/pages/about/services.astro)
  * [Give page](src/pages/give.astro)
  * [Volunteer page](src/pages/volunteer.astro)
  * [Contact page](src/pages/contact.astro)
+ * [Navigation bar/menu](src/components/Header.astro)
+ * [Color palette definition](src/assets/scss/base/_root.scss)
 
 ## Admin Links
  * [Cloudflare Deployments - Staging](https://dash.cloudflare.com/bd31516cf452a595955169731b95d1bf/workers/services/view/website-cccgainesville-org-staging/production/deployments)
