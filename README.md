@@ -8,8 +8,7 @@
 
 This website is based on the [Accessible Astro Starter](https://github.com/incluud/accessible-astro-starter)
 theme, version 4.3.1. You can find the documentation for the theme and components
-[here](https://accessible-astro.incluud.dev/getting-started/introduction/). The license for this theme can
-be found [here](LICENSE-astro-accessible-starter).
+[here](https://accessible-astro.incluud.dev/getting-started/introduction/).
 
 ## Shortcuts to Commonly-Edited Files
  * [Home page](src/pages/index.astro)
