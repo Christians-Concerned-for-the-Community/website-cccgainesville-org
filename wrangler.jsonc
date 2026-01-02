@@ -4,7 +4,7 @@
  */
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "website-cccgainesville-org",
+	"name": "website-cccgainesville-org-staging",
 	"compatibility_date": "2026-01-01",
 	"assets": {
 		"directory": "./dist"
@@ -19,6 +19,7 @@
 	// If we're running a production build, host it at the real URL.
 	"env": {
 		"production": {
+			"name": "website-cccgainesville-org-prod",
 			"route": {
 				"pattern": "cccgainesville.org",
 				"custom_domain": true,

@@ -18,6 +18,9 @@ theme, version 4.3.1. You can find the documentation for the theme and component
  * [Volunteer page](src/pages/volunteer.astro)
  * [Contact page](src/pages/contact.astro)
 
+## Admin Links
+ * [Cloudflare Deployments - Staging](https://dash.cloudflare.com/bd31516cf452a595955169731b95d1bf/workers/services/view/website-cccgainesville-org-staging/production/deployments)
+
 ## Why Astro?
 
 We used to use a WordPress site hosted with DreamHost. WordPress is a dynamic website solution -
