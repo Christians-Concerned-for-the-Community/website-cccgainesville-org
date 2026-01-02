@@ -21,7 +21,7 @@
 		"production": {
 			"name": "website-cccgainesville-org-prod",
 			"route": {
-				"pattern": "cccgainesville.org",
+				"pattern": "new.cccgainesville.org",
 				"custom_domain": true,
 				"zone_name": "cccgainesville.org"
 			},
