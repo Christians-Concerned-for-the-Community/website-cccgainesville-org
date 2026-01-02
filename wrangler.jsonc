@@ -10,12 +10,20 @@
 		"directory": "./dist"
 	},
 
-	"route": "staging.cccgainesville.org",
+	"route": {
+		"pattern": "staging.cccgainesville.org",
+		"custom_domain": true,
+		"zone_name": "cccgainesville.org"
+	},
 
 	// If we're running a production build, host it at the real URL.
 	"env": {
 		"production": {
-			"route": "cccgainesville.org"
+			"route": {
+				"pattern": "cccgainesville.org",
+				"custom_domain": true,
+				"zone_name": "cccgainesville.org"
+			},
 		}
 	}
 }
