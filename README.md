@@ -9,13 +9,18 @@
 
 &nbsp;
 
-## Shortcuts to Commonly-Edited Files
- * [Home page](src/pages/index.astro)
- * [Services page](src/pages/about/services.astro)
- * [Give page](src/pages/give.astro)
- * [Volunteer page](src/pages/volunteer.astro)
- * [Contact page](src/pages/contact.astro)
+## Main Pages
+ * [Home](src/pages/index.astro)
+ * [Give](src/pages/give.astro)
+ * [Volunteer](src/pages/volunteer.astro)
+ * About
+   * [Services](src/pages/about/services.astro)
+   * [Our Values](src/pages/about/our-values.astro)
+   * [News](src/pages/about/news.astro)
+   * [Documents](src/pages/about/docs.astro)
+ * [Contact](src/pages/contact.astro)
 
+## Other Commonly-Edited Files
  * [Redirects](public/_redirects)
  * [Navigation bar/menu](src/components/Header.astro)
  * [Color palette definition](src/assets/scss/base/_root.scss)
