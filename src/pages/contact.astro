@@ -10,7 +10,7 @@ import Feat from '@assets/contact-feat.png'
 <DefaultLayout title="Contact">
   <PageHeader title="Contact" subtitle="Have a question? Get in touch with us!" bgType="neutral" featuredImage={Feat} />
   <section class="container my-16">
-    <div class="grid grid-cols-1 gap-32 md:grid-cols-2">
+    <div class="grid grid-cols-1 gap-16 md:gap-32 md:grid-cols-2">
       <div class="space-content">
         <Form name="contact" action="/thank-you" method="post">
           <Input name="name" label="Name" required autocomplete="name" />
