@@ -21,7 +21,10 @@ import { Icon } from 'astro-icon/components'
 
           <Textarea name="message" label="Message" required />
 
-          <Button htmlType="submit" type="primary">Send Message</Button>
+          <Button htmlType="submit" type="primary" animateOnHover animationType="boop">
+            Send Message
+            <Icon aria-hidden="true" name="lucide:send-horizontal" size={32} />
+          </Button>
         </Form>
       </div>
       <div class="space-content">
