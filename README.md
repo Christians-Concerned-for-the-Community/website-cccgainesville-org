@@ -16,6 +16,8 @@ theme, version 4.3.1. You can find the documentation for the theme and component
  * [Give page](src/pages/give.astro)
  * [Volunteer page](src/pages/volunteer.astro)
  * [Contact page](src/pages/contact.astro)
+
+ * [Redirects](public/_redirects)
  * [Navigation bar/menu](src/components/Header.astro)
  * [Color palette definition](src/assets/scss/base/_root.scss)
 

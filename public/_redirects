@@ -1,0 +1,37 @@
+# Server-side redirects (will be handled by Cloudflare for us)
+# See: https://developers.cloudflare.com/workers/static-assets/redirects/
+#
+# Format:
+#  [source] [destination] [code?]
+#
+# where:
+#    source: original path, can include wildcards & placeholders
+#    destination: path to redirect to instead (either relative, or an external path)
+#    code: HTTP status code to use for redirect (optional, default is 302)
+#          301- permanent redirect
+#          302- temporary redirect
+#
+# Example:
+#    /donate /give
+#    Any requests for https://[this site]/donate will be redirected to https://[this site]/give.
+
+# Map routes from the old Wordpress site to our new one.
+/donate     /give             301
+/contact-us /contact          301
+/about      /about/our-values 301
+/services   /about/services   301
+/news       /about/news       301
+
+# Convenience redirects (short URL's for various other pages)
+#  - Give Lively landing page (for most payment methods)
+/dd https://secure.givelively.org/donate/christians-concerned-for-the-community-inc#donation-list 301
+#  - Every.org landing page (for stocks & crypto)
+/altdonate https://www.every.org/cccgainesville?theme_color=32425B&method=crypto%2Cstocks&utm_campaign=donate-link#/donate/stocks
+#  - Newsletter signup (Mailchimp hosted signup page)
+/ns https://cccgainesville.us21.list-manage.com/subscribe?u=cd7e35eb3114d8da0b9bce283&id=a39d04bad3
+#  - Volunteer Interest form (Tally.so)
+/vi                 https://tally.so/r/3XROPV
+/volunteer-interest https://tally.so/r/3XROPV
+#  - Volunteer Legal form (Tally.so)
+/vl              https://tally.so/r/wo0lJN
+/volunteer-legal https://tally.so/r/wo0lJN
