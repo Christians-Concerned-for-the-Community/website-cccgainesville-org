@@ -1,14 +1,13 @@
 # Main Website for Christians Concerned for the Community
-## https://cccgainesville.org (production)
-## https://staging.cccgainesville.org (staging)
 
-[![Built with Astro](https://astro.badg.es/v2/built-with-astro/small.svg)](https://astro.build)
-[![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![Built with Astro](https://astro.badg.es/v2/built-with-astro/small.svg)](https://astro.build) &nbsp;
+[![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/) &nbsp;
 [![Cloudflare](https://img.shields.io/badge/Cloudflare-F38020?style=for-the-badge&logo=Cloudflare&logoColor=white)](https://developers.cloudflare.com/workers/framework-guides/web-apps/astro/)
 
-This website is based on the [Accessible Astro Starter](https://github.com/incluud/accessible-astro-starter)
-theme, version 4.3.1. You can find the documentation for the theme and components
-[here](https://accessible-astro.incluud.dev/getting-started/introduction/).
+* ### https://staging.cccgainesville.org ← edits to [main branch](../../tree/main) show up here
+* ### https://cccgainesville.org ← edits to [production branch](../../tree/production) show up here
+
+&nbsp;
 
 ## Shortcuts to Commonly-Edited Files
  * [Home page](src/pages/index.astro)
@@ -39,17 +38,22 @@ whenever something changes, and the only thing uploaded to the public server are
 (HTML, CSS, JS, copies of images) produced by the build. There's no public admin console to hack
 into, no plugins, nothing but the site itself.
 
-## Why Accessible Astro?
+## Which theme is this based on, and why?
 
-This theme was built to help comply with web accessibility rules, such as
+The website uses the [Accessible Astro Starter](https://github.com/incluud/accessible-astro-starter)
+theme, version 4.3.1. You can find the documentation for the theme and components
+[here](https://accessible-astro.incluud.dev/getting-started/introduction/).
+
+Accessible Astro was built to help comply with web accessibility rules, such as
 [WCAG 2.2 AA](https://www.levelaccess.com/blog/wcag-2-2-aa-summary-and-checklist-for-website-owners/),
 the [European Accessibility Act](https://www.levelaccess.com/compliance-overview/european-accessibility-act-eaa/),
 and modern web standards in general. This makes it easier for neighbors to use screen readers and
 keyboard shortcuts when viewing our website, and the theme includes tools to make sure the color contrasts
 used meet WCAG readability standards.
 
-A series of legal cases in Gainesville in 2025 where local businesses were being sued for errors in
-their websites' accessibility implementations also prompted this change.
+A series of [legal cases](https://www.mainstreetdailynews.com/news/local/gainesville-businesses-ada-lawsuits)
+in Gainesville where local businesses were being sued for errors in their websites' accessibility
+implementations also prompted this change.
 
 ## Okay, so how does this stuff here in GitHub wind up on cccgainesville.org?
 
