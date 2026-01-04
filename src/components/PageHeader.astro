@@ -15,6 +15,8 @@ interface Props {
   class?: string
   /**
    * The featured image of the page
+   * 
+   * Recommended aspect ratio: 3 x 2
    */
   featuredImage?: any
   /**
@@ -150,11 +152,9 @@ const sanitizedSubtitle: string = subtitle
             <Image
               src={featuredImage}
               alt=""
-              width={375}
-              height={250}
               aria-hidden={true}
               priority={true}
-              class="h-full rounded-lg hidden md:col-span-1 md:block object-contain ml-auto"
+              class="h-full dark:brightness-90 rounded-lg hidden md:col-span-1 md:block object-contain ml-auto"
             />
           )
         }
