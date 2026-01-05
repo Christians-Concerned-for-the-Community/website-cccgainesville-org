@@ -133,16 +133,17 @@ const sanitizedSubtitle: string = subtitle
         </div>
         {
           featuredImage && (
-            <Image
-              src={featuredImage}
-              alt=""
-              aria-hidden="true"
-              priority={true}
-              width={375}
-              height={250}
-              class={"feat-image hidden md:block dark:brightness-90"
-               + " md:col-span-7 row-span-3 ml-auto"}
-            />
+            <div class="cardshadow hidden md:block md:col-span-7 row-span-3 ml-auto">
+              <Image
+                src={featuredImage}
+                alt=""
+                aria-hidden="true"
+                priority={true}
+                width={375}
+                height={250}
+                class={"dark:brightness-90"}
+              />
+            </div>
           )
         }
       </div>
@@ -152,11 +153,7 @@ const sanitizedSubtitle: string = subtitle
 
 <style>
   .page-header {
-    /* Give the featured image a slight shadow to make it look like a card. */
-    .feat-image {
-      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    }
-
+    
     .bg-primary {
       background-color: light-dark(var(--color-primary-100), var(--color-primary-500));
     }
@@ -193,6 +190,10 @@ const sanitizedSubtitle: string = subtitle
     .bg-bordered {
       border: 1px solid var(--border-color-subtle);
       border-inline: 0;
+    }
+
+    .cardshadow {
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     }
   }
 </style>
