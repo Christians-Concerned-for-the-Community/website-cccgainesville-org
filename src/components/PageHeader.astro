@@ -31,7 +31,7 @@ interface Props {
   /**
    * The background color of the page header
    * @type {'primary' | 'secondary' | 'neutral' | 'gradient' | 'bordered' | undefined}
-   * @default undefined - Uses the default background color
+   * @default neutral - Uses neutral color, with feat image extending below colored part of header
    */
   bgType?: 'primary' | 'secondary' | 'neutral' | 'gradient' | 'bordered'
   /**
@@ -54,7 +54,7 @@ const {
   class: className,
   title,
   subtitle,
-  bgType,
+  bgType = 'neutral',
   showBreadcrumbs = false,
   featuredImage,
   customBreadcrumbLabels,
@@ -84,7 +84,7 @@ const sanitizedSubtitle: string = subtitle
   : ''
 ---
 
-<section class:list={[className, 'page-header']}>
+<section class:list={[className, 'page-header', 'md:mb-12']}>
   <div class="container my-3">
     {
       showBreadcrumbs &&
@@ -126,8 +126,8 @@ const sanitizedSubtitle: string = subtitle
   </div>
   <div class:list={['py-8', bgType && `bg-${bgType}`]}>
     <div class="container">
-      <div class="grid grid-cols-1 items-center gap-10 md:grid-cols-3">
-        <div class="space-content md:col-span-2">
+      <div class="grid grid-cols-1 items-center gap-10 md:grid-cols-18 grid-rows-3">
+        <div class="space-content md:col-span-11 row-span-2">
           <Heading level="h1">{title}</Heading>
           {sanitizedSubtitle && <p class="text-2xl" set:html={sanitizedSubtitle} />}
         </div>
@@ -136,9 +136,12 @@ const sanitizedSubtitle: string = subtitle
             <Image
               src={featuredImage}
               alt=""
-              aria-hidden={true}
+              aria-hidden="true"
               priority={true}
-              class="h-full dark:brightness-90 rounded-lg hidden md:col-span-1 md:block object-contain ml-auto"
+              width={300}
+              height={200}
+              class={"feat-image hidden md:block dark:brightness-90"
+               + " md:col-span-7 row-span-3 ml-auto"}
             />
           )
         }
@@ -149,6 +152,11 @@ const sanitizedSubtitle: string = subtitle
 
 <style>
   .page-header {
+    /* Give the featured image a slight shadow to make it look like a card. */
+    .feat-image {
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    }
+
     .bg-primary {
       background-color: light-dark(var(--color-primary-100), var(--color-primary-500));
     }
@@ -158,10 +166,19 @@ const sanitizedSubtitle: string = subtitle
     }
 
     .bg-neutral {
-      color:                   light-dark(var(--color-neutral-100), var(--color-neutral-100));
-      background-color:        light-dark(var(--color-neutral-800), var(--color-neutral-900));
-      border-top:    2px solid light-dark(var(--color-neutral-800), var(--color-neutral-300));
-      border-bottom: 4px solid light-dark(var(--color-neutral-800), var(--color-neutral-300));
+      /* text color */
+      color: light-dark(var(--color-neutral-100), var(--color-neutral-100));
+      /* background color
+       * Uses one color for the top 2/3 of the header, then another for the bottom.
+       * This lets us set the bottom 1/3 to the overall page background, which
+       * makes the feature image look like it extends below the edge of the header.
+       */
+      background-image: linear-gradient(to bottom,
+        light-dark(var(--color-neutral-800),var(--color-neutral-850)) 0%,
+        light-dark(var(--color-neutral-800),var(--color-neutral-850)) 66%,
+        light-dark(var(--color-neutral-100),var(--color-neutral-900)) 66%,
+        light-dark(var(--color-neutral-100),var(--color-neutral-900))
+      );
     }
 
     .bg-gradient {
@@ -176,11 +193,6 @@ const sanitizedSubtitle: string = subtitle
     .bg-bordered {
       border: 1px solid var(--border-color-subtle);
       border-inline: 0;
-    }
-
-    .featured-image-container {
-      max-height: 500px;
-      overflow: hidden;
     }
   }
 </style>
