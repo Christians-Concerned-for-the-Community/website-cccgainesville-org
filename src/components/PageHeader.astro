@@ -1,5 +1,5 @@
 ---
-import { Avatar, Breadcrumbs, BreadcrumbsItem, Heading } from 'accessible-astro-components'
+import { Breadcrumbs, BreadcrumbsItem, Heading } from 'accessible-astro-components'
 import { Image } from 'astro:assets'
 import sanitizeHtml from 'sanitize-html'
 
@@ -33,14 +33,6 @@ interface Props {
    * @type {'primary' | 'secondary' | 'neutral' | 'gradient' | 'bordered' | undefined}
    * @default undefined - Uses the default background color
    */
-  /**
-   * The author of the page
-   */
-  author?: {
-    name: string
-    image: string
-    bio: string
-  }
   bgType?: 'primary' | 'secondary' | 'neutral' | 'gradient' | 'bordered'
   /**
    * Whether to show the breadcrumbs
@@ -65,7 +57,6 @@ const {
   bgType,
   showBreadcrumbs = false,
   featuredImage,
-  author,
   customBreadcrumbLabels,
   joinLastBreadcrumb = false,
 } = Astro.props
@@ -139,13 +130,6 @@ const sanitizedSubtitle: string = subtitle
         <div class="space-content md:col-span-2">
           <Heading level="h1">{title}</Heading>
           {sanitizedSubtitle && <p class="text-2xl" set:html={sanitizedSubtitle} />}
-          {
-            author && (
-              <div class="mt-6 flex items-center">
-                <Avatar title={author.name} image={author.image} subtitle={author.bio} />
-              </div>
-            )
-          }
         </div>
         {
           featuredImage && (
