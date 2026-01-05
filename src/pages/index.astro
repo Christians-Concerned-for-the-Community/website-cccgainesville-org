@@ -2,14 +2,16 @@
 import DefaultLayout from '@layouts/DefaultLayout.astro'
 import Hero from '@components/Hero.astro'
 import Counter from '@components/Counter.astro'
-import ContentMedia from '@components/ContentMedia.astro'
+import ContentImage from '@components/ContentImage.astro'
 import { Accordion, AccordionItem, Avatar, AvatarGroup, Heading, Link } from 'accessible-astro-components'
 import { Icon } from 'astro-icon/components'
+
+import Img1 from '@assets/contact-feat.png'
 ---
 
 <DefaultLayout title="Home">
   <Hero />
-  <ContentMedia imgSrc="/accessible-components.webp">
+  <ContentImage imgSrc={Img1} alt="">
     <Heading level="h2">Accessible components</Heading>
     <p class="text-2xl">
       This theme provides plenty of tried and tested Accessible Astro Components. Some are native to this theme and a
@@ -18,15 +20,15 @@ import { Icon } from 'astro-icon/components'
         href="https://github.com/incluud/accessible-astro-components">separate package</Link
       >. They'll get you up and running in building an accessible solution for your visitors.
     </p>
-  </ContentMedia>
-  <ContentMedia imgSrc="/wcag-compliant.webp" reverseImg={true}>
+  </ContentImage>
+  <ContentImage imgSrc={Img1} reverseImg={true} alt="">
     <Heading level="h2">WCAG 2.2 AA compliant</Heading>
     <p class="text-2xl">
       Using semantic HTML, landmarks, skip links, screen reader friendly content, aria-labels, keyboard accessible
       navigation and components, clear outlines and tab indicators and the right color contrast, you're more certain of
       reaching WCAG AA compliance.
     </p>
-  </ContentMedia>
+  </ContentImage>
   <section class="my-64">
     <div class="container grid grid-cols-1 gap-12 md:grid-cols-2">
       <div class="flex flex-col items-start gap-4">

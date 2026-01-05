@@ -1,0 +1,87 @@
+---
+import { Image } from 'astro:assets'
+
+/**
+ * ContentImage Component
+ *
+ * @description A component that displays content alongside an image, with the option to reverse the image position
+ */
+interface Props {
+  /**
+   * Additional classes to apply to the whole component
+   * @default 'my-40'
+   */
+  class?: string
+  /**
+   * The source URL for the image, or an image imported from assets
+   */
+  imgSrc: any
+  /**
+   * Additional classes to apply to the image
+   * @default 'rounded-lg'
+   */
+  imgClass?: string
+  /**
+   * Alternate text for image.
+   */
+  alt: string
+  /**
+   * Whether to display the image on the right side instead of the left
+   * @default false
+   */
+  reverseImg?: boolean
+}
+
+const {
+  class: className = 'my-40',
+  imgSrc,
+  imgClass = 'rounded-lg',
+  alt,
+  reverseImg = false
+} = Astro.props
+
+/* 
+  Only allow the order to be reversed on medium screens or larger.
+
+  This allows us to have a nice alternating pattern when the image and slot
+  are shown side-by-side, but reverts to the original order on small screens
+  where everything is smooshed into one column.
+
+  For example, if we're displaying pictures and text:
+
+  Medium screen or larger:
+    [image]  [text]   -- ContentMedia #1 (normal)
+    
+    [text]   [image]  -- ContentMedia #2 (reversed)
+    
+    [image]  [text]   -- ContentMedia #3 (normal)
+  
+  Small screen:
+    [image]     -- Content Media #1
+    [text]
+
+    [image]     -- Content Media #2 (reversal ignored)
+    [text]
+
+    [image]     -- Content Media #3
+    [text]
+ */
+const imagePos = reverseImg? 'md:order-2' : undefined;
+const slotPos  = reverseImg? 'md:order-1' : undefined;
+
+---
+
+<section class:list={[className]}>
+  <div class="container">
+    <div class="grid grid-cols-1 gap-16 md:gap-24 md:grid-cols-2">
+      <Image
+        src={imgSrc}
+        class:list={[imgClass, imagePos]}
+        alt={alt} 
+      />
+      <div class:list={['space-content', 'flex', 'flex-col', 'justify-center', slotPos]}>
+        <slot />
+      </div>
+    </div>
+  </div>
+</section>
