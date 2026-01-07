@@ -1,11 +1,13 @@
 ---
 import DefaultLayout from '@layouts/DefaultLayout.astro'
 import PageHeader from '@components/PageHeader.astro'
+
+import Feat from '@assets/services-feat.jpg'
 ---
 
 <DefaultLayout title="Services">
-  <PageHeader title="Services" subtitle="Here's how we can help." />
-  <section class="container mb-16">
+  <PageHeader title="Services" subtitle="Here's how we can help."  showBreadcrumbs={true} featuredImage={Feat}/>
+  <section class="container my-24">
     
   </section>
 </DefaultLayout>

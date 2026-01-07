@@ -7,6 +7,8 @@ import PageHeader from '@components/PageHeader.astro'
 import { Heading, Link } from 'accessible-astro-components'
 import { Icon } from 'astro-icon/components'
 
+import Feat from '@assets/docs-feat.jpg'
+
 function getPdfPaths(dirname: string) {
   return globSync('./public/docs/'+dirname+'/*.pdf')
     // Sort paths in ascending alphabetical order.
@@ -28,7 +30,7 @@ const lists = [
   },
   {
     title: "Policies",
-    paths: getPdfPaths('policies').reverse(),
+    paths: getPdfPaths('policies'),
   },
   {
     title: "IRS Returns",
@@ -39,14 +41,14 @@ const lists = [
 ---
 
 <DefaultLayout title="Documents">
-  <PageHeader title="Documents" subtitle="Take a look through the archives." />
-  <section class="container mb-16">
+  <PageHeader title="Documents" subtitle="Take a look through the archives." showBreadcrumbs={true} featuredImage={Feat}/>
+  <section class="container my-24">
     <div class="grid grid-cols-1 gap-24 items-start md:grid-cols-3 md:gap-8 md:justify-items-center">
       
       <!-- Loop over each list of files: -->
       {lists.map((dir) => (
         
-        <div class="grid grid-cols-1 gap-xs items-left">
+        <div class="grid grid-cols-1 gap-xs items-left file-list">
           {/* Write out title of list. */}
           <Heading level="h2" size="h3" class="mb-4">{dir.title}</Heading>
 
@@ -64,4 +66,10 @@ const lists = [
       ))}
     </div>
   </section>
+
+  <style>
+    .file-list {
+
+    }
+  </style>
 </DefaultLayout>
