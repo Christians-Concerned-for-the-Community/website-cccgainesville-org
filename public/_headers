@@ -28,6 +28,3 @@
   Cross-Origin-Opener-Policy: same-origin
   Cross-Origin-Resource-Policy: same-site
   Cross-Origin-Embedder-Policy: require-corp
-
-#/site.webmanifest
-#  Access-Control-Allow-Origin: https://cccgainesville.org https://new.cccgainesville.org https://staging.cccgainesville.org https://cccgainesville.cloudflareaccess.com
