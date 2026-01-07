@@ -15,5 +15,8 @@
   X-Frame-Options: SAMEORIGIN
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
-  Permissions-Policy: camera=(), microphone=(), geolocation=(), display-capture=(), autoplay=(), fullscreen=(), magnetometer=(), gyroscope=(), accelerometer=(), idle-detection=()
+  Permissions-Policy: camera=(), microphone=(), display-capture=(), geolocation=(), magnetometer=(), gyroscope=(), accelerometer=()
   Content-Security-Policy: upgrade-insecure-requests; default-src 'self'
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Resource-Policy: same-site
+  Cross-Origin-Embedder-Policy: require-corp
