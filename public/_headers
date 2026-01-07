@@ -17,7 +17,9 @@
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), display-capture=(), geolocation=(), magnetometer=(), gyroscope=(), accelerometer=()
 #
-# TODO: get rid of 'unsafe-inline', once Astro supports it
+# TODO: get rid of 'unsafe-inline', once Astro supports it. Can't currently, because
+#       the accessibility stuff uses view transitions via <ClientRouter />, and Astro's
+#       experimental csp support doesn't handle that as of 1/7/2026.
 #
   Content-Security-Policy: default-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'; upgrade-insecure-requests
 #
