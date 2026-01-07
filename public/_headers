@@ -16,7 +16,13 @@
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), display-capture=(), geolocation=(), magnetometer=(), gyroscope=(), accelerometer=()
-  Content-Security-Policy: upgrade-insecure-requests; default-src 'self'
-  Cross-Origin-Opener-Policy: same-origin
-  Cross-Origin-Resource-Policy: same-site
-  Cross-Origin-Embedder-Policy: require-corp
+#
+# TODO: get rid of 'unsafe-inline', once Astro supports it
+#
+  Content-Security-Policy: default-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'; upgrade-insecure-requests
+#
+# TODO: uncomment these, if they ever become ready for primetime
+#
+#  Cross-Origin-Opener-Policy: same-origin
+  #Cross-Origin-Resource-Policy: same-site
+#  Cross-Origin-Embedder-Policy: require-corp
