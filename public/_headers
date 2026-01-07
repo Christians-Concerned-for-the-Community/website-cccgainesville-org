@@ -21,7 +21,9 @@
 #       the accessibility stuff uses view transitions via <ClientRouter />, and Astro's
 #       experimental csp support doesn't handle that as of 1/7/2026.
 #
-  Content-Security-Policy: default-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'; manifest-src 'self' cccgainesville.cloudflareaccess.com; upgrade-insecure-requests
+# TODO: get rid of 'data:' as well, once we can use Astro's CSP support (see above).
+#
+  Content-Security-Policy: default-src 'self' data: 'unsafe-inline'; object-src 'none'; base-uri 'none'; manifest-src 'self' cccgainesville.cloudflareaccess.com; upgrade-insecure-requests
 #
 #
 #
