@@ -27,4 +27,6 @@
 #
   Cross-Origin-Opener-Policy: same-origin
   Cross-Origin-Resource-Policy: same-site
-  Cross-Origin-Embedder-Policy: require-corp
+#
+#  (breaks third-party stuff that hasn't set CORS properly)
+#  Cross-Origin-Embedder-Policy: require-corp
