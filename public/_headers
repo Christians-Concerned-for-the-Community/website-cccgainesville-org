@@ -1,0 +1,19 @@
+# HTTP headers added by Cloudflare server when serving our pages and assets.
+# See: https://developers.cloudflare.com/workers/static-assets/headers/
+#
+# Most of these security headers were obtained by following the recommendations
+# on https://securityheaders.com.
+#
+# You can run a security check on our deployed headers at any time using one
+# of these links:
+#   Staging: https://securityheaders.com/?q=staging.cccgainesville.org&followRedirects=on
+#   Production: https://securityheaders.com/?q=cccgainesville.org&followRedirects=on
+
+# Apply these headers to all paths served.
+/*
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  X-Frame-Options: SAMEORIGIN
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), display-capture=(), autoplay=(), fullscreen=(), magnetometer=(), gyroscope=(), accelerometer=(), idle-detection=()
+  Content-Security-Policy: upgrade-insecure-requests; default-src 'self'
