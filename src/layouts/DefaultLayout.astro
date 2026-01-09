@@ -4,7 +4,6 @@ import '../assets/scss/index.scss'
 import SiteMeta from '@components/SiteMeta.astro'
 import Header from '@components/Header.astro'
 import Footer from '@components/Footer.astro'
-import { ClientRouter } from 'astro:transitions'
 
 const {
   title = 'Christians Concerned for the Community',
@@ -35,6 +34,10 @@ const {
     <!-- sitemap hint -->
     <link rel="sitemap" href="/sitemap-index.xml" />
 
+    <!-- prevent view transition from happening until whole page is loaded (waits for footer) -->
+    <!--   see: https://vtbag.dev/basics/pseudos/#delaying-cross-document-transitions -->
+    <link rel="expect" href="#footer" blocking="render" />
+
     <SiteMeta
       title={title}
       description={description}
@@ -42,13 +45,10 @@ const {
       image='social-preview.png'
       author={author}
     />
-
-    <!-- Enable Astro View Transitions for all browsers -->
-    <ClientRouter />
   </head>
   <body>
     <Header />
-    <main id="main-content" transition:animate="fade">
+    <main id="main-content">
       <slot />
     </main>
     <Footer />
@@ -79,6 +79,18 @@ const {
         border: 2px solid var(--link-color);
         border-radius: 0.35rem;
         padding: 1rem;
+      }
+
+      // enable view transitions for every page
+      @media (prefers-reduced-motion: no-preference) {
+        @view-transition {
+          navigation: auto;
+        }
+
+        ::view-transition-group(root) {
+          animation-duration: var(--animation-speed-fast);
+          animation-timing-function: var(--cubic-bezier);
+        }
       }
     </style>
   </body>
