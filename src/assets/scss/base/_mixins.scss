@@ -30,27 +30,3 @@
   -webkit-box-shadow: 0 0 0 2px white;
   box-shadow: 0 0 0 2px white;
 }
-
-@mixin sr-only {
-  position: absolute;
-  margin: -1px;
-  padding: 0;
-  inline-size: 1px;
-  block-size: 1px;
-  overflow: clip;
-  clip: rect(0, 0, 0, 0);
-  border-width: 0;
-  white-space: nowrap;
-}
-
-@mixin rotate-icon-on-hover {
-  .icon svg {
-    transition: rotate var(--animation-speed-fast) var(--cubic-bezier);
-  }
-
-  &:where(:hover, :focus-visible) {
-    .icon svg {
-      rotate: -90deg;
-    }
-  }
-}
