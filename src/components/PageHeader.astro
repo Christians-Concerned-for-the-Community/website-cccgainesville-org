@@ -140,7 +140,7 @@ const sanitizedSubtitle: string = subtitle
               priority={true}
               width={675}
               height={450}
-              class={"dark:brightness-90 cardshadow justify-self-end rounded-md"
+              class={"dark:brightness-90 shadow-(--elevation-card) justify-self-end rounded-md"
                 + " w-[70%] max-h-[150px]  md:w-[375px] md:max-h-[250px]"
                 + " row-span-2  md:row-span-3 md:col-span-7"
               }
@@ -189,9 +189,5 @@ const sanitizedSubtitle: string = subtitle
   .bg-bordered {
     border: 1px solid var(--border-color-subtle);
     border-inline: 0;
-  }
-
-  .cardshadow {
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   }
 </style>
