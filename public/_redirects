@@ -15,13 +15,11 @@
 #    /donate /give
 #    Any requests for https://[this site]/donate will be redirected to https://[this site]/give.
 
-# Map routes from the old Wordpress site to our new one.
-/donate     /give             301
-/contact-us /contact          301
-/about      /about/our-values 301
-/volunteer  /about/volunteer  301
-/news       /about/news       301
-/about/docs /about/documents  301
+# Redirects for pages that have different names on our new site, than on our old Wordpress site.
+/donate     /give       301
+/contact-us /contact    301
+/about      /our-values 301
+/about/docs /documents  301
 
 # Convenience redirects (short URL's for various other pages)
 #  - Give Lively landing page (for most payment methods)
