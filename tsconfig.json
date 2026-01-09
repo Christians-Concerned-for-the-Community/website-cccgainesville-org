@@ -2,6 +2,8 @@
   "extends": "astro/tsconfigs/strict",
   "compilerOptions": {
     "baseUrl": ".",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "paths": {
       "@components/*": [
         "src/components/*"
@@ -12,9 +14,18 @@
       "@assets/*": [
         "src/assets/*"
       ],
+      "@content/*": [
+        "src/content/*"
+      ],
+      "@pages/*": [
+        "src/pages/*"
+      ],
+      "@public/*": [
+        "public/*"
+      ],
       "@/utils/*": [
         "src/utils/*"
-      ]
+      ],
     }
   }
 }
