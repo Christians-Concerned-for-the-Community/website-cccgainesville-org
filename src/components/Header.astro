@@ -10,7 +10,7 @@ import { Icon } from 'astro-icon/components'
  */
 ---
 
-<header class="max-sm:fixed max-sm:w-full max-sm:top-0 max-sm:z-10">
+<header>
   <SkipLink />
   <Navigation>
     <li class="menu-item">
@@ -68,8 +68,6 @@ import { Icon } from 'astro-icon/components'
 
 <style lang="scss" is:global>
   header {
-    background-color: oklch(from var(--background-color) l c h / 0.95);
-
     .type-icon {
       display: block;
       margin-inline: -7px;
