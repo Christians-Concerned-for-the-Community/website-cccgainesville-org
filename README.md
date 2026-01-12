@@ -11,17 +11,19 @@
 
 ## Main Pages
  * [Home](src/pages/index.astro)
+ * [Services](src/pages/services.astro)
  * [Give](src/pages/give.astro)
- * [Volunteer](src/pages/volunteer.astro)
- * About
-   * [Services](src/pages/about/services.astro)
-   * [Our Values](src/pages/about/our-values.astro)
-   * [News](src/pages/about/news.astro)
-   * [Documents](src/pages/about/docs.astro)
  * [Contact](src/pages/contact.astro)
+ * [News](src/pages/news.astro)
+ * [Volunteer](src/pages/volunteer.astro)
+ * [Our Values](src/pages/our-values.astro)
+ * [Documents](src/pages/documents.astro)
 
 ## Other Commonly-Edited Files
  * [Redirects](public/_redirects)
+ * [HTTP Headers](public/_headers)
+ * [robots.txt](src/pages/robots.txt.ts)
+ * [Default page layout](src/layouts/DefaultLayout.astro)
  * [Navigation bar/menu](src/components/Header.astro)
  * [Color palette definition](src/assets/scss/base/_root.scss)
 
