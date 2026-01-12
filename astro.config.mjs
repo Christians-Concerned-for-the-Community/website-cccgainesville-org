@@ -90,6 +90,25 @@ export default defineConfig({
   prefetch: {
     prefetchAll: true,
   },
+  /* // This isn't working right yet, as of 1/12/2026 (Astro v5.16.8). But keep trying.
+  experimental: {
+    // See:
+    //   https://docs.astro.build/en/reference/experimental-flags/csp/
+    //   https://web.dev/articles/strict-csp
+    //
+    csp: {
+      scriptDirective: {
+        strictDynamic: true, // trust any scripts that were loaded by trusted scripts, without requiring them to be hashed
+      },
+      directives: [
+        "object-src 'none'", // disable insecure legacy embeds like Flash and Java
+        "base-uri 'none'", // prevents injection attacks that reset the base URL of relative links
+        "upgrade-insecure-requests", // upgrade http resource requests to https automatically
+        "manifest-src 'self' cccgainesville.cloudflareaccess.com",
+      ],
+    },
+  },
+  */
   compressHTML: true,
   site: 'https://staging.cccgainesville.org',
   integrations: [

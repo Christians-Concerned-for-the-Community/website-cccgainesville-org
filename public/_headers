@@ -18,12 +18,11 @@
   Permissions-Policy: camera=(), microphone=(), display-capture=(), geolocation=(), magnetometer=(), gyroscope=(), accelerometer=()
 #
 # TODO: get rid of 'unsafe-inline', once Astro supports it. Can't currently, because
-#       the accessibility stuff uses view transitions via <ClientRouter />, and Astro's
-#       experimental csp support doesn't handle that as of 1/7/2026.
+#       Astro's experimental CSP support doesn't currently play nice with the Accessible Starter theme.
 #
 # TODO: get rid of 'data:' as well, once we can use Astro's CSP support (see above).
 #
-  Content-Security-Policy: default-src 'self' data: 'unsafe-inline'; object-src 'none'; base-uri 'none'; manifest-src 'self' cccgainesville.cloudflareaccess.com; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'self' data: 'unsafe-inline'; script-src 'self' 'unsafe-inline' https://secure.givelively.org; object-src 'none'; base-uri 'none'; manifest-src 'self' cccgainesville.cloudflareaccess.com; upgrade-insecure-requests
 #
 #
 #
