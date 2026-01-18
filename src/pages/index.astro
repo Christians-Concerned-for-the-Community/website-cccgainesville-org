@@ -2,6 +2,7 @@
 import DefaultLayout from '@layouts/DefaultLayout.astro'
 import Hero from '@components/Hero.astro'
 import Counter from '@components/Counter.astro'
+import BlockQuote from '@components/BlockQuote.astro'
 import ContentImage from '@components/ContentImage.astro'
 import { Accordion, AccordionItem, Avatar, AvatarGroup, Heading, Link } from 'accessible-astro-components'
 import { Icon } from 'astro-icon/components'
@@ -11,6 +12,12 @@ import Img1 from '@assets/contact-feat.jpg'
 
 <DefaultLayout title="Home">
   <Hero />
+  <div class="mt-12 max-w-112 w-[90%] sm:w-[70%] place-self-center">
+    <BlockQuote author=" - Matthew 5:16">
+      <p>In the same way, let your light shine before others, that they may see your
+      good deeds and glorify your Father in heaven.</p>
+    </BlockQuote>
+  </div>
   <ContentImage imgSrc={Img1} alt="">
     <Heading level="h2">Accessible components</Heading>
     <p class="text-2xl">

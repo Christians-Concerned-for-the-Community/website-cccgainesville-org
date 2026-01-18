@@ -15,19 +15,17 @@ interface Props {
 const { author } = Astro.props
 ---
 
-<blockquote class="border-primary-500 border-l-4 pl-4">
+<blockquote class="border-(--foreground-color) border-l-8 pl-4 text-(length:--font-size-2)">
   <div>
-    <Icon aria-hidden="true" name="lucide:quote" size="2rem" />
+    <Icon aria-hidden="true" name="lucide:quote" size="1rem" />
     <slot />
-    <Icon aria-hidden="true" name="lucide:quote" size="2rem" />
+    <Icon aria-hidden="true" name="lucide:quote" size="1rem" />
   </div>
-  {author && <cite class="block text-sm font-medium">{author}</cite>}
+  {author && <cite class="block mt-(--space-s) text-(length:--font-size-1) font-medium">{author}</cite>}
 </blockquote>
 
 <style lang="scss" is:global>
   blockquote {
-    font-size: var(--font-size-2);
-
     p {
       display: inline;
     }
@@ -39,11 +37,6 @@ const { author } = Astro.props
       &:first-child {
         scale: -1 1;
       }
-    }
-
-    cite {
-      margin-block-start: var(--space-s);
-      font-size: var(--font-size-1);
     }
   }
 </style>

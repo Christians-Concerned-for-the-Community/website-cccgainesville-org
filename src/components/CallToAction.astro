@@ -23,12 +23,18 @@ interface Props {
    * @default "Get Started"
    */
   linkText?: string
+  /**
+   * The icon to display on the button
+   * @default "lucide:rocket"
+   */
+  linkIcon?: string
 }
 
 const {
   title = 'Get this theme on GitHub',
   link = 'https://github.com/incluud/accessible-astro-starter',
   linkText = 'Use this theme',
+  linkIcon = 'lucide:rocket',
 } = Astro.props
 ---
 
@@ -37,13 +43,13 @@ const {
     <Heading level="h2" class="text-center text-3xl md:text-6xl">{title}</Heading>
     <Link href={link} isButton size="lg" animateOnHover animationType="nudge">
       {linkText}
-      <Icon aria-hidden="true" name="lucide:rocket" size="1.5rem" />
+      <Icon aria-hidden="true" name={linkIcon} size="1.5rem" />
     </Link>
   </div>
 </div>
 
 <style lang="scss">
-  @use '../assets/scss/base/mixins' as *;
+  @use '@assets/scss/base/mixins' as *;
 
   .call-to-action {
     position: relative;
