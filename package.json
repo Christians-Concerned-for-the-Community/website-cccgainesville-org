@@ -13,9 +13,9 @@
     "cf-typegen": "wrangler types"
   },
   "devDependencies": {
-    "@astrojs/mdx": "^4.3.13",
+    "@astrojs/mdx": "^5.0.0-beta.1",
     "@astrojs/partytown": "^2.1.4",
-    "@astrojs/sitemap": "^3.6.1",
+    "@astrojs/sitemap": "^3.7.0",
     "@eslint/eslintrc": "^3.3.3",
     "@eslint/js": "^9.39.2",
     "@iconify-json/lucide": "^1.2.84",
@@ -25,7 +25,7 @@
     "@typescript-eslint/eslint-plugin": "^8.52.0",
     "@typescript-eslint/parser": "^8.52.0",
     "accessible-astro-components": "^5.1.1",
-    "astro": "^5.16.8",
+    "astro": "^6.0.0-beta.1",
     "astro-compress": "^2.3.9",
     "astro-eslint-parser": "^1.2.2",
     "astro-icon": "^1.1.5",
