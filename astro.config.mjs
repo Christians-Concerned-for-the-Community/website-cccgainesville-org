@@ -72,6 +72,7 @@ export default defineConfig({
         video: false,
       }
     }),
+    (await import("astro-compress")).default(),
   ],
   vite: viteConfig,
   image: {
