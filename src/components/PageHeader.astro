@@ -99,7 +99,7 @@ const sanitizedSubtitle: string = subtitle
           return (
             <Breadcrumbs>
               <BreadcrumbsItem href="/" label="Home" />
-              {segments.map((segment, index) => {
+              {segments.map((segment: string, index: number) => {
                 if (joinLastBreadcrumb && index === segments.length - 1) {
                   return null
                 }
@@ -141,7 +141,7 @@ const sanitizedSubtitle: string = subtitle
               width={675}
               height={450}
               class={"dark:brightness-90 shadow-(--elevation-card) justify-self-end rounded-md"
-                + " w-[70%] max-h-[150px]  md:w-[375px] md:max-h-[250px]"
+                + " w-[70%] max-h-37.5  md:w-93.75 md:max-h-62.5"
                 + " row-span-2  md:row-span-3 md:col-span-7"
               }
             />

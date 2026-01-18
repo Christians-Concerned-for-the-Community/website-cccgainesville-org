@@ -1,6 +1,6 @@
 ---
-import '../styles/tailwind.css'
-import '../assets/scss/index.scss'
+import '@styles/tailwind.css'
+import '@styles/scss/index.scss'
 import SiteMeta from '@components/SiteMeta.astro'
 import Header from '@components/Header.astro'
 import Footer from '@components/Footer.astro'
@@ -53,7 +53,7 @@ const {
     </main>
     <Footer />
     <style lang="scss" is:global>
-      @use '../assets/scss/base/mixins' as *;
+      @use '@styles/scss/base/mixins' as *;
 
       // sticky footer on low content pages
       html,

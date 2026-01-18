@@ -23,6 +23,7 @@ const viteConfig = {
       '@components': fileURLToPath(new URL('./src/components', import.meta.url)),
       '@layouts': fileURLToPath(new URL('./src/layouts', import.meta.url)),
       '@assets': fileURLToPath(new URL('./src/assets', import.meta.url)),
+      '@styles': fileURLToPath(new URL('./src/styles', import.meta.url)),
       '@content': fileURLToPath(new URL('./src/content', import.meta.url)),
       '@pages': fileURLToPath(new URL('./src/pages', import.meta.url)),
       '@public': fileURLToPath(new URL('./public', import.meta.url)),
@@ -72,7 +73,7 @@ export default defineConfig({
         video: false,
       }
     }),
-    compress(),
+    //compress(), // makes build really slow, for not much benefit
   ],
   vite: viteConfig,
   image: {
