@@ -68,20 +68,23 @@ import { Icon } from 'astro-icon/components'
 
 <style lang="scss" is:global>
   header {
-    a {
+    a { // Increase clickable area of text links a bit, for ease of use
       padding: 0.5rem 0.25rem;
     }
     .type-icon {
       display: block;
-      margin-inline: -4px;
-      margin-block-start: 7px;
+      margin-inline: -2px;
+      margin-block-start: 6px;
 
       a {
         padding: 0;
       }
+      .icon {
+        margin-left: -1px;
+      }
       svg, .icon {
-        inline-size: 28px;
-        block-size: 28px;
+        inline-size: 29px;
+        block-size: 29px;
       }
     }
   }
