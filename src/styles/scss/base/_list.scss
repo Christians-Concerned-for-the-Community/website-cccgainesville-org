@@ -1,5 +1,3 @@
-@use 'breakpoint' as *;
-
 ul:not([class]),
 ol:not([class]) {
   margin-inline-start: var(--space-s);

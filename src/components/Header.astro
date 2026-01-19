@@ -68,13 +68,20 @@ import { Icon } from 'astro-icon/components'
 
 <style lang="scss" is:global>
   header {
+    a {
+      padding: 0.5rem 0.25rem;
+    }
     .type-icon {
       display: block;
-      margin-inline: -7px;
+      margin-inline: -4px;
+      margin-block-start: 7px;
 
-      svg {
-        inline-size: 30px;
-        block-size: 30px;
+      a {
+        padding: 0;
+      }
+      svg, .icon {
+        inline-size: 28px;
+        block-size: 28px;
       }
     }
   }

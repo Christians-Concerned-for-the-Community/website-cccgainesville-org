@@ -1,9 +1,5 @@
 @use './mixins' as *;
 
-@view-transition {
-  navigation: auto;
-}
-
 body {
   font-weight: 400;
   font-size: 1.15rem;
