@@ -1,0 +1,16 @@
+{
+  "recommendations": [
+    // Linter for typescript and javascript.
+    "dbaeumer.vscode-eslint",
+    // Intellisense for Astro files.
+    "astro-build.astro-vscode",
+    // Intellisense for Tailwind CSS.
+    "bradlc.vscode-tailwindcss",
+    // Intellisense for Cloudflare's wrangler.jsonc file and bindings.
+    "cloudflare.cloudflare-workers-bindings-extension",
+    // Intellisense for _headers file (HTTP response headers spec for Cloudflare)
+    "oakessoftware.headers",
+    // Intellisense for _redirects file (HTTP redirects spec for Cloudflare)
+    "sissel.netlify-redirects",
+  ]
+}
