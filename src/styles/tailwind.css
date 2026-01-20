@@ -31,11 +31,30 @@
 }
 
 @layer base {
-  /*
-    Reserve space for scrollbar. This prevents distracting layout shifts when moving
-    between pages with/without scrollbars.
-  */
   html {
+    /*
+      Reserve space for scrollbar. This prevents distracting layout shifts when moving
+      between pages with/without scrollbars.
+    */
     scrollbar-gutter: stable;
+
+    /*
+      Use animated scrolls when clicking in-page links, instead of sudden jumps.
+    */
+    scroll-behavior: smooth;
+  }
+
+  /*
+    Keyboard focus indicator - a dashed outline box.
+    Have to force this for the DarkMode component, it's
+    annoyingly opinionated on style. 
+   */
+  *:focus-visible {
+    outline: 2px dashed var(--color-bw);
+    box-shadow: none;
+  }
+  .darkmode-toggle:focus-visible {
+    outline: 2px dashed var(--color-bw) !important;
+    box-shadow: none !important;
   }
 }

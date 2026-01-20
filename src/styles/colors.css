@@ -30,7 +30,8 @@
    see: https://tailwindcss.com/docs/theme
  */
 @theme inline {
-  /* Palette. */
+  
+  /* Color palette - variations of the three brand colors. */
   --color-primary-100: oklch(from var(--brand-primary) 90% c h);
   --color-primary-200: oklch(from var(--brand-primary) 80% c h);
   --color-primary-300: oklch(from var(--brand-primary) 70% c h);
@@ -55,7 +56,7 @@
   --color-neutral-900: oklch(from var(--brand-neutral) 15% c h);
 
 
-  /* Theme default colors. */
+  /* Theme default colors (for both light and dark modes). */
   --color-theme-fg:
     var(--tw-light, var(--color-neutral-800))
     var(--tw-dark,  var(--color-neutral-100));
@@ -77,4 +78,7 @@
   --color-theme-subtle:
     var(--tw-light, var(--color-neutral-300))
     var(--tw-dark,  var(--color-neutral-800));
+  --color-bw:
+    var(--tw-light, black)
+    var(--tw-dark,  white);
 }
