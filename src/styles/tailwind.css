@@ -1,5 +1,6 @@
 @import "tailwindcss" source("../");
 @import "./colors.css";
+@import "./typography.css";
 
 @custom-variant dark (&:where(.darkmode, .darkmode *));
 

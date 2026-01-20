@@ -1,6 +1,72 @@
-@use 'breakpoint' as *;
 
-// Atkinson Hyperlegible font faces
+@layer base {
+  /* Global default fonts. */
+  html {
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+  }
+
+  /* Default text wrap settings. */
+  p {
+    text-wrap: pretty;
+  }
+  h1,h2,h3,h4,h5,h6 {
+    text-wrap: balance;
+  }
+
+  /* Default header font weights. */
+  h1,h2 {
+    font-weight: 600;
+  }
+  h3,h4,h5,h6 {
+    font-weight: 500;
+  }
+
+  /* Default header font sizes. */
+  h1 {
+    font-size: var(--text-5xl);
+    line-height: var(--text-6xl);
+  }
+  h2 {
+    font-size: var(--text-4xl);
+    line-height: var(--text-5xl);
+  }
+  h3 {
+    font-size: var(--text-3xl);
+    line-height: var(--text-4xl);
+  }
+  h4 {
+    font-size: var(--text-2xl);
+    line-height:var(--text-3xl);
+  }
+  h5 {
+    font-size: var(--text-xl);
+    line-height: var(--text-2xl);
+  }
+  h6 {
+    font-size: var(--text-lg);
+    line-height: var(--text-xl);
+  }
+}
+
+
+/* see https://utopia.fyi/type/calculator?c=320,16,1.2,1240,18,1.25,6,2,&s=0.75|0.5|0.25,1.5|2|3|4|6,s-l&g=s,l,xl,12 */
+@theme inline {
+  --text-xs:   clamp(0.6944rem, 0.6855rem + 0.0446vw, 0.72rem  );
+  --text-sm:   clamp(0.8331rem, 0.8099rem + 0.1163vw, 0.9rem   );
+  --text-base: clamp(1rem,      0.9565rem + 0.2174vw, 1.125rem );
+  --text-lg:   clamp(1.2rem,    1.1283rem + 0.3587vw, 1.4063rem);
+  --text-xl:   clamp(1.44rem,   1.3293rem + 0.5533vw, 1.7581rem);
+  --text-2xl:  clamp(1.7281rem, 1.5649rem + 0.8163vw, 2.1975rem);
+  --text-3xl:  clamp(2.0738rem, 1.8396rem + 1.1707vw, 2.7469rem);
+  --text-4xl:  clamp(2.4881rem, 2.1594rem + 1.6435vw, 3.4331rem);
+  --text-5xl:  clamp(2.9863rem, 2.5323rem + 2.2696vw, 4.2913rem);
+  --text-6xl:  clamp(3.5836rem, 2.9667rem + 3.0674vw, 5.3544rem);
+  --text-7xl:  clamp(4.2999rem, 3.5601rem + 3.6935vw, 6.6856rem);
+  --text-8xl:  initial;
+  --text-9xl:  initial;
+}
+
+/* Atkinson Hyperlegible font faces */
 @font-face {
   font-style: normal;
   font-weight: 400;
@@ -45,7 +111,6 @@
   font-display: swap;
 }
 
-// Additional weights
 @font-face {
   font-style: normal;
   font-weight: 300;
@@ -99,62 +164,4 @@
     url('/fonts/AtkinsonHyperlegibleNext-SemiBold.woff2') format('woff2');
   font-family: 'Atkinson Hyperlegible';
   font-display: swap;
-}
-
-@layer base {
-  p {
-    text-wrap: pretty;
-  }
-
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    font-family: var(--font-heading);
-    text-wrap: balance;
-  }
-
-  h1,
-  h2 {
-    font-weight: 600;
-  }
-
-  h3,
-  h4,
-  h5,
-  h6 {
-    font-weight: 500;
-  }
-
-  h1 {
-    font-size: var(--font-size-6);
-    line-height: var(--font-size-7);
-  }
-
-  h2 {
-    font-size: var(--font-size-5);
-    line-height: var(--font-size-6);
-  }
-
-  h3 {
-    font-size: var(--font-size-4);
-    line-height: var(--font-size-5);
-  }
-
-  h4 {
-    font-size: var(--font-size-3);
-    line-height: var(--font-size-4);
-  }
-
-  h5 {
-    font-size: var(--font-size-2);
-    line-height: var(--font-size-3);
-  }
-
-  h6 {
-    font-size: var(--font-size-1);
-    line-height: var(--font-size-2);
-  }
 }

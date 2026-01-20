@@ -15,13 +15,13 @@ interface Props {
 const { author } = Astro.props
 ---
 
-<blockquote class="border-theme-fg border-l-8 pl-4 text-(length:--font-size-2)">
+<blockquote class="border-theme-fg border-l-8 pl-4 text-xl">
   <div>
     <Icon aria-hidden="true" name="lucide:quote" size="1rem" />
     <slot />
     <Icon aria-hidden="true" name="lucide:quote" size="1rem" />
   </div>
-  {author && <cite class="block mt-(--space-s) text-(length:--font-size-1) font-medium">{author}</cite>}
+  {author && <cite class="block mt-(--space-s) text-lg font-medium">{author}</cite>}
 </blockquote>
 
 <style lang="scss" is:global>

@@ -89,6 +89,12 @@
   --color-theme-subtle:
     var(--tw-light, var(--color-neutral-300))
     var(--tw-dark,  var(--color-neutral-800));
+  --color-theme-grad1:
+    var(--tw-light, var(--color-neutral-700))
+    var(--tw-dark,  var(--color-secondary-100));
+  --color-theme-grad2:
+    var(--tw-light, var(--color-primary-300))
+    var(--tw-dark,  var(--color-primary-200));
   --color-bw:
     var(--tw-light, black)
     var(--tw-dark,  white);
