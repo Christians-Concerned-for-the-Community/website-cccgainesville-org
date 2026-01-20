@@ -3,23 +3,6 @@ body {
   font-size: 1.15rem;
   line-height: 1.5;
   font-family: var(--font-body);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  text-shadow: rgba(0, 0, 0, 0.01) 0 0 1px;
-  -webkit-text-size-adjust: 100%;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-font-smoothing: antialiased;
-  background-color: var(--color-theme-bg);
-  color: var(--color-theme-fg);
-}
-
-a {
-  transition: color var(--animation-speed-fast) var(--cubic-bezier);
-  color: var(--color-theme-link);
-
-  &:where(:hover, :focus-visible) {
-    color: var(--color-theme-link-hover);
-  }
 }
 
 main a,
@@ -41,17 +24,6 @@ footer a {
     text-decoration-color: var(--color-theme-link-hover);
     text-decoration-thickness: 1px;
     text-underline-offset: 0.125rem;
-  }
-
-  &.external-link {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-3xs);
-
-    // small visual correction
-    svg {
-      margin-block-start: 0.1875rem;
-    }
   }
 }
 

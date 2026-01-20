@@ -21,9 +21,21 @@
     var(--tw-light, var(--color-secondary-100))
     var(--tw-dark, var(--color-secondary-500)) !important;
   
-  /* Accessible astro components project pulls colors from these two vars (probably a bug) */
+  /*
+    The Accessible Astro Components project pulls colors from these two vars,
+    so we need to set them. This is probably a bug.
+   */
   --background-color: var(--color-theme-bg);
   --link-color: var(--color-theme-link);
+}
+
+@layer base {
+  html {
+    /* default text and background colors */
+    color: var(--color-theme-fg);
+    text-shadow: rgba(0, 0, 0, 0.01) 0 0 1px;
+    background-color: var(--color-theme-bg);
+  }
 }
 
 /* Tailwind theme variables - you'll be able to use these via classes.
@@ -54,7 +66,6 @@
   --color-neutral-800: oklch(from var(--brand-neutral) 30% c h);
   --color-neutral-850: oklch(from var(--brand-neutral) 22% c h);
   --color-neutral-900: oklch(from var(--brand-neutral) 15% c h);
-
 
   /* Theme default colors (for both light and dark modes). */
   --color-theme-fg:
