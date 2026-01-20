@@ -87,13 +87,6 @@
   white-space: nowrap;
 }
 
-.text-ellipsis {
-  display: -webkit-box;
-  -webkit-line-clamp: var(--line-clamp);
-  -webkit-box-orient: vertical;
-  overflow: clip;
-}
-
 .uppercase {
   text-transform: uppercase;
 }

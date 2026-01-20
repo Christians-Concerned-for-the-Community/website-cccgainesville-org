@@ -267,7 +267,7 @@ import Logo from './Logo.astro'
 
     a,
     button {
-      color: var(--foreground-color);
+      color: var(--color-theme-fg);
     }
 
     nav {
@@ -302,14 +302,14 @@ import Logo from './Logo.astro'
           gap: var(--space-2xs);
           transition: all var(--animation-speed-fast) var(--cubic-bezier);
           margin-block-start: calc(var(--space-4xs) * -1);
-          border: 1px solid var(--foreground-color);
-          border-radius: var(--radius-large);
+          border: 1px solid var(--color-theme-fg);
+          border-radius: var(--radius-sm);
           padding: var(--space-4xs) var(--space-2xs);
           text-decoration: none;
 
           &:where(:hover, :focus-visible) {
-            background-color: var(--foreground-color);
-            color: var(--background-color) !important;
+            background-color: var(--color-theme-fg);
+            color: var(--color-theme-bg) !important;
           }
         }
       }
@@ -376,7 +376,7 @@ import Logo from './Logo.astro'
         box-shadow: var(--elevation-4);
         border: 2px solid var(--color-secondary-border);
         border-radius: var(--radius-l);
-        background-color: var(--background-color);
+        background-color: var(--color-theme-bg);
         padding: var(--space-m);
         min-inline-size: 275px;
 

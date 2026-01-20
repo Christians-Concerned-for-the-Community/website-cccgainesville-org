@@ -6,7 +6,7 @@ kbd {
   border-radius: var(--radius-s);
   background-color: light-dark(var(--color-neutral-200), var(--color-neutral-800));
   padding: var(--space-4xs) var(--space-3xs);
-  aspect-ratio: var(--ratio-square);
+  aspect-ratio: 1;
   min-inline-size: 12px;
   color: light-dark(var(--color-neutral-900), var(--color-neutral-100));
   font-size: var(--font-size--2);

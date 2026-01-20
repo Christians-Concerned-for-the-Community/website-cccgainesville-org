@@ -1,0 +1,47 @@
+[
+  {
+    "initials": "RJ",
+    "title": "Robert Johnson",
+    "subtitle": "Manager"
+  },
+  {
+    "initials": "MT",
+    "title": "Maria Torres",
+    "subtitle": "Developer"
+  },
+  {
+    "initials": "AK",
+    "title": "Alex Kim",
+    "subtitle": "Designer"
+  },
+  {
+    "initials": "SL",
+    "title": "Sarah Lee",
+    "subtitle": "Content Strategist"
+  },
+  {
+    "initials": "JP",
+    "title": "James Peterson",
+    "subtitle": "QA Engineer"
+  },
+  {
+    "initials": "LW",
+    "title": "Lisa Wong",
+    "subtitle": "Product Owner"
+  },
+  {
+    "initials": "DM",
+    "title": "David Martinez",
+    "subtitle": "UX Researcher"
+  },
+  {
+    "initials": "EB",
+    "title": "Emma Brown",
+    "subtitle": "Accessibility Specialist"
+  },
+  {
+    "initials": "TC",
+    "title": "Thomas Chen",
+    "subtitle": "Frontend Developer"
+  }
+]

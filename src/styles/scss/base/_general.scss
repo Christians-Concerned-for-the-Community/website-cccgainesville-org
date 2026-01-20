@@ -11,27 +11,38 @@ body {
   -webkit-text-size-adjust: 100%;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  background-color: var(--background-color);
-  color: var(--foreground-color);
+  background-color: var(--color-theme-bg);
+  color: var(--color-theme-fg);
 }
 
 a {
   transition: color var(--animation-speed-fast) var(--cubic-bezier);
-  color: var(--link-color);
+  color: var(--color-theme-link);
 
   &:where(:hover, :focus-visible) {
-    color: var(--link-hover-color);
+    color: var(--color-theme-link-hover);
   }
 }
 
 main a,
 footer a {
-  @include text-decoration(var(--link-color), var(--link-hover-color));
-
-  color: var(--link-color);
+  color: var(--color-theme-link);
+  
+  transition: text-decoration, text-underline-offset, text-decoration-color, text-decoration-thickness;
+  transition-duration: var(--animation-speed-fast);
+  transition-timing-function: var(--cubic-bezier);
+  text-decoration: underline;
+  text-decoration-style: solid;
+  text-decoration-color: var(--color-theme-link);
+  text-decoration-thickness: 0.125rem;
+  text-decoration-skip-ink: none;
+  text-underline-offset: 0.25rem;
 
   &:where(:hover, :focus-visible) {
-    color: var(--link-hover-color);
+    color: var(--color-theme-link-hover);
+    text-decoration-color: var(--color-theme-link-hover);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.125rem;
   }
 
   &.external-link {
@@ -41,7 +52,7 @@ footer a {
 
     // small visual correction
     svg {
-      margin-block-start: 3px;
+      margin-block-start: 0.1875rem;
     }
   }
 }

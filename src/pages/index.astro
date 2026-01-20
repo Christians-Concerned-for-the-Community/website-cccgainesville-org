@@ -1,13 +1,14 @@
 ---
 import DefaultLayout from '@layouts/DefaultLayout.astro'
 import Hero from '@components/Hero.astro'
-import Counter from '@components/Counter.astro'
 import BlockQuote from '@components/BlockQuote.astro'
 import ContentImage from '@components/ContentImage.astro'
 import { Accordion, AccordionItem, Avatar, AvatarGroup, Heading, Link } from 'accessible-astro-components'
 import { Icon } from 'astro-icon/components'
 
 import Img1 from '@assets/contact-feat.jpg'
+
+import people from '@assets/people.json'
 ---
 
 <DefaultLayout title="Home">
@@ -105,35 +106,15 @@ import Img1 from '@assets/contact-feat.jpg'
         for new ways to improve the accessibility of the web.
       </p>
       <AvatarGroup display="grid" gridItemsSize="300px" gridGap="2rem">
-        <Avatar initials="RJ" title="Robert Johnson" subtitle="Manager" />
-        <Avatar initials="MT" title="Maria Torres" subtitle="Developer" />
-        <Avatar initials="AK" title="Alex Kim" subtitle="Designer" />
-        <Avatar initials="SL" title="Sarah Lee" subtitle="Content Strategist" />
-        <Avatar initials="JP" title="James Peterson" subtitle="QA Engineer" />
-        <Avatar initials="LW" title="Lisa Wong" subtitle="Product Owner" />
-        <Avatar initials="DM" title="David Martinez" subtitle="UX Researcher" />
-        <Avatar initials="EB" title="Emma Brown" subtitle="Accessibility Specialist" />
-        <Avatar initials="TC" title="Thomas Chen" subtitle="Frontend Developer" />
+        {people.map((person) => (
+          <Avatar
+            class="border border-theme-subtle rounded-md p-(--space-s)"
+            initials={person.initials}
+            title={person.title}
+            subtitle={person.subtitle}
+          />
+        ))}
       </AvatarGroup>
     </div>
   </section>
-  <section class="mt-64 mb-32">
-    <div class="container">
-      <Heading level="h2" class="mb-16">Impact in numbers</Heading>
-      <div class="grid grid-cols-1 gap-12 sm:grid-cols-2 md:grid-cols-4">
-        <Counter count="900+" title="Stars" sub="On GitHub" />
-        <Counter count="25+" title="Accessible" sub="Components" />
-        <Counter count="400+" title="Commits" sub="Merged" />
-        <Counter count="48+" title="Months" sub="Since launch" />
-      </div>
-    </div>
-  </section>
 </DefaultLayout>
-
-<style>
-  .avatar {
-    border: 1px solid var(--border-color-subtle);
-    border-radius: var(--radius-md);
-    padding: var(--space-s);
-  }
-</style>
