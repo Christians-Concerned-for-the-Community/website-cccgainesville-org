@@ -2,6 +2,9 @@
  * 
  * https://blog.sentry.io/web-fonts-and-the-dreaded-cumulative-layout-shift
  *
+ * Can get FullName and Postscript Name here (needed for local() in font-face):
+ * https://fontdrop.info/
+ *
  */
 
 @layer base {
@@ -70,6 +73,8 @@
   font-family: "Atkinson Hyperlegible Next";
   font-style: normal;
   src:
+    local(AtkinsonHyperlegibleNext-Regular),
+    local(Atkinson Hyperlegible Next Regular),
     url("/fonts/AtkinsonHyperlegibleNext-VariableFont_wght.woff2") format("woff2-variations");
   font-weight: 200 800;
   font-display: swap;
@@ -83,6 +88,8 @@
   font-family: "Atkinson Hyperlegible Next";
   font-style: italic;
   src:
+    local(AtkinsonHyperlegibleNext-Italic),
+    local(Atkinson Hyperlegible Next Italic),
     url("/fonts/AtkinsonHyperlegibleNext-Italic-VariableFont_wght.woff2") format("woff2-variations");
   font-weight: 200 800;
   font-display: swap;
