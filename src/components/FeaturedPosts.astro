@@ -1,4 +1,5 @@
 ---
+import PageSection from '@components/PageSection.astro'
 import { Card, Heading, Link } from 'accessible-astro-components'
 import { Icon } from 'astro-icon/components'
 
@@ -65,29 +66,31 @@ const featuredPosts: Post[] = data.slice(0, limit).map((post: any) => {
 })
 ---
 
-<section class:list={[className, 'my-64']}>
-  <div class="container">
-    <Heading level="h2" class="mb-6">{title}</Heading>
-    <div class="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-3">
-      {
-        featuredPosts.map((post) => (
-          <Card
-            imageComponent={post.featuredImage}
-            url={'/blog/' + post.shortUrl}
-            headingLevel="h2"
-            title={post.title}
-            footer={'User ID: ' + post.userId}
-          >
-            {post.body}
-          </Card>
-        ))
-      }
-    </div>
-    <div class="mt-12">
-      <Link href="/blog/" isButton animateOnHover animationType="nudge">
-        Read all posts
-        <Icon aria-hidden="true" name="lucide:arrow-right" size="1.5rem" />
-      </Link>
-    </div>
+<PageSection class:list={[className, 'my-64']}>
+
+  <Heading level="h2" class="mb-6">{title}</Heading>
+
+  <div class="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-3">
+    {
+      featuredPosts.map((post) => (
+        <Card
+          imageComponent={post.featuredImage}
+          url={'/blog/' + post.shortUrl}
+          headingLevel="h2"
+          title={post.title}
+          footer={'User ID: ' + post.userId}
+        >
+          {post.body}
+        </Card>
+      ))
+    }
   </div>
-</section>
+
+  <div class="mt-12">
+    <Link href="/blog/" isButton animateOnHover animationType="nudge">
+      Read all posts
+      <Icon aria-hidden="true" name="lucide:arrow-right" size="1.5rem" />
+    </Link>
+  </div>
+
+</PageSection>

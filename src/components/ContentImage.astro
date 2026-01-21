@@ -1,5 +1,6 @@
 ---
 import { Image } from 'astro:assets'
+import PageSection from '@components/PageSection.astro'
 
 /**
  * ContentImage Component
@@ -71,19 +72,17 @@ const slotPos  = reverseImg? 'md:order-1' : undefined;
 
 ---
 
-<section class:list={[className]}>
-  <div class="container">
-    <div class="grid grid-cols-1 gap-16 md:gap-24 md:grid-cols-2">
-      <Image
-        src={imgSrc}
-        width={900}
-        height={600}
-        class:list={[imgClass, imagePos]}
-        alt={alt} 
-      />
-      <div class:list={['space-content', 'flex', 'flex-col', 'justify-center', slotPos]}>
-        <slot />
-      </div>
+<PageSection class:list={[className]}>
+  <div class="grid grid-cols-1 gap-16 md:gap-24 md:grid-cols-2">
+    <Image
+      src={imgSrc}
+      width={900}
+      height={600}
+      class:list={[imgClass, imagePos]}
+      alt={alt} 
+    />
+    <div class:list={['space-content', 'flex', 'flex-col', 'justify-center', slotPos]}>
+      <slot />
     </div>
   </div>
-</section>
+</PageSection>

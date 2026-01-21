@@ -1,4 +1,5 @@
 ---
+import PageSection from '@components/PageSection.astro'
 import { Heading, Link } from 'accessible-astro-components'
 
 /**
@@ -9,10 +10,10 @@ import { Heading, Link } from 'accessible-astro-components'
 const currentYear = new Date().getFullYear()
 ---
 
-<footer id="footer">
-  <section class="py-8 border-t border-theme-subtle">
+<footer id="footer" class="py-8 border-t border-theme-subtle">
+  <PageSection>
     <Heading level="h2" class="sr-only">Footer</Heading>
-    <div class="container flex flex-col gap-4 md:flex-row md:justify-between">
+    <div class="flex flex-col gap-4 md:flex-row md:justify-between">
       <p>
         &copy; {currentYear} - Christians Concerned for the Community
       </p>
@@ -20,5 +21,5 @@ const currentYear = new Date().getFullYear()
         Made with ❤️ by <Link href="https://github.com/stephen-sorley">Stephen Sorley</Link>.
       </p>
     </div>
-  </section>
+  </PageSection>
 </footer>

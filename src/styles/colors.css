@@ -39,7 +39,14 @@
 }
 
 /* Tailwind theme variables - you'll be able to use these via classes.
-   see: https://tailwindcss.com/docs/theme
+ * see: https://tailwindcss.com/docs/theme
+ *
+ * For example, if I have a color variable named "--color-special-100",
+ * I can use the color name (everything after --color-) in tailwind's
+ * built-in utilities that take a color:
+ *    bg-special
+ *    text-special
+ *    ... etc.
  */
 @theme inline {
   
@@ -95,6 +102,15 @@
   --color-theme-grad2:
     var(--tw-light, var(--color-primary-300))
     var(--tw-dark,  var(--color-primary-200));
+  --color-theme-grad3:
+    var(--tw-light, var(--color-primary-100))
+    var(--tw-dark,  var(--color-secondary-100));
+  --color-theme-grad4:
+    var(--tw-light, var(--color-secondary-100))
+    var(--tw-dark,  var(--color-primary-200));
+  --color-theme-banner:
+    var(--tw-light, var(--color-neutral-800))
+    var(--tw-dark,  var(--color-neutral-850));
   --color-bw:
     var(--tw-light, black)
     var(--tw-dark,  white);

@@ -1,0 +1,41 @@
+---
+
+/**
+ * PageSection component
+ */
+interface Props {
+  /**
+   * Additional classes to apply to the PageSection
+   */
+  class?: string
+
+  /**
+   * HTML id attribute for this section (let's you link to it via a '#' anchor)
+   */
+  id?: string | undefined
+
+  /**
+   * The width of the section.
+   * @type {'normal' | 'narrow' | 'stretch' | undefined}
+   * @default normal - width of viewport, up to 1200 px max
+   */
+  width?: 'normal' | 'narrow' | 'stretch'
+}
+
+const {
+  class: className,
+  id,
+  width = 'normal',
+} = Astro.props
+
+let classWidth = "";
+switch(width) {
+  case 'normal':  classWidth = "max-w-307"; break;
+  case 'narrow':  classWidth = "max-w-200"; break;
+  case 'stretch': classWidth = "max-w-full"; break;
+}
+---
+
+<section id={id} class:list={[className, classWidth, "mx-auto", "px-7.5"]}>
+  <slot />
+</section>

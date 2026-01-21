@@ -1,28 +1,5 @@
 @use 'breakpoint' as *;
 
-.container {
-  margin-inline: auto;
-  padding-inline: var(--grid-gutter);
-  max-width: var(--grid-max-width);
-
-  @include breakpoint(m) {
-    padding-inline: 2rem;
-  }
-
-  @include breakpoint(xl) {
-    padding-inline: calc(2rem / 2);
-    max-width: 1200px;
-  }
-
-  &.stretch {
-    max-width: 100%;
-  }
-
-  &.narrow {
-    max-width: 800px;
-  }
-}
-
 $space-map: (
   3xs: var(--space-3xs),
   2xs: var(--space-2xs),

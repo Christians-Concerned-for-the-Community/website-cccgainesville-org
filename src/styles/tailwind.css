@@ -4,7 +4,7 @@
 
 @custom-variant dark (&:where(.darkmode, .darkmode *));
 
-/* Global CSS variables - these won't be accessible via Tailwind CSS classes. */
+/* Global CSS variables - these won't be accessible via Tailwind CSS utilities. */
 :root {
   /*
     Enable animations/transitions that change the width/height of a container.
@@ -58,4 +58,18 @@
     outline: 2px dashed var(--color-bw) !important;
     box-shadow: none !important;
   }
+}
+
+/* Theme variables. */
+@theme {
+
+  /* Additional custom breakpoints.
+   * 
+   * These can be used as modifiers just like the built-in breakpoints:
+   *
+   * Example:
+   *   max-w-50 xs:max-w-60 md:max-w-100
+   */
+  --breakpoint-xs:      31.25rem;  /* 500 px */
+  --breakpoint-fullnav: 58.125rem; /* 930 px */
 }

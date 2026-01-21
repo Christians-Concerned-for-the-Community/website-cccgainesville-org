@@ -1,4 +1,5 @@
 ---
+import PageSection from '@components/PageSection.astro'
 import { Link } from 'accessible-astro-components'
 import { Icon } from 'astro-icon/components'
 import { Image } from 'astro:assets'
@@ -7,46 +8,47 @@ import HeroImg from '@assets/hero.webp'
 
 ---
 
-<section class="hero my-24">
-  <div class="container">
-    <div class="grid grid-cols-1 items-center gap-20 lg:grid-cols-2">
-      <div class="flex flex-col items-start min-[500px]:items-center gap-8 lg:items-start">
-        <h1 class="text-left text-wrap-balance min-[500px]:text-center text-6xl lg:text-left lg:text-7xl">
-          <span class="bg-linear-315 from-theme-grad1 from-25% to-theme-grad2 bg-clip-text text-transparent">
-            Neighbors
-          </span>
-          Helping Neighbors
-        </h1>
-        <div class="flex flex-col gap-3 min-[500px]:flex-row">
-          <Link
-            href="/services/"
-            isButton
-            type="primary"
-            animateOnHover
-            animationType="boop"
-          >
-            <Icon aria-hidden="true" name="lucide:heart-handshake" size="1.5rem" />
-            Our Services
-          </Link>
-          <Link
-            href="/ns"
-            isButton
-            type="secondary"
-            animateOnHover
-            animationType="boop"
-          >
-            <Icon aria-hidden="true" name="lucide:mail-plus" size="1.5rem" />
-            Newsletter Signup
-          </Link>
-        </div>
-      </div>
-      <Image src={HeroImg}
-        priority={true}
-        width={1200}
-        height={800}
-        alt="A collage showing various projects: ramp builds, furniture deliveries, and yard work."
-        class="rounded-xl"
-      />
+<PageSection class="my-24 grid grid-cols-1 items-center gap-20 lg:grid-cols-2">
+  
+  <div class="flex flex-col items-start min-[500px]:items-center gap-8 lg:items-start">
+    
+    <h1 class="text-left text-wrap-balance min-[500px]:text-center text-6xl lg:text-left lg:text-7xl">
+      <span class="bg-linear-315 from-theme-grad1 from-25% to-theme-grad2 bg-clip-text text-transparent">
+        Neighbors
+      </span>
+      Helping Neighbors
+    </h1>
+
+    <div class="flex flex-col gap-3 min-[500px]:flex-row">
+      <Link
+        href="/services/"
+        isButton
+        type="primary"
+        animateOnHover
+        animationType="boop"
+      >
+        <Icon aria-hidden="true" name="lucide:heart-handshake" size="1.5rem" />
+        Our Services
+      </Link>
+      <Link
+        href="/ns"
+        isButton
+        type="secondary"
+        animateOnHover
+        animationType="boop"
+      >
+        <Icon aria-hidden="true" name="lucide:mail-plus" size="1.5rem" />
+        Newsletter Signup
+      </Link>
     </div>
+    
   </div>
-</section>
+
+  <Image src={HeroImg}
+    priority={true}
+    width={1200}
+    height={800}
+    alt="A collage showing various projects: ramp builds, furniture deliveries, and yard work."
+    class="rounded-xl"
+  />
+</PageSection>

@@ -4,6 +4,7 @@ import path from 'node:path';
 
 import DefaultLayout from '@layouts/DefaultLayout.astro'
 import PageHeader from '@components/PageHeader.astro'
+import PageSection from '@components/PageSection.astro'
 import { Heading, Link } from 'accessible-astro-components'
 import { Icon } from 'astro-icon/components'
 
@@ -42,34 +43,29 @@ const lists = [
 
 <DefaultLayout title="Documents">
   <PageHeader title="Documents" subtitle="Take a look through the archives." featuredImage={Feat}/>
-  <section class="container my-24">
-    <div class="grid grid-cols-1 gap-24 items-start md:grid-cols-3 md:gap-8 md:justify-items-center">
+  <PageSection class={"my-24 grid" +
+    " grid-cols-1 gap-24 items-start" +
+    " md:grid-cols-3 md:gap-8 md:justify-items-center"}
+  >
+    <!-- Loop over each list of files: -->
+    {lists.map((dir) => (
       
-      <!-- Loop over each list of files: -->
-      {lists.map((dir) => (
-        
-        <div class="grid grid-cols-1 gap-xs items-left file-list">
-          {/* Write out title of list. */}
-          <Heading level="h2" size="h3" class="mb-4">{dir.title}</Heading>
+      <div class="grid grid-cols-1 gap-xs items-left file-list">
+        {/* Write out title of list. */}
+        <Heading level="h2" size="h3" class="mb-4">{dir.title}</Heading>
 
-          {/* Loop over paths in list, write out link for each one. */}
-          {dir.paths.map((doc) => (
+        {/* Loop over paths in list, write out link for each one. */}
+        {dir.paths.map((doc) => (
 
-            <Link href={doc.href} isExternal hideIcon >
-              <Icon aria-hidden="true" name="lucide:file-down" size={20} />
-              {doc.title}
-              <span class="sr-only">Opens in a new tab</span>
-            </Link>
+          <Link href={doc.href} isExternal hideIcon >
+            <Icon aria-hidden="true" name="lucide:file-down" size={20} />
+            {doc.title}
+            <span class="sr-only">Opens in a new tab</span>
+          </Link>
 
-          ))}
-        </div>
-      ))}
-    </div>
-  </section>
+        ))}
+      </div>
+    ))}
+  </PageSection>
 
-  <style>
-    .file-list {
-
-    }
-  </style>
 </DefaultLayout>
