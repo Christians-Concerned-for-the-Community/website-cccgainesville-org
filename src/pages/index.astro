@@ -7,13 +7,14 @@ import PageSection from '@components/PageSection.astro'
 import { Accordion, AccordionItem, Avatar, AvatarGroup, Heading, Link } from 'accessible-astro-components'
 import { Icon } from 'astro-icon/components'
 
+import HeroImg from '@assets/hero.webp'
 import Img1 from '@assets/contact-feat.jpg'
 
 import people from '@assets/people.json'
 ---
 
-<DefaultLayout title="Home">
-  <Hero />
+<DefaultLayout title="Home" preload={HeroImg.src}>
+  <Hero featuredImage={HeroImg}/>
 
   <div class="mt-12 max-w-md w-[90%] sm:w-[70%] place-self-center">
     <BlockQuote author=" - Matthew 5:16">

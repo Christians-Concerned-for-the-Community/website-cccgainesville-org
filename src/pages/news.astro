@@ -6,7 +6,7 @@ import PageSection from '@components/PageSection.astro'
 import Feat from '@assets/news-feat.jpg'
 ---
 
-<DefaultLayout title="News">
+<DefaultLayout title="News" preload={Feat.src}>
   <PageHeader title="News" subtitle="Updates from CCC's director." featuredImage={Feat} />
   <PageSection class="my-24">
     

@@ -2,6 +2,8 @@
 import PageSection from '@components/PageSection.astro'
 import { Breadcrumbs, BreadcrumbsItem, Heading } from 'accessible-astro-components'
 import { Image } from 'astro:assets'
+import type { ImageMetadata } from 'astro';
+
 import sanitizeHtml from 'sanitize-html'
 
 /**
@@ -19,7 +21,7 @@ interface Props {
    * 
    * Recommended aspect ratio: 3 x 2
    */
-  featuredImage?: any
+  featuredImage?: ImageMetadata
   /**
    * The title of the page
    */
@@ -78,7 +80,7 @@ const sanitizedSubtitle: string = subtitle
   : ''
 ---
 
-<section class:list={[className, 'page-header', 'md:mb-12']}>
+<section class:list={['md:mb-12', className]}>
   {
     showBreadcrumbs &&
       (() => {

@@ -14,6 +14,7 @@ const {
   description = 'CCC is a Christian charity based in Gainesville, FL that provides used furniture and builds wheelchair ramps for our neighbors in Alachua County.',
   author = 'Christians Concerned for the Community',
   alwaysHide = false,
+  preloadImg,
 } = Astro.props
 ---
 
@@ -30,6 +31,9 @@ const {
 
     <!-- preload our main font, so that it's not chained after the main CSS file -->
     <link rel="preload" as="font" type="font/woff2" href={fontPath} crossorigin="anonymous" />
+    {preloadImg && (
+      <link rel="preload" fetchpriority="high" as="image" href={preloadImg} type="image/webp">
+    )}
 
     <!-- favicon stuff -->
     <!-- https://dev.to/masakudamatsu/favicon-nightmare-how-to-maintain-sanity-3al7 -->

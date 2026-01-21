@@ -6,7 +6,7 @@ import PageSection from '@components/PageSection.astro'
 import Feat from '@assets/volunteer-feat.jpg'
 ---
 
-<DefaultLayout title="Volunteer">
+<DefaultLayout title="Volunteer" preload={Feat.src}>
   <PageHeader title="Volunteer" subtitle="Be a neighbor to those in need." featuredImage={Feat}/>
   <PageSection class="my-24">
     

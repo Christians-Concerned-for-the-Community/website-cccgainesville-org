@@ -6,7 +6,7 @@ import PageSection from '@components/PageSection.astro'
 import Feat from '@assets/ourvalues-feat.jpg'
 ---
 
-<DefaultLayout title="Our Values">
+<DefaultLayout title="Our Values" preload={Feat.src}>
   <PageHeader title="Our Values" subtitle="Who we are, and what we believe in." featuredImage={Feat}/>
   <PageSection class="my-24">
     

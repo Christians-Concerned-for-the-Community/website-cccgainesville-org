@@ -6,7 +6,7 @@ import PageSection from '@components/PageSection.astro'
 import Feat from '@assets/give-feat.jpg'
 ---
 
-<DefaultLayout title="Give">
+<DefaultLayout title="Give" preload={Feat.src}>
   <PageHeader title="Give" subtitle="Help us serve our community." featuredImage={Feat} />
   <PageSection class="my-24">
     
