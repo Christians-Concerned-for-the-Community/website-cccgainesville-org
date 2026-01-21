@@ -2,7 +2,7 @@
 @layer base {
   /* Global default fonts. */
   html {
-    font-family: 'Atkinson Hyperlegible', sans-serif;
+    font-family: 'Atkinson Hyperlegible', 'Adjusted Arial Fallback', sans-serif;
   }
 
   /* Default text wrap settings. */
@@ -46,6 +46,18 @@
     font-size: var(--text-lg);
     line-height: var(--text-xl);
   }
+}
+
+/* Fallback font (helps prevent layout shifts during font loading)
+ * Used this tool: https://screenspan.net/fallback
+ */
+@font-face {
+    font-family: 'Adjusted Arial Fallback';
+    src: local(Arial);
+    size-adjust: 99%;
+    ascent-override: 87%;
+    descent-override: normal;
+    line-gap-override: normal;
 }
 
 /* Atkinson Hyperlegible font faces */
