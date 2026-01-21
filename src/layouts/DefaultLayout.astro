@@ -5,6 +5,10 @@ import SiteMeta from '@components/SiteMeta.astro'
 import Header from '@components/Header.astro'
 import Footer from '@components/Footer.astro'
 
+
+// Used for preloading.
+const fontPath = "/fonts/AtkinsonHyperlegibleNext-VariableFont_wght.woff2";
+
 const {
   title = 'Christians Concerned for the Community',
   description = 'CCC is a Christian charity based in Gainesville, FL that provides used furniture and builds wheelchair ramps for our neighbors in Alachua County.',
@@ -23,6 +27,9 @@ const {
     {(Astro.site?.hostname.startsWith("staging") || alwaysHide) &&
       <meta name="robots" content="noindex, nofollow">
     }
+
+    <!-- preload our main font, so that it's not chained after the main CSS file -->
+    <link rel="preload" as="font" type="font/woff2" href={fontPath} crossorigin="anonymous" />
 
     <!-- favicon stuff -->
     <!-- https://dev.to/masakudamatsu/favicon-nightmare-how-to-maintain-sanity-3al7 -->
