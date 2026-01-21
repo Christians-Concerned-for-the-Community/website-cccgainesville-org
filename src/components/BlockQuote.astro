@@ -16,27 +16,13 @@ const { author } = Astro.props
 ---
 
 <blockquote class="border-theme-fg border-l-8 pl-4 text-xl">
-  <div>
-    <Icon aria-hidden="true" name="lucide:quote" size="1rem" />
+  <Icon aria-hidden="true" name="lucide:quote" size="1rem" class="inline -scale-x-100 -mt-(--space-s)" />
+  
+  <p class="inline">
     <slot />
-    <Icon aria-hidden="true" name="lucide:quote" size="1rem" />
-  </div>
-  {author && <cite class="block mt-(--space-s) text-lg font-medium">{author}</cite>}
+  </p>
+  
+  <Icon aria-hidden="true" name="lucide:quote" size="1rem" class="inline -mt-(--space-s)" />
+  
+  {author && <cite class="block mt-(--space-s) text-lg font-medium not-italic">{author}</cite>}
 </blockquote>
-
-<style lang="scss" is:global>
-  blockquote {
-    p {
-      display: inline;
-    }
-
-    svg {
-      display: inline;
-      margin-block-start: calc(var(--space-s) * -1);
-
-      &:first-child {
-        scale: -1 1;
-      }
-    }
-  }
-</style>

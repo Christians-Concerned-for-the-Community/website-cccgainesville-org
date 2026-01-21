@@ -1,8 +1,16 @@
+/* Helpful when choosing how to handle fonts:
+ * 
+ * https://blog.sentry.io/web-fonts-and-the-dreaded-cumulative-layout-shift
+ *
+ */
 
 @layer base {
   /* Global default fonts. */
   html {
-    font-family: 'Atkinson Hyperlegible', 'Adjusted Arial Fallback', sans-serif;
+    font-family:
+      'Atkinson Hyperlegible Next',
+      'Adjusted Arial Fallback',
+      sans-serif;
   }
 
   /* Default text wrap settings. */
@@ -48,8 +56,45 @@
   }
 }
 
-/* Fallback font (helps prevent layout shifts during font loading)
- * Used this tool: https://screenspan.net/fallback
+/* Atkinson Hyperlegible Next
+ * 
+ * See: https://fonts.google.com/specimen/Atkinson+Hyperlegible+Next
+ *
+ * This uses the variable version of the font, which saves quite a bit on
+ * download size. It also needs a lot less code.
+ *
+ * Static fonts: 98 kB (regular, medium, semi-bold, bold)
+ * Variable font: 47 kB
+ */
+@font-face {
+  font-family: "Atkinson Hyperlegible Next";
+  font-style: normal;
+  src:
+    url("/fonts/AtkinsonHyperlegibleNext-VariableFont_wght.woff2") format("woff2-variations");
+  font-weight: 200 800;
+  font-display: swap;
+}
+
+/* We don't currently need the Italic versions of this font, but leave it in here
+ * as a comment in case we that changes in the future.
+ */
+/*
+@font-face {
+  font-family: "Atkinson Hyperlegible Next";
+  font-style: italic;
+  src:
+    url("/fonts/AtkinsonHyperlegibleNext-Italic-VariableFont_wght.woff2") format("woff2-variations");
+  font-weight: 200 800;
+  font-display: swap;
+}
+*/
+
+/* Fallback font - helps prevent layout shifts during font loading.
+ *
+ * Used the tool below to figure out the adjustments needed to get the fallback
+ * font to render as close to the same size as the real font as possible:
+ *
+ * https://screenspan.net/fallback
  */
 @font-face {
     font-family: 'Adjusted Arial Fallback';
@@ -58,104 +103,4 @@
     ascent-override: 87%;
     descent-override: normal;
     line-gap-override: normal;
-}
-
-/* Atkinson Hyperlegible font faces */
-@font-face {
-  font-style: normal;
-  font-weight: 400;
-  src:
-    local('Atkinson Hyperlegible Regular'),
-    local('AtkinsonHyperlegible-Regular'),
-    url('/fonts/AtkinsonHyperlegibleNext-Regular.woff2') format('woff2');
-  font-family: 'Atkinson Hyperlegible';
-  font-display: swap;
-}
-
-@font-face {
-  font-style: italic;
-  font-weight: 400;
-  src:
-    local('Atkinson Hyperlegible Italic'),
-    local('AtkinsonHyperlegible-Italic'),
-    url('/fonts/AtkinsonHyperlegibleNext-RegularItalic.woff2') format('woff2');
-  font-family: 'Atkinson Hyperlegible';
-  font-display: swap;
-}
-
-@font-face {
-  font-style: normal;
-  font-weight: 700;
-  src:
-    local('Atkinson Hyperlegible Bold'),
-    local('AtkinsonHyperlegible-Bold'),
-    url('/fonts/AtkinsonHyperlegibleNext-Bold.woff2') format('woff2');
-  font-family: 'Atkinson Hyperlegible';
-  font-display: swap;
-}
-
-@font-face {
-  font-style: italic;
-  font-weight: 700;
-  src:
-    local('Atkinson Hyperlegible Bold Italic'),
-    local('AtkinsonHyperlegible-BoldItalic'),
-    url('/fonts/AtkinsonHyperlegibleNext-BoldItalic.woff2') format('woff2');
-  font-family: 'Atkinson Hyperlegible';
-  font-display: swap;
-}
-
-@font-face {
-  font-style: normal;
-  font-weight: 300;
-  src:
-    local('Atkinson Hyperlegible Light'),
-    local('AtkinsonHyperlegible-Light'),
-    url('/fonts/AtkinsonHyperlegibleNext-Light.woff2') format('woff2');
-  font-family: 'Atkinson Hyperlegible';
-  font-display: swap;
-}
-
-@font-face {
-  font-style: italic;
-  font-weight: 300;
-  src:
-    local('Atkinson Hyperlegible Light Italic'),
-    local('AtkinsonHyperlegible-LightItalic'),
-    url('/fonts/AtkinsonHyperlegibleNext-LightItalic.woff2') format('woff2');
-  font-family: 'Atkinson Hyperlegible';
-  font-display: swap;
-}
-
-@font-face {
-  font-style: normal;
-  font-weight: 500;
-  src:
-    local('Atkinson Hyperlegible Medium'),
-    local('AtkinsonHyperlegible-Medium'),
-    url('/fonts/AtkinsonHyperlegibleNext-Medium.woff2') format('woff2');
-  font-family: 'Atkinson Hyperlegible';
-  font-display: swap;
-}
-
-@font-face {
-  font-style: italic;
-  font-weight: 500;
-  src:
-    local('Atkinson Hyperlegible Medium Italic'),
-    local('AtkinsonHyperlegible-MediumItalic'),
-    url('/fonts/AtkinsonHyperlegibleNext-MediumItalic.woff2') format('woff2');
-  font-family: 'Atkinson Hyperlegible';
-  font-display: swap;
-}
-
-@font-face {
-  font-style: normal;
-  font-weight: 600;
-  src:
-    local('Atkinson Hyperlegible SemiBold'),
-    local('AtkinsonHyperlegible-SemiBold'),
-    url('/fonts/AtkinsonHyperlegibleNext-SemiBold.woff2') format('woff2');
-  font-family: 'Atkinson Hyperlegible';
-  font-display: swap;
 }
