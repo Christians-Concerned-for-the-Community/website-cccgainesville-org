@@ -12,8 +12,13 @@
   html {
     font-family:
       'Atkinson Hyperlegible Next',
-      'Adjusted Arial Fallback',
-      sans-serif;
+      'Fallback - Atkinson Hyperlegible Next',
+      sans-serif,
+      /* Native emoji support */
+      "Apple Color Emoji",
+      "Segoe UI Emoji",
+      "Segoe UI Symbol",
+      "Noto Color Emoji";
   }
 
   /* Default text wrap settings. */
@@ -104,7 +109,7 @@
  * https://screenspan.net/fallback
  */
 @font-face {
-    font-family: 'Adjusted Arial Fallback';
+    font-family: 'Fallback - Atkinson Hyperlegible Next';
     src: local(Arial);
     size-adjust: 99%;
     ascent-override: 87%;
