@@ -1,5 +1,5 @@
 ---
-import DefaultLayout from '@layouts/DefaultLayout.astro'
+import DefaultLayout from '@layouts/Layout.astro'
 import PageHeader from '@components/PageHeader.astro'
 import PageSection from '@components/PageSection.astro'
 import { Form, Input, Button, Textarea, Heading, Link } from 'accessible-astro-components'
@@ -17,7 +17,7 @@ import Feat from '@assets/contact-feat.jpg'
     <!-- Contact Form -->
     <div class="space-content">
       <Heading level="h2" class="sr-only">Contact Form</Heading>
-      <Form name="contact" action="/thank-you" method="post">
+      <Form name="contact" action="/" method="post">
         <Input name="name" label="Name" required autocomplete="name" />
 
         <Input name="email" label="Email address" type="email" required autocomplete="email" />
