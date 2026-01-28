@@ -1,9 +1,10 @@
 ---
-import PageSection from '@components/PageSection.astro'
-import { Link } from 'accessible-astro-components'
-import { Icon } from 'astro-icon/components'
-import { Image } from 'astro:assets'
 import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets'
+import { Button } from '@/components/starwind/button'
+
+import Handshake from '@icons/heart-handshake.svg'
+import MailPlus from '@icons/mail-plus.svg'
 
 /**
  * Hero component
@@ -26,9 +27,9 @@ const {
 } = Astro.props;
 ---
 
-<PageSection class:list={["my-24 grid grid-cols-1 items-center gap-20 lg:grid-cols-2", className]}>
+<section class:list={["my-(--sp-2xl-3xl) grid grid-cols-1 items-center gap-(--sp-xl-2xl) lg:grid-cols-2", className]}>
   
-  <div class="flex flex-col items-start xs:items-center gap-8 lg:items-start">
+  <div class="flex flex-col items-start xs:items-center gap-(--sp-lg) lg:items-start">
     
     <h1 class="text-left text-wrap-balance xs:text-center text-6xl lg:text-left lg:text-7xl">
       <span class="bg-linear-315 from-theme-grad1 from-25% to-theme-grad2 bg-clip-text text-transparent">
@@ -37,27 +38,23 @@ const {
       Helping Neighbors
     </h1>
 
-    <div class="flex flex-col gap-3 min-[500px]:flex-row">
-      <Link
+    <div class="flex flex-col gap-(--sp-xs) sm:flex-row">
+      <Button
         href="/services/"
-        isButton
-        type="primary"
-        animateOnHover
-        animationType="boop"
+        variant="primary"
+        animation="raise-boop"
       >
-        <Icon aria-hidden="true" name="lucide:heart-handshake" size="1.5rem" />
+        <Handshake aria-hidden="true" />
         Our Services
-      </Link>
-      <Link
+      </Button>
+      <Button
         href="/ns"
-        isButton
-        type="secondary"
-        animateOnHover
-        animationType="boop"
+        variant="secondary"
+        animation="raise-boop"
       >
-        <Icon aria-hidden="true" name="lucide:mail-plus" size="1.5rem" />
+        <MailPlus aria-hidden="true"/>
         Newsletter Signup
-      </Link>
+      </Button>
     </div>
 
   </div>
@@ -69,4 +66,4 @@ const {
     alt="A collage showing various projects: ramp builds, furniture deliveries, and yard work."
     class="rounded-xl"
   />
-</PageSection>
+</section>

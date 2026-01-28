@@ -1,0 +1,135 @@
+---
+import type { HTMLAttributes } from "astro/types";
+/**
+ * Link Component
+ * @description A versatile link component that handles links with proper accessibility
+ * 
+ * Will add icons and screen-reader annotations for links that open in a new tab.
+ */
+
+interface Props extends HTMLAttributes<"a"> {
+  /**
+   * Additional classes to apply to the link
+   */
+  class?: string
+
+  /**
+   * The URL to link to
+   */
+  href: string
+
+  /**
+   * Screen-reader text for the link.
+   * 
+   * Only use this if the link text is too generic ("read more", etc), or if
+   * the link is icon-only.
+   * 
+   * Don't add descriptive text here to indicate that the link opens in a new tab,
+   * that will be automatically appended for you when you set openNew = true.
+   */
+  "aria-label"?: string
+
+  /**
+   * Styling classes that will be applied only if the link points to the
+   * page that the link is located on. This is useful for nav bars, where
+   * you want to indicate somehow which menu entry is the current one.
+   * 
+   * If any classes are passed in here, the aria-current="page" attribute
+   * will also be applied to the link automatically for you, so that screen
+   * readers will also properly notify the user.
+   */
+  thisPageClass?: string
+  
+  /**
+   * Whether to open in a new tab or not.
+   * 
+   * If true, will add a standard "opens in new tab" icon,
+   * as well as some screen-reader text.
+   * 
+   * You should ALMOST NEVER use this, opening in new tabs is bad for
+   * accessibility, and really not that great for usability in general.
+   * 
+   * Some situations where it might still make sense:
+   *   - links to documents (like PDF's or Word docs) - people tend to close
+   *     the tab after the finish with these, according to research.
+   *   - links to help pages on a form page - so you don't lose form progress.
+   *   - situations where the user might need to refer back to the original page
+   *     while they're working with the linked one.
+   * 
+   * @link https://blog.pope.tech/2024/01/02/how-to-make-external-links-accessible/
+   * 
+   * @default false
+   */
+  openAsNew?: boolean
+
+  /**
+   * Whether to show the "opens in new tab" icon or not.
+   * Only affects anything if openNew = true.
+   * 
+   * You should only set this to false for icon-only links, it's generally
+   * considered bad for accessibility, otherwise.
+   * @default true
+   */
+  showIcon?: boolean
+}
+
+const {
+  class: className,
+  href,
+  "aria-label": ariaLabel,
+  thisPageClass,
+  openAsNew = false,
+  showIcon = true,
+  ...htmlAttrs
+} = Astro.props;
+
+
+const thisPage = Astro.url.pathname;
+const removeSlash = (path: string) => {
+  // The regex /\\/+$/ matches one or more (\\/+) forward slashes at the end ($)
+  return path.replace("/\\/+$/", "");
+};
+const pathEq = (path1: string, path2: string) => {
+  return removeSlash(path1) === removeSlash(path2);
+}
+
+let autoAttrs: Record<string,string> = {};
+const autoClasses: string[] = [];
+if (openAsNew) {
+  autoAttrs.target = '_blank';
+}
+if (ariaLabel) {
+  autoAttrs["aria-label"] = ariaLabel;
+}
+if (thisPageClass && pathEq(thisPage, href)) {
+  autoAttrs["aria-current"] = "page";
+  autoClasses.push(thisPageClass);
+  console.log(["flex flex-row gap-x-(--sp-2xs) items-center justify-center-safe", ...autoClasses, className]);
+}
+---
+
+<a href={href}
+   class:list={["flex flex-row gap-x-(--sp-2xs) items-center justify-center-safe", ...autoClasses, className]}
+   {...autoAttrs}
+   {...htmlAttrs}
+>
+  <slot />
+  {openAsNew && showIcon && (
+    <slot name="icon">
+      <svg
+        aria-hidden="true"
+        width="1em"
+        height="1em"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M15 3h6v6m-11 5L21 3m-3 10v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+      </svg>
+    </slot>
+    <span class="sr-only">Opens in a new tab</span>
+  )}
+</a>

@@ -1,8 +1,8 @@
 ---
-import '@styles/globals.css'
-import SiteMeta from '@components/SiteMeta.astro'
-import Header from '@components/Header.astro'
-import Footer from '@components/Footer.astro'
+import '@/styles/globals.css'
+import SiteMeta from '@/components/SiteMeta.astro'
+import Header from '@/components/Header.astro'
+import Footer from '@/components/Footer.astro'
 
 
 // Used for preloading.
@@ -14,6 +14,7 @@ const {
   author = 'Christians Concerned for the Community',
   alwaysHide = false,
   preloadImg,
+  class: className,
 } = Astro.props
 ---
 
@@ -58,42 +59,42 @@ const {
   </head>
   <body>
     <Header />
-    <main id="main-content">
+    <main id="main-content" class={className}>
       <slot />
     </main>
     <Footer />
-    <style lang="scss" is:global>
-      // sticky footer on low content pages
-      html,
-      body {
-        height: 100%;
-      }
-
-      body {
-        display: flex;
-        flex-direction: column;
-        overflow-x: clip;
-
-        main {
-          flex: 1 0 auto;
-        }
-
-        footer {
-          flex-shrink: 0;
-        }
-      }
-
-      // enable view transitions for every page
-      @media (prefers-reduced-motion: no-preference) {
-        @view-transition {
-          navigation: auto;
-        }
-
-        ::view-transition-group(root) {
-          animation-duration: var(--animation-speed-fast);
-          animation-timing-function: var(--cubic-bezier);
-        }
-      }
-    </style>
   </body>
 </html>
+
+
+{/*
+  Script that applies the dark mode settings on page load.
+
+  See: src/components/starwind/theme-toggle/ThemeToggle.astro
+*/}
+<script is:inline>
+  function initTheme() {
+    const colorTheme = localStorage.getItem("colorTheme");
+    if (!colorTheme) {
+      if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+        document.documentElement.classList.add("dark");
+        localStorage.setItem("colorTheme", "dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+        localStorage.setItem("colorTheme", "light");
+      }
+    } else {
+      if (colorTheme === "dark") {
+        document.documentElement.classList.add("dark");
+      } else if (colorTheme === "light") {
+        document.documentElement.classList.remove("dark");
+      } else if (colorTheme === "system") {
+        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        document.documentElement.classList.toggle("dark", prefersDark);
+      }
+    }
+  }
+
+  initTheme();
+  document.addEventListener("astro:after-swap", initTheme);
+</script>

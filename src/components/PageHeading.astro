@@ -1,0 +1,116 @@
+---
+import { Image } from 'astro:assets'
+import type { ImageMetadata } from 'astro';
+
+/**
+ * PageHeading Component
+ * 
+ * Provides an <h1> for the main content of the page, decorated with a colored
+ * banner and (optionally) a featured image.
+ * 
+ * Inside the content, you should provide <section>'s followed by <h2>'s that
+ * identify each chunk. This leads to the following hierarchy, which can be
+ * interpreted well by screen readers:
+ *   <header>
+ *   <main>
+ *     <h1>{Page Title}</h1>  <-- Provided by PageHeading inside PageLayout
+ *     <section>              <-- Start of content you wrap in PageLayout tags
+ *        <h2>{Section 1 Title}</h2>
+ *        ... section 1 content
+ *     </section>                     
+ *     <section>
+ *        <h2>{Section 2 Title}</h2>
+ *        ... section 2 content
+ *     </section>
+ *     ...
+ *   </main>
+ *   <footer>
+ * 
+ * The code to make the above hierarchy would look like this:
+ * 
+ * <PageLayout title={PageTitle} ...can also set subtitle, featuredImage>
+ *   <section>
+ *     <h2>{Section 1 Title}</h2>
+ *     ... section 1 content
+ *   </section>                     
+ *   <section>
+ *     <h2>{Section 2 Title}</h2>
+ *     ... section 2 content
+ *   </section>
+ * </PageLayout>
+ *
+ */
+interface Props {
+  /**
+   * Additional classes to apply to the PageHeading
+   */
+  class?: string
+
+  /**
+   * The featured image of the page
+   * 
+   * Recommended aspect ratio: 3 x 2
+   */
+
+  featuredImage?: ImageMetadata
+
+  /**
+   * The title of the page
+   */
+  title: string
+
+  /**
+   * The subtitle of the page (optional)
+   */
+  subtitle?: string
+
+  /**
+   * HTML attributes
+   */
+  [key: string]: any
+}
+
+const {
+  class: className,
+  title,
+  subtitle,
+  featuredImage,
+  ...htmlAttrs
+} = Astro.props
+---
+
+<!--
+  background gradient -
+    Uses one color for the top 2/3 of the heading, then another for the bottom.
+    This lets us set the bottom 1/3 to the overall page background, which
+    makes the feature image look like it extends below the edge of the header.
+-->
+<div class:list={["py-(--sp-lg) md:mb-(--sp-lg-xl)",
+  "bg-linear-to-b from-banner from-66% to-background to-66%",
+  className
+]} {...htmlAttrs}>
+  <div class={"mx-auto my-auto max-w-(--content-max) px-(--sp-sm-md) text-neutral-50"
+    + " grid grid-cols-1 grid-rows-4 items-center"
+    + " md:gap-(--sp-sm) md:grid-cols-18 md:grid-rows-3"}>
+    <div class="space-y-(--sp-sm) md:col-span-11 row-span-2">
+      <h1 class="text-h2">{title}</h1>
+      {subtitle && (<p class="text-lg">{subtitle}</p>)}
+    </div>
+    {
+      featuredImage && (
+        <Image
+          src={featuredImage}
+          alt=""
+          aria-hidden="true"
+          priority={true}
+          width={675}
+          height={450}
+          class={"shadow-(--elevation-card) justify-self-end rounded-md"
+            + " w-[70%] xs:w-[60%] max-h-37.5  md:w-93.75 md:max-h-62.5"
+            + " row-span-2  md:row-span-3 md:col-span-7"
+          }
+        />
+      )
+    }
+  </div>
+</div>

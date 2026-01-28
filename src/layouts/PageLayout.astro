@@ -1,0 +1,90 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import PageHeading from '@/components/PageHeading.astro'
+import type { ImageMetadata } from 'astro';
+
+/**
+ * PageLayout Component
+ *
+ * @description layout for standard pages on the website - includes the full
+ *              nav bar, title/subtitle and featured image header, and wraps
+ *              the main content in a styled container.
+ */
+interface Props {
+  /**
+   * Additional classes to apply to the PageLayout holding the slot contents.
+   */
+  class?: string
+
+  /**
+   * The title of the page
+   */
+  title: string
+
+  /**
+   * The subtitle of the page (optional)
+   */
+  subtitle?: string
+
+  /**
+   * The featured image of the page (optional)
+   * 
+   * Recommended aspect ratio: 3 x 2
+   */
+  featuredImage?: ImageMetadata
+
+  /**
+   * The width of the section.
+   *   normal: 300rem (1200px) max
+   *   narrow: 200rem (800px) max
+   *   stretch: full viewport width (retains some padding)
+   * @type {'normal' | 'narrow' | 'stretch' | undefined}
+   * @default normal
+   */
+  width?: 'normal' | 'narrow' | 'stretch'
+
+  /**
+   * Always hide this page from search engines, even on production builds.
+   * @default false
+   */
+  alwaysHide?: boolean
+
+  /**
+   * Include a page header?
+   * @default true
+   */
+  showHeading?: boolean
+
+  /**
+   * HTML attributes
+   */
+  [key: string]: any
+}
+
+const {
+  class: className,
+  title,
+  subtitle,
+  featuredImage,
+  width = 'normal',
+  alwaysHide = false,
+  showHeading = true,
+  ...htmlAttrs
+} = Astro.props
+
+let classWidth = "";
+switch(width) {
+  case 'normal':  classWidth = "max-w-(--content-max)"; break;
+  case 'narrow':  classWidth = "max-w-(--content-narrow)"; break;
+  case 'stretch': classWidth = "max-w-full"; break;
+}
+---
+
+<BaseLayout title={title} preload={featuredImage?.src} alwaysHide={alwaysHide}>
+  {showHeading && (
+    <PageHeading title={title} subtitle={subtitle} featuredImage={featuredImage} />
+  )}
+  <div id="after-heading" class:list={["mx-auto px-(--sp-sm-md) my-(--sp-xl-2xl)", classWidth, className]} {...htmlAttrs}>
+    <slot />
+  </div>
+</BaseLayout>

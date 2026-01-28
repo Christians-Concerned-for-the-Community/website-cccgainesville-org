@@ -1,7 +1,5 @@
 ---
-import PageSection from '@components/PageSection.astro'
-import { Heading, Link } from 'accessible-astro-components'
-import { Icon } from 'astro-icon/components'
+import { Button } from '@/components/starwind/button'
 
 /**
  * CallToAction Component
@@ -11,43 +9,28 @@ import { Icon } from 'astro-icon/components'
 interface Props {
   /**
    * The title text to display
-   * @default "Get this theme on GitHub"
    */
-  title?: string
+  title: string
   /**
    * The URL the button should link to
-   * @default "https://github.com/incluud/accessible-astro-starter"
    */
-  link?: string
-  /**
-   * The text to display on the button
-   * @default "Get Started"
-   */
-  linkText?: string
-  /**
-   * The icon to display on the button
-   * @default "lucide:rocket"
-   */
-  linkIcon?: string
+  href: string
 }
 
 const {
-  title = 'Get this theme on GitHub',
-  link = 'https://github.com/incluud/accessible-astro-starter',
-  linkText = 'Use this theme',
-  linkIcon = 'lucide:rocket',
+  title,
+  href,
 } = Astro.props
 ---
 
-<PageSection class={"flex flex-col items-center gap-12 rounded-xl"
-  + " mt-24 mb-32 py-20 text-neutral-900"
+<section class={"flex flex-col items-center gap-(--sp-xl) rounded-xl"
+  + " my-(--sp-3xl) py-(--sp-xl) px-(--sp-sm) md:px-(--sp-2xl) text-neutral-900"
   + " bg-linear-315 from-theme-grad3 from-25% to-theme-grad4"
 }>
-  <div class="px-5 md:px-17">
-    <Heading level="h2" class="text-center text-3xl md:text-6xl">{title}</Heading>
-    <Link href={link} isButton size="lg" animateOnHover animationType="nudge">
-      {linkText}
-      <Icon aria-hidden="true" name={linkIcon} size="1.5rem" />
-    </Link>
+  <div class="px-(--sp-sm) md:px-(--sp-2xl)">
+    <h2 class="text-center text-3xl md:text-6xl">{title}</h2>
+    <Button href={href} variant="primary" size="lg" animation="raise-boop">
+      <slot />
+    </Button>
   </div>
-</PageSection>
+</section>

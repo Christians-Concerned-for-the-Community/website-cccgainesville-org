@@ -1,91 +1,195 @@
 ---
-import Navigation from '@components/Navigation.astro'
-import { DarkMode, Link, SkipLink } from 'accessible-astro-components'
-import { Icon } from 'astro-icon/components'
+import Facebook from "@/assets/icons/facebook.svg"
+import Instagram from "@/assets/icons/instagram.svg"
+import Menu from "@icons/menu-2.svg"
+import ChevronDown from "@icons/chevron-down.svg"
+
+import Logo from "@/components/Logo.astro"
+import Link from "@/components/Link.astro"
+import { Dropdown, DropdownTrigger, DropdownContent, DropdownItem } from "@/components/starwind/dropdown";
+import { Button } from "@/components/starwind/button";
+import { ThemeToggle } from "@/components/starwind/theme-toggle";
+import { Sheet, SheetClose, SheetContent, SheetFooter, SheetTrigger, } from "@/components/starwind/sheet";
+
 
 /**
  * Header Component
  *
- * @description A component that displays the header of the website
+ * @description A component that displays the logo and navbar of the website
  */
+
+const maxItems = 5;
+
+const items = [
+  { label: "Services",
+    href:  "/services/",
+  },
+  { label: "Give",
+    href:  "/give/",
+  },
+  { label: "Volunteer",
+    href:  "/volunteer/",
+  },
+  { label: "Contact",
+    href:  "/contact/",
+  },
+  { label: "News",
+    href:  "/news/"
+  },
+  { label: "Our Values",
+    href:  "/our-values/"
+  },
+  { label: "Documents",
+    href:  "/documents/"
+  },
+];
+
+const icons = [
+  { icon: Facebook,
+    href: "https://facebook.com/cccgainesville",
+    alt:  "Go to our Facebook page",
+  },
+  { icon: Instagram,
+    href: "https://instagram.com/cccmainoffice",
+    alt:  "Go to our Instagram page",
+  },
+];
+
+const doDropdown = (items.length > maxItems);
+const split = doDropdown? maxItems - 1 : items.length;
 ---
 
-<header>
-  <SkipLink />
-  <Navigation>
-    <li class="menu-item">
-      <Link href="/">Home</Link>
-    </li>
-    <li class="menu-item">
-      <Link href="/services/">Services</Link>
-    </li>
-    <li class="menu-item">
-      <Link href="/give/">Give</Link>
-    </li>
-    <li class="menu-item">
-      <Link href="/contact/">Contact</Link>
-    </li>
-    <li class="menu-item has-dropdown">
-      <button aria-haspopup="true" aria-expanded="false" class="cursor-pointer">
-        More
-        <Icon aria-hidden="true" name="lucide:chevrons-down" size="17" />
-      </button>
-      <ul class="dropdown-menu">
-        <li class="submenu-item">
-          <Link href="/news/">News</Link>
+<header class="max-fullnav:sticky max-fullnav:top-0 max-fullnav:z-50 px-(--sp-sm) py-(--sp-md) bg-background/80 backdrop-blur-lg shadow-sm">
+  
+  {/* Skip Link (visually hidden but accessible via keyboard focus) */}
+  <a href="#main-content" class:list={[ "py-(--sp-sm) px-(--sp-lg) rounded-lg",
+      "sr-only focus:not-sr-only focus:absolute focus:top-0 focus:left-0",
+      "focus:z-50 focus:p-(--sp-sm) focus:bg-wb focus:text-bw"]} >
+    Skip to main content
+  </a>
+
+  <div class="max-w-(--content-max) h-(--sp-2xl) mx-auto px-(--sp-sm-md) flex flex-wrap justify-between items-center">
+    
+    {/* Logo / Home Link */}
+    <div class="flex shrink-0 items-center">
+      <Logo/>
+    </div>
+
+    
+    <nav class="">
+      {/* Full menu: visible when width >= fullnav */}
+      <ul class="space-x-(--sp-xs) hidden fullnav:flex
+        [&_li]:flex [&_li]:items-center">
+      
+      { /* Main text links along the top. */
+        items.slice(0,split).map((item) => (
+        <li>
+          <Link href={item.href}
+            class="text-md py-(--sp-2xs) px-(--sp-3xs) underline-offset-3 hover:underline"
+            thisPageClass="underline"
+          >
+            {item.label}
+          </Link>
         </li>
-        <li class="submenu-item">
-          <Link href="/volunteer/">Volunteer</Link>
-        </li>
-        <li class="submenu-item">
-          <Link href="/our-values/">Our Values</Link>
-        </li>
-        <li class="submenu-item">
-          <Link href="/documents/">Documents</Link>
+      ))}
+
+      { /* Add additional links in a dropdown menu, if necessary. */
+        doDropdown && (
+          <li class="ml-(--sp-2xs)">
+            <Dropdown>
+              <DropdownTrigger asChild>
+                <Button variant="outline" class="aria-expanded:[&_svg]:-scale-y-100">
+                  More
+                  <ChevronDown />
+                </Button>
+              </DropdownTrigger>
+              <DropdownContent align="end" class="p-(--sp-xs) --space-y-(--sp-xs)">
+
+              {items.slice(split).map((item) => (
+                <DropdownItem>
+                  <Link
+                    href={item.href}
+                    class="text-md underline-offset-3 hover:underline"
+                    thisPageClass="underline"
+                  >
+                    {item.label}
+                  </Link>
+                </DropdownItem>
+              ))}
+              
+              </DropdownContent>
+            </Dropdown>
+          </li>
+        )
+      }
+
+      { /* Add social icons to the icon tray. */
+        icons.map( (item) => {
+          const Icon = item.icon;
+          return (
+          <li class="flex shrink-0 items-center">
+            <Link href={item.href} aria-label={item.alt}>
+              <Icon />
+            </Link>
+          </li>
+          );
+        })
+      }
+
+      {/* Add dark mode toggle to the icon tray. */}
+        <li class="flex shrink-0 items-center">
+          <ThemeToggle ariaLabel="Toggle dark mode"/>
         </li>
       </ul>
-    </li>
-    <li class="menu-item type-icon animate-rotate">
-      <Link href="https://facebook.com/cccgainesville" isExternal hideIcon>
-        <Icon aria-hidden="true" name="simple-icons:facebook"/>
-        <span class="sr-only">Go to our Facebook page, opens in a new tab</span>
-      </Link>
-    </li>
-    <li class="menu-item type-icon animate-rotate">
-      <Link href="https://instagram.com/cccmainoffice" isExternal hideIcon>
-        <Icon aria-hidden="true" name="simple-icons:instagram"/>
-        <span class="sr-only">Go to our Instagram page, opens in a new tab</span>
-      </Link>
-    </li>
-    <li class="menu-item type-icon animate-rotate">
-      <DarkMode class="border-none! hover:shadow-none! rounded-none! p-0!">
-        <Icon aria-hidden="true" name="lucide:moon" slot="light" />
-        <Icon aria-hidden="true" name="lucide:sun" slot="dark" />
-      </DarkMode>
-    </li>
-  </Navigation>
+
+      {/* Menu button: visible when width < fullnav */}
+      <div class="flex fullnav:hidden shrink-0 items-center">
+        <SheetTrigger asChild for="mobile-nav">
+          <Button>
+            Menu
+            <Menu aria-hidden="true"/>
+          </Button>
+        </SheetTrigger>
+      </div>
+
+      <Sheet id="mobile-nav">
+        <SheetContent side="right" class="pt-(--sp-md)">
+          <ul class="flex flex-col gap-(--sp-md)">
+            {items.map((item) => (
+            <li>
+              <Link href={item.href}
+                class="text-lg underline-offset-3 hover:underline"
+                thisPageClass="underline"
+              >
+                {item.label}
+              </Link>
+            </li>
+            ))}
+            <div class="flex flex-row justify-center items-center mx-(--sp-md)">
+              {/* Add social icons to the icon tray. */
+              icons.map( (item) => {
+                const Icon = item.icon;
+                return (
+                <div class="flex shrink-0 items-center">
+                  <Link href={item.href} aria-label={item.alt}>
+                    <Icon />
+                  </Link>
+                </div>
+                );
+              })}
+              {/* Add dark mode toggle to the icon tray. */}
+              <li class="flex shrink-0 items-center">
+                <ThemeToggle ariaLabel="Toggle dark mode"/>
+              </li>
+            </div>
+          </ul>
+          <SheetFooter>
+            <SheetClose asChild>
+              <Button>Close</Button>
+            </SheetClose>
+          </SheetFooter>
+        </SheetContent>
+      </Sheet>
+    </nav>
+  </div>
 </header>
-
-<style lang="scss" is:global>
-  header {
-    a { // Increase clickable area of text links a bit, for ease of use
-      padding: 0.5rem 0.25rem;
-    }
-    .type-icon {
-      display: block;
-      margin-inline: -2px;
-      margin-block-start: 6px;
-
-      a {
-        padding: 0;
-      }
-      .icon {
-        margin-left: -1px;
-      }
-      svg, .icon {
-        inline-size: 29px;
-        block-size: 29px;
-      }
-    }
-  }
-</style>

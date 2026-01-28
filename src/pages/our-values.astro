@@ -1,14 +1,9 @@
 ---
-import DefaultLayout from '@layouts/Layout.astro'
-import PageHeader from '@components/PageHeader.astro'
-import PageSection from '@components/PageSection.astro'
+import PageLayout from '@/layouts/PageLayout.astro'
 
-import Feat from '@assets/ourvalues-feat.jpg'
+import feat from '@/assets/ourvalues-feat.jpg'
 ---
 
-<DefaultLayout title="Our Values" preload={Feat.src}>
-  <PageHeader title="Our Values" subtitle="Who we are, and what we believe in." featuredImage={Feat}/>
-  <PageSection class="my-24">
-    
-  </PageSection>
-</DefaultLayout>
+<PageLayout title="Our Values" subtitle="Who we are, and what we believe in." featuredImage={feat}>
+  
+</PageLayout>

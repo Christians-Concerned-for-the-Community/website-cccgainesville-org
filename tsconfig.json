@@ -5,27 +5,18 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "paths": {
-      "@components/*": [
-        "src/components/*"
-      ],
-      "@layouts/*": [
-        "src/layouts/*"
-      ],
-      "@assets/*": [
-        "src/assets/*"
-      ],
-      "@content/*": [
-        "src/content/*"
-      ],
-      "@pages/*": [
-        "src/pages/*"
-      ],
       "@public/*": [
         "public/*"
       ],
-      "@/utils/*": [
-        "src/utils/*"
+      "@/*": [
+        "src/*"
       ],
+      "@icons/*": [
+        "node_modules/@tabler/icons/icons/outline"
+      ],
+      "@icons-filled/*": [
+        "node_modules/@tabler/icons/icons/filled"
+      ]
     }
   }
 }

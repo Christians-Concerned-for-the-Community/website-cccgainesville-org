@@ -1,24 +1,18 @@
 @import "tailwindcss" source("../");
+@import "tw-animate-css";
+@plugin "@tailwindcss/forms";
+
 @import "./colors.css";
 @import "./typography.css";
+@import "./animations.css";
 
-@custom-variant dark (&:where(.darkmode, .darkmode *));
+@custom-variant dark (&:where(.dark, .dark *));
 
-/* Global CSS variables - these won't be accessible via Tailwind CSS utilities. */
 :root {
   /*
-    Enable animations/transitions that change the width/height of a container.
-    We use this for menu animations.
-    Note: this is experimental as of 2026, may not be supported on all browsers.
-  */
-  interpolate-size: allow-keywords;
+    This is what changes the color scheme from light to dark when the ".dark"
+    class gets added to the root HTML element of the page.
 
-  /*
-    This is what changes the color scheme from light to dark when
-    DarkMode.astro adds the "darkmode" class to the root HTML element
-    of the page.
-
-    See: node_modules/accessible-astro-components/src/components/darkmode/DarkMode.astro
     See: https://stackoverflow.com/a/79739830
   */
   color-scheme: light;
@@ -32,6 +26,18 @@
 }
 
 @layer base {
+  :root {
+    /* Max width of main content on site.
+      75rem -> 1200px -> 300
+     */
+    --content-max: 75rem;
+
+    /* Max width for narrower elements on site.
+      50rem -> 800 px -> 200
+     */
+    --content-narrow: 50rem;
+  }
+
   html {
     /*
       Reserve space for scrollbar. This prevents distracting layout shifts when moving
@@ -50,18 +56,27 @@
     Have to force this for the DarkMode component, it's
     annoyingly opinionated on style. 
    */
+  /*
   *:focus-visible {
-    outline: 2px dashed var(--color-bw);
+    outline: 0.125rem dashed var(--color-bw);
     box-shadow: none;
   }
-  .darkmode-toggle:focus-visible {
-    outline: 2px dashed var(--color-bw) !important;
-    box-shadow: none !important;
-  }
+  */
 }
 
 /* Theme variables. */
-@theme {
+@theme inline {
+
+  /* Custom presets for radius sizes (determines roundedness of corners).
+   */
+  --radius: 0.625rem;
+  --radius-xs: calc(var(--radius) - 0.375rem);
+  --radius-sm: calc(var(--radius) - 0.25rem);
+  --radius-md: calc(var(--radius) - 0.125rem);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 0.25rem);
+  --radius-2xl: calc(var(--radius) + 0.5rem);
+  --radius-3xl: calc(var(--radius) + 1rem);
 
   /* Additional custom breakpoints.
    * 

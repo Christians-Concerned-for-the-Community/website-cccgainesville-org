@@ -1,6 +1,6 @@
 ---
-import { Image } from 'astro:assets'
-import PageSection from '@components/PageSection.astro'
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
 
 /**
  * ContentImage Component
@@ -14,9 +14,9 @@ interface Props {
    */
   class?: string
   /**
-   * The source URL for the image, or an image imported from assets
+   * An image imported from assets.
    */
-  imgSrc: any
+  img: ImageMetadata
   /**
    * Additional classes to apply to the image
    * @default 'rounded-lg'
@@ -35,7 +35,7 @@ interface Props {
 
 const {
   class: className = 'my-40',
-  imgSrc,
+  img,
   imgClass = 'rounded-lg',
   alt,
   reverseImg = false
@@ -72,17 +72,18 @@ const slotPos  = reverseImg? 'md:order-1' : undefined;
 
 ---
 
-<PageSection class:list={[className]}>
-  <div class="grid grid-cols-1 gap-16 md:gap-24 md:grid-cols-2">
-    <Image
-      src={imgSrc}
-      width={900}
-      height={600}
-      class:list={[imgClass, imagePos]}
-      alt={alt} 
-    />
-    <div class:list={['space-content', 'flex', 'flex-col', 'justify-center', slotPos]}>
-      <slot />
-    </div>
+<div class:list={["mx-auto px-(--sp-sm-md) my-(--sp-xl-2xl)",
+  "grid grid-cols-1 gap-(--sp-2xl-3xl) md:grid-cols-2",
+  className]}
+>
+  <Image
+    src={img}
+    width={900}
+    height={600}
+    class:list={[imgClass, imagePos]}
+    alt={alt} 
+  />
+  <div class:list={['flex flex-col justify-center', slotPos]}>
+    <slot />
   </div>
-</PageSection>
+</div>

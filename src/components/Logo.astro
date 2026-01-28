@@ -1,26 +1,19 @@
 ---
-import { Link } from 'accessible-astro-components'
-import { Image } from 'astro:assets'
-import logo_light from '@assets/logo-wide-light.svg'
-import logo_dark from '@assets/logo-wide-dark.svg'
+import Link from '@/components/Link.astro'
+import LogoLight from '@/assets/logo-wide-light.svg'
+import LogoDark from '@/assets/logo-wide-dark.svg'
 
 ---
 
-<Link href="/" class="flex items-center -ml-6">
-  <Image
-    src={logo_light}
+<Link href="/" class="-ml-6" aria-label="CCC logo - return to home page">
+  <LogoLight
     width={488}
     height={120}
-    alt="CCC Logo"
-    priority={true}
     class="block dark:hidden w-54 min-[33.75rem]:w-76 h-auto"
   />
-  <Image
-    src={logo_dark}
+  <LogoDark
     width={488}
     height={120}
-    alt="CCC Logo"
-    priority={true}
     class="hidden dark:block w-54 min-[33.75rem]:w-76 h-auto"
   />
 </Link>

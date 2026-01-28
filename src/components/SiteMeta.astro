@@ -27,24 +27,25 @@ interface Props {
   author?: string
 }
 
-const { title, description, url, image, author = 'CCC Office' } = Astro.props
+const { title, description, url, image, author = "CCC Office" } = Astro.props
 
-let subtitle = 'Christians Concerned for the Community'
+let pageTitle = "Christians Concerned for the Community";
+if (title !== "Home") {
+  pageTitle = `${title} - ${pageTitle}`;
+}
 ---
 
-<!-- general meta -->
-<meta name="title" content={`${title} - ${subtitle}`} />
+{/* general meta */}
+<meta name="title" content={pageTitle} />
 <meta name="description" content={description} />
 <meta name="author" content={author} />
 
-<!-- open graph -->
-<meta property="og:title" content={`${title} - ${subtitle}`} />
+{/* open graph */}
+<meta property="og:title" content={pageTitle} />
 <meta property="og:description" content={description} />
 <meta property="og:type" content="website" />
 <meta property="og:url" content={url} />
 <meta property="og:image" content={`${Astro.site}${image}`} />
 
-<!-- twitter card -->
-
-<!-- page title -->
-<title>{title} - {subtitle}</title>
+{/* page title */}
+<title>{pageTitle}</title>

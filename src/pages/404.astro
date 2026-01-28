@@ -1,22 +1,18 @@
 ---
-import DefaultLayout from '@layouts/Layout.astro'
-import PageSection from '@components/PageSection.astro'
-import { Heading, Link } from 'accessible-astro-components'
-import { Icon } from 'astro-icon/components'
+import { Button } from "@/components/starwind/button";
+import PageLayout from '@/layouts/PageLayout.astro'
+import Rocket from '@icons/rocket.svg'
 ---
 
-<DefaultLayout title="404" alwaysHide={true}>
+<PageLayout title="404" subtitle="Page Not Found" alwaysHide={true}>
   
-  <PageSection class="my-12">
-      <Heading level="h1">404</Heading>
-  </PageSection>
+  <p class="text-2xl mb-(--sp-sm)">
+    This page does not exist. Don't worry though, we got you.
+  </p>
   
-  <PageSection class="my-12 space-content">
-    <p class="text-2xl">This page does not exist. Don't worry though, we got you.</p>
-    <Link href="/" isButton type="primary" animateOnHover animationType="nudge">
-      Let's get you home, Astronaut
-      <Icon aria-hidden="true" name="lucide:rocket" size="1.5rem" />
-    </Link>
-  </PageSection>
+  <Button href="/" variant="primary" animation="raise-boop">
+    Let's get you home, Astronaut
+    <Rocket aria-hidden="true" width="1.5rem" height="1.5rem" />
+  </Button>
 
-</DefaultLayout>
+</PageLayout>

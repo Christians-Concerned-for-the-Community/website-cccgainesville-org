@@ -1,0 +1,82 @@
+---
+/* Made using the Starwind UI Form Builder:
+ * https://pro.starwind.dev/tools/form-builder/
+ */
+import Button from "@/components/starwind/button";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+} from "@/components/starwind/card";
+import Input from "@/components/starwind/input";
+import Label from "@/components/starwind/label";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/starwind/select";
+import Textarea from "@/components/starwind/textarea";
+---
+
+<Card class="mx-auto w-full max-w-lg px-4">
+  
+  <form id="contact-form">
+    <CardContent class="flex flex-col gap-4">
+      <div class="flex flex-col space-y-2">
+        <Label for="name">Name<span class="text-error ml-1">*</span></Label>
+        <Input type="text" id="name" name="name" placeholder="Your name" required />
+      </div>
+      <div class="flex flex-col space-y-2">
+        <Label for="email">Email<span class="text-error ml-1">*</span></Label>
+        <Input type="email" id="email" name="email" placeholder="your@email.com" required />
+      </div>
+      <div class="flex flex-col space-y-2">
+        <Label for="phone">Phone<span class="text-error ml-1">*</span></Label>
+        <Input type="tel" id="phone" name="phone" placeholder="555-555-5555" required />
+      </div>
+      <div class="flex flex-col space-y-2">
+        <Label for="topic">Topic<span class="text-error ml-1">*</span></Label>
+        <Select id="topic" name="topic" required>
+          <SelectTrigger class="w-full">
+            <SelectValue placeholder="Choose an option" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectItem value="service-furniture">I need furniture or other home goods</SelectItem>
+              <SelectItem value="service-ramp">I need a ramp or other accessibility feature</SelectItem>
+              <SelectItem value="service-other">I need something else</SelectItem>
+              <SelectItem value="give-furniture">I'd like to donate furniture/home goods</SelectItem>
+              <SelectItem value="give-other">I'd like to donate something else</SelectItem>
+              <SelectItem value="volunteer">I'm interested in volunteering</SelectItem>
+              <SelectItem value="other">(Other)</SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+      </div>
+      <div class="flex flex-col space-y-2">
+        <Label for="message">Message<span class="text-error ml-1">*</span></Label>
+        <Textarea id="message" name="message" placeholder="How can we help?" rows={4} required />
+      </div>
+    </CardContent>
+    <CardFooter>
+      <Button type="submit">Send Message</Button>
+    </CardFooter>
+  </form>
+</Card>
+
+<script>
+  function setupForm() {
+    const form = document.querySelector("#contact-form") as HTMLFormElement;
+    form?.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const formData = new FormData(form);
+      const values = Object.fromEntries(formData.entries());
+      console.log("Form submitted:", values);
+    });
+  }
+  setupForm();
+  document.addEventListener("astro:after-swap", setupForm);
+</script>

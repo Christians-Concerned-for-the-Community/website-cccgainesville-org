@@ -1,5 +1,5 @@
 ---
-import { Icon } from 'astro-icon/components'
+import Quote from '@icons/quote.svg'
 
 interface Props {
   /**
@@ -15,14 +15,14 @@ interface Props {
 const { author } = Astro.props
 ---
 
-<blockquote class="border-theme-fg border-l-8 pl-4 text-xl">
-  <Icon aria-hidden="true" name="lucide:quote" size="1rem" class="inline -scale-x-100 -mt-(--space-s)" />
+<blockquote class="border-theme-fg border-l-(--sp-lg) pl-(--sp-sm) text-xl">
+  <Quote aria-hidden="true" name="lucide:quote" class="inline -scale-x-100 -mt-(--sp-sm) size-(--sp-xs)" />
   
   <p class="inline">
     <slot />
   </p>
   
-  <Icon aria-hidden="true" name="lucide:quote" size="1rem" class="inline -mt-(--space-s)" />
+  <Quote aria-hidden="true" name="lucide:quote" class="inline -mt-(--space-s) size-(--sp-xs)" />
   
-  {author && <cite class="block mt-(--space-s) text-lg font-medium not-italic">{author}</cite>}
+  {author && <cite class="block mt-(--sp-xs) text-lg font-medium not-italic">{author}</cite>}
 </blockquote>

@@ -8,20 +8,178 @@
  */
 
 @layer base {
-  /* Global default fonts. */
-  html {
-    font-family:
-      'Atkinson Hyperlegible Next',
-      'Fallback - Atkinson Hyperlegible Next',
-      sans-serif,
-      /* Native emoji support */
+  :root {
+    /* Relative spacing scale from utopia.fyi (adapts to viewport width).
+     *
+     * Note that these vars do not replace the default number system used by Tailwind
+     * utilities for spacing, those remain fixed because they can't be customized
+     * to do a full adaptive scale.
+     * 
+     * For example, "py-8" means:
+     *    padding, y-dir, 8 * (--spacing)
+     *
+     * ...where "--spacing" defaults to 0.25 rem. The scale is always linear and fixed,
+     * you can only change the multiplier by setting --spacing to something else.
+     *
+     * Instead, to use this sliding scale, you need to use CSS variables in your
+     * calls to tailwind utility classes, instead of numbers:
+     *
+     * For example: "py-(--sp-m)" varies from "py-6.75" to "py-7.5" as the viewport
+     * gets wider.
+     *
+     * @link https://utopia.fyi/space/calculator?c=360,18,1.2,1200,20,1.25,10,2,&s=0.75|0.5|0.25,1.5|2|3|4|6,&g=s,l,xl,12
+     */
+    /* Space 3xs: 1.25 → 1.25 */
+    --sp-3xs: clamp(0.3125rem, 0.3125rem + 0vw, 0.3125rem);
+    /* Space 2xs: 2.25 → 2.5 */
+    --sp-2xs: clamp(0.5625rem, 0.5357rem + 0.119vw, 0.625rem);
+    /* Space xs: 3.5 → 3.75 */
+    --sp-xs: clamp(0.875rem, 0.8482rem + 0.119vw, 0.9375rem);
+    /* Space sm: 4.5 → 5 */
+    --sp-sm: clamp(1.125rem, 1.0714rem + 0.2381vw, 1.25rem);
+    /* Space md: 6.75 → 7.5 */
+    --sp-md: clamp(1.6875rem, 1.6071rem + 0.3571vw, 1.875rem);
+    /* Space lg: 9 → 10 */
+    --sp-lg: clamp(2.25rem, 2.1429rem + 0.4762vw, 2.5rem);
+    /* Space xl: 13.5 → 15 */
+    --sp-xl: clamp(3.375rem, 3.2143rem + 0.7143vw, 3.75rem);
+    /* Space 2xl: 18 → 20 */
+    --sp-2xl: clamp(4.5rem, 4.2857rem + 0.9524vw, 5rem);
+    /* Space 3xl: 27 → 30 */
+    --sp-3xl: clamp(6.75rem, 6.4286rem + 1.4286vw, 7.5rem);
+
+    /* One-up pairs */
+    /* Space 3xs-2xs: 1.25 → 2.5 */
+    --sp-3xs-2xs: clamp(0.3125rem, 0.1786rem + 0.5952vw, 0.625rem);
+    /* Space 2xs-xs: 2.25 → 3.75 */
+    --sp-2xs-xs: clamp(0.5625rem, 0.4018rem + 0.7143vw, 0.9375rem);
+    /* Space xs-sm: 3.5 → 5 */
+    --sp-xs-sm: clamp(0.875rem, 0.7143rem + 0.7143vw, 1.25rem);
+    /* Space sm-md: 4.5 → 7.5 */
+    --sp-sm-md: clamp(1.125rem, 0.8036rem + 1.4286vw, 1.875rem);
+    /* Space md-lg: 6.75 → 10 */
+    --sp-md-lg: clamp(1.6875rem, 1.3393rem + 1.5476vw, 2.5rem);
+    /* Space lg-xl: 9 → 15 */
+    --sp-lg-xl: clamp(2.25rem, 1.6071rem + 2.8571vw, 3.75rem);
+    /* Space xl-2xl: 13.5 → 20 */
+    --sp-xl-2xl: clamp(3.375rem, 2.6786rem + 3.0952vw, 5rem);
+    /* Space 2xl-3xl: 18 → 30 */
+    --sp-2xl-3xl: clamp(4.5rem, 3.2143rem + 5.7143vw, 7.5rem);
+
+
+    /* Support for system-native emojis (added to end of each font stack below). */
+    --add-emojis:
       "Apple Color Emoji",
       "Segoe UI Emoji",
       "Segoe UI Symbol",
       "Noto Color Emoji";
   }
+}
 
-  /* Default text wrap settings. */
+
+@theme inline {
+  /* Our self-hosted hyperlegible web font (see font-face decl's below).
+   * 
+   * Note: font-sans is the default font in Tailwind (set by Preflight).
+   */
+  --font-sans:
+    'Atkinson Hyperlegible Next',
+    'Fallback - Atkinson Hyperlegible Next',
+    system-ui,
+    sans-serif,
+    var(--add-emojis);
+
+  /* The font stacks below are native - they rely on fonts that come preloaded in
+   * modern browsers, so they don't require downloading additional font files.
+   *
+   * See: https://modernfontstacks.com/
+   */
+
+  /* Native font: handwritten look */
+  --font-hand:
+    'Segoe Print',
+    'Bradley Hand',
+    Chilanka,
+    TSCu_Comic,
+    casual,
+    cursive,
+    var(--add-emojis);
+
+  /* Override default Tailwind font sizes with a sliding scale from utopia.fyi.
+   *
+   * This is based around a font that varies from 18pt @ 360px screen width, to
+   * 20pt @ 1200px screen width.
+   *
+   * Note that Tailwind's default font size and weight (set by Preflight) is:
+   *  size: --text-base
+   *  weight: --font-normal (400)
+   *
+   * These utilities can be used as normal: text-lg, text-base, etc.
+   *
+   * @link https://utopia.fyi/type/calculator?c=360,18,1.2,1200,20,1.25,10,2,&s=0.75|0.5|0.25,1.5|2|3|4|6,s-l&g=s,l,xl,12
+   */
+  --text-xs:   clamp(0.7813rem, 0.7732rem + 0.0357vw, 0.8rem);
+  --text-sm:   clamp(0.9375rem, 0.9107rem + 0.119vw, 1rem);
+  --text-base: clamp(1.125rem, 1.0714rem + 0.2381vw, 1.25rem);
+  --text-md:   clamp(1.25rem, 1.1652rem + 0.3215vw, 1.375rem);
+  --text-lg:   clamp(1.35rem, 1.2589rem + 0.4048vw, 1.5625rem);
+  --text-xl:   clamp(1.62rem, 1.4772rem + 0.6345vw, 1.9531rem);
+  --text-2xl:  clamp(1.944rem, 1.7308rem + 0.9474vw, 2.4414rem);
+  --text-3xl:  clamp(2.3328rem, 2.0247rem + 1.3694vw, 3.0518rem);
+  --text-4xl:  clamp(2.7994rem, 2.3642rem + 1.934vw, 3.8147rem);
+  --text-5xl:  clamp(3.3592rem, 2.7553rem + 2.6841vw, 4.7684rem);
+  --text-6xl:  clamp(4.0311rem, 3.2042rem + 3.675vw, 5.9605rem);
+  --text-7xl:  clamp(4.8373rem, 3.7173rem + 4.9777vw, 7.4506rem);
+  --text-8xl:  clamp(5.8048rem, 4.3011rem + 6.6828vw, 9.3132rem);
+  --text-9xl:  clamp(6.9657rem, 4.9618rem + 8.9063vw, 11.6415rem);
+
+
+  /* Text sizes, line heights and weights for headers.
+   *
+   * These are handy because accessibility guidelines require a strict hierarchy
+   * when using header tags - you can't skip over numbers, even if you really
+   * want a smaller size for the sub-header than the default.
+   *
+   * These classes let you specify the header size separately from the logical
+   * tag name:
+   *
+   *  <h1>A Header with Default Size</h1>
+   *     <h2 class="text-h3">A Header with Smaller Size</h2>
+   *     <h2 class="text-h1">A Header with Bigger Size </h2>
+   */
+  --text-h1:              var(--text-5xl);
+  --text-h1--line-height: var(--text-6xl);
+  --text-h1--font-weight: 600;
+
+  --text-h2:              var(--text-4xl);
+  --text-h2--line-height: var(--text-5xl);
+  --text-h2--font-weight: 600;
+
+  --text-h3:              var(--text-3xl);
+  --text-h3--line-height: var(--text-4xl);
+  --text-h3--font-weight: 500;
+  
+  --text-h4:              var(--text-2xl);
+  --text-h4--line-height: var(--text-3xl);
+  --text-h4--font-weight: 500;
+
+  --text-h5:              var(--text-xl);
+  --text-h5--line-height: var(--text-2xl);
+  --text-h5--font-weight: 500;
+
+  --text-h6:              var(--text-lg);
+  --text-h6--line-height: var(--text-xl);
+  --text-h6--font-weight: 500;
+}
+
+
+@layer base {
+  /* Global font settings. */
+  html {
+    font-synthesis: none;
+  }
+
+  /* Default text wrap settings for headers and paragraphs. */
   p {
     text-wrap: pretty;
   }
@@ -29,40 +187,27 @@
     text-wrap: balance;
   }
 
-  /* Default header font weights. */
-  h1,h2 {
-    font-weight: 600;
-  }
-  h3,h4,h5,h6 {
-    font-weight: 500;
-  }
-
-  /* Default header font sizes. */
+  /* Default header font settings. */
   h1 {
-    font-size: var(--text-5xl);
-    line-height: var(--text-6xl);
+    @apply text-h1;
   }
   h2 {
-    font-size: var(--text-4xl);
-    line-height: var(--text-5xl);
+    @apply text-h2;
   }
   h3 {
-    font-size: var(--text-3xl);
-    line-height: var(--text-4xl);
+    @apply text-h3;
   }
   h4 {
-    font-size: var(--text-2xl);
-    line-height:var(--text-3xl);
+    @apply text-h4;
   }
   h5 {
-    font-size: var(--text-xl);
-    line-height: var(--text-2xl);
+    @apply text-h5;
   }
   h6 {
-    font-size: var(--text-lg);
-    line-height: var(--text-xl);
+    @apply text-h6;
   }
 }
+
 
 /* Atkinson Hyperlegible Next
  * 

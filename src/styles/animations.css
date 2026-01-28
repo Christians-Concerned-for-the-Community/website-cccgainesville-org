@@ -1,0 +1,63 @@
+
+/* Page transition animations. */
+@view-transition {
+    navigation: auto;
+}
+@layer theme {
+  ::view-transition-group(root) {
+    animation-duration: 100ms;
+  }
+}
+
+@utility animate-raise {
+  transition: all 200ms var(--ease-fast);
+  translate: 0 -3px;
+}
+
+
+@theme inline {
+  --ease-fast: cubic-bezier(0.165, 0.84, 0.44, 1);
+
+  --animate-boop: boop 500ms var(--ease-fast) forwards;
+
+  @keyframes boop {
+    0% {
+      transform: scale(1) rotate(0deg);
+    }
+    25% {
+      transform: scale(var(--scaleAmount, 1.1)) rotate(calc(-1 * var(--rotateAmount, 10deg)));
+    }
+    50% {
+      transform: scale(calc(var(--scaleAmount, 1.1) - 0.05))
+        rotate(calc(var(--rotateAmount, 10deg) / 2));
+    }
+    75% {
+      transform: scale(calc(var(--scaleAmount, 1.1) - 0.08))
+        rotate(calc(-1 * var(--rotateAmount, 10deg) / 4));
+    }
+    100% {
+      transform: scale(1) rotate(0deg);
+    }
+  }  
+
+  --animate-accordion-down: accordion-down 200ms ease-out;
+  --animate-accordion-up: accordion-up 200ms ease-out;
+
+  @keyframes accordion-down {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--starwind-accordion-content-height);
+    }
+  }
+
+  @keyframes accordion-up {
+    from {
+      height: var(--starwind-accordion-content-height);
+    }
+    to {
+      height: 0;
+    }
+  }
+}

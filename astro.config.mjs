@@ -1,9 +1,12 @@
-import { defineConfig } from 'astro/config'
-import { fileURLToPath } from 'url'
-import icon from 'astro-icon'
-import mdx from '@astrojs/mdx'
-import sitemap from '@astrojs/sitemap'
-import tailwindcss from '@tailwindcss/vite'
+import tailwindcss from "@tailwindcss/vite";
+import { defineConfig } from "astro/config";
+import { fileURLToPath } from "url";
+import mdx from "@astrojs/mdx";
+import sitemap from "@astrojs/sitemap";
+
+const abspath = (path) => {
+  return fileURLToPath(new URL(path, import.meta.url))
+};
 
 // Base Vite config
 const viteConfig = {
@@ -19,24 +22,21 @@ const viteConfig = {
   plugins: [tailwindcss()],
   resolve: {
     alias: {
-      '@components': fileURLToPath(new URL('./src/components', import.meta.url)),
-      '@layouts': fileURLToPath(new URL('./src/layouts', import.meta.url)),
-      '@assets': fileURLToPath(new URL('./src/assets', import.meta.url)),
-      '@styles': fileURLToPath(new URL('./src/styles', import.meta.url)),
-      '@content': fileURLToPath(new URL('./src/content', import.meta.url)),
-      '@pages': fileURLToPath(new URL('./src/pages', import.meta.url)),
-      '@public': fileURLToPath(new URL('./public', import.meta.url)),
+      '@':       abspath('./src'),
+      '@public': abspath('./public'),
+
+      '@icons':        abspath('./node_modules/@tabler/icons/icons/outline'),
+      '@icons-filled': abspath('./node_modules/@tabler/icons/icons/filled'),
     },
   },
 }
-
 
 // https://astro.build/config
 //
 // Note: site can be overriden by using the "--site" flag when building.
 //       (we do this for staging builds)
 export default defineConfig({
-  prefetch: {
+	prefetch: {
     prefetchAll: true,
   },
   security: {
@@ -63,7 +63,6 @@ export default defineConfig({
   compressHTML: true,
   site: 'https://staging.cccgainesville.org',
   integrations: [
-    icon(),
     mdx(),
     sitemap({
       namespaces: {
@@ -75,6 +74,7 @@ export default defineConfig({
   ],
   vite: viteConfig,
   image: {
+		plugins: [tailwindcss()],
     // Enable responsive images:
     layout: 'constrained',
     responsiveStyles: true,
