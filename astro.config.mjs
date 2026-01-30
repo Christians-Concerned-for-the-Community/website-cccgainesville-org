@@ -4,6 +4,8 @@ import { fileURLToPath } from "url";
 import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
 
+import icon from "astro-icon";
+
 const abspath = (path) => {
   return fileURLToPath(new URL(path, import.meta.url))
 };
@@ -36,7 +38,7 @@ const viteConfig = {
 // Note: site can be overriden by using the "--site" flag when building.
 //       (we do this for staging builds)
 export default defineConfig({
-	prefetch: {
+    prefetch: {
     prefetchAll: true,
   },
   security: {
@@ -71,10 +73,13 @@ export default defineConfig({
         video: false,
       }
     }),
+    icon({
+      iconDir: "src/assets/icons",
+    }),
   ],
   vite: viteConfig,
   image: {
-		plugins: [tailwindcss()],
+        plugins: [tailwindcss()],
     // Enable responsive images:
     layout: 'constrained',
     responsiveStyles: true,

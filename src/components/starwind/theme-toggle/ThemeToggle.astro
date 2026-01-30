@@ -79,14 +79,14 @@ const {
   {...rest}
 >
   <slot>
-    <span class="size-full" data-theme-icon-wrapper>
+    <div data-theme-icon-wrapper>
       <slot name="light-icon">
-        <Sun class="hidden size-full group-data-[state=off]:data-ready:block" data-theme-icon />
+        <Sun class="hidden group-data-[state=off]:data-ready:block" data-theme-icon />
       </slot>
       <slot name="dark-icon">
-        <Moon class="hidden size-full group-data-[state=on]:data-ready:block" data-theme-icon />
+        <Moon class="hidden group-data-[state=on]:data-ready:block" data-theme-icon />
       </slot>
-    </span>
+    </div>
   </slot>
 </Toggle>
 

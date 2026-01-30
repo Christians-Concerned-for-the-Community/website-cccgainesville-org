@@ -1,11 +1,10 @@
 ---
-import Link from '@/components/Link.astro'
 import LogoLight from '@/assets/logo-wide-light.svg'
 import LogoDark from '@/assets/logo-wide-dark.svg'
 
 ---
 
-<Link href="/" class="-ml-6" aria-label="CCC logo - return to home page">
+<a href="/" aria-label="CCC logo - return to home page">
   <LogoLight
     width={488}
     height={120}
@@ -16,4 +15,4 @@ import LogoDark from '@/assets/logo-wide-dark.svg'
     height={120}
     class="hidden dark:block w-54 min-[33.75rem]:w-76 h-auto"
   />
-</Link>
+</a>

@@ -107,8 +107,8 @@
 
   /* Override default Tailwind font sizes with a sliding scale from utopia.fyi.
    *
-   * This is based around a font that varies from 18pt @ 360px screen width, to
-   * 20pt @ 1200px screen width.
+   * This is based around a font that varies from 16pt @ 360px screen width, to
+   * 18pt @ 1200px screen width.
    *
    * Note that Tailwind's default font size and weight (set by Preflight) is:
    *  size: --text-base
@@ -116,23 +116,22 @@
    *
    * These utilities can be used as normal: text-lg, text-base, etc.
    *
-   * @link https://utopia.fyi/type/calculator?c=360,18,1.2,1200,20,1.25,10,2,&s=0.75|0.5|0.25,1.5|2|3|4|6,s-l&g=s,l,xl,12
+   * @link https://utopia.fyi/type/calculator?c=360,16,1.2,1200,18,1.25,10,2,&s=0.75,1.5|2|3|4|6,s-l&g=s,l,xl,12
    */
-  --text-xs:   clamp(0.7813rem, 0.7732rem + 0.0357vw, 0.8rem);
-  --text-sm:   clamp(0.9375rem, 0.9107rem + 0.119vw, 1rem);
-  --text-base: clamp(1.125rem, 1.0714rem + 0.2381vw, 1.25rem);
-  --text-md:   clamp(1.25rem, 1.1652rem + 0.3215vw, 1.375rem);
-  --text-lg:   clamp(1.35rem, 1.2589rem + 0.4048vw, 1.5625rem);
-  --text-xl:   clamp(1.62rem, 1.4772rem + 0.6345vw, 1.9531rem);
-  --text-2xl:  clamp(1.944rem, 1.7308rem + 0.9474vw, 2.4414rem);
-  --text-3xl:  clamp(2.3328rem, 2.0247rem + 1.3694vw, 3.0518rem);
-  --text-4xl:  clamp(2.7994rem, 2.3642rem + 1.934vw, 3.8147rem);
-  --text-5xl:  clamp(3.3592rem, 2.7553rem + 2.6841vw, 4.7684rem);
-  --text-6xl:  clamp(4.0311rem, 3.2042rem + 3.675vw, 5.9605rem);
-  --text-7xl:  clamp(4.8373rem, 3.7173rem + 4.9777vw, 7.4506rem);
-  --text-8xl:  clamp(5.8048rem, 4.3011rem + 6.6828vw, 9.3132rem);
-  --text-9xl:  clamp(6.9657rem, 4.9618rem + 8.9063vw, 11.6415rem);
-
+  --text-xs:   clamp(0.6944rem, 0.6835rem + 0.0487vw, 0.72rem);
+  --text-sm:   clamp(0.8333rem, 0.8048rem + 0.127vw, 0.9rem);
+  --text-base: clamp(1rem, 0.9464rem + 0.2381vw, 1.125rem);
+  --text-md:   clamp(1.1rem, 1.029rem + 0.3155vw, 1.2657rem);
+  --text-lg:   clamp(1.2rem, 1.1116rem + 0.3929vw, 1.4063rem);
+  --text-xl:   clamp(1.44rem, 1.3038rem + 0.6054vw, 1.7578rem);
+  --text-2xl:  clamp(1.728rem, 1.5269rem + 0.8938vw, 2.1973rem);
+  --text-3xl:  clamp(2.0736rem, 1.7852rem + 1.2819vw, 2.7466rem);
+  --text-4xl:  clamp(2.4883rem, 2.0834rem + 1.7998vw, 3.4332rem);
+  --text-5xl:  clamp(2.986rem, 2.4265rem + 2.4868vw, 4.2915rem);
+  --text-6xl:  clamp(3.5832rem, 2.8198rem + 3.3928vw, 5.3644rem);
+  --text-7xl:  clamp(4.2998rem, 3.2688rem + 4.5823vw, 6.7055rem);
+  --text-8xl:  clamp(5.1598rem, 3.7789rem + 6.1374vw, 8.3819rem);
+  --text-9xl:  clamp(6.1917rem, 4.355rem + 8.1631vw, 10.4774rem);
 
   /* Text sizes, line heights and weights for headers.
    *

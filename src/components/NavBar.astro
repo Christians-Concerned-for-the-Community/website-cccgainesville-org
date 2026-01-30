@@ -1,8 +1,5 @@
 ---
-import Facebook from "@/assets/icons/facebook.svg"
-import Instagram from "@/assets/icons/instagram.svg"
-import Menu from "@icons/menu-2.svg"
-import ChevronDown from "@icons/chevron-down.svg"
+import { Icon } from 'astro-icon/components'
 
 import Logo from "@/components/Logo.astro"
 import Link from "@/components/Link.astro"
@@ -18,7 +15,7 @@ import { Sheet, SheetClose, SheetContent, SheetFooter, SheetTrigger, } from "@/c
  * @description A component that displays the logo and navbar of the website
  */
 
-const maxItems = 5;
+const maxItems = 4;
 
 const items = [
   { label: "Services",
@@ -27,11 +24,11 @@ const items = [
   { label: "Give",
     href:  "/give/",
   },
-  { label: "Volunteer",
-    href:  "/volunteer/",
-  },
   { label: "Contact",
     href:  "/contact/",
+  },
+  { label: "Volunteer",
+    href:  "/volunteer/",
   },
   { label: "News",
     href:  "/news/"
@@ -45,11 +42,11 @@ const items = [
 ];
 
 const icons = [
-  { icon: Facebook,
+  { name: 'facebook',
     href: "https://facebook.com/cccgainesville",
     alt:  "Go to our Facebook page",
   },
-  { icon: Instagram,
+  { name: 'instagram',
     href: "https://instagram.com/cccmainoffice",
     alt:  "Go to our Instagram page",
   },
@@ -59,16 +56,17 @@ const doDropdown = (items.length > maxItems);
 const split = doDropdown? maxItems - 1 : items.length;
 ---
 
-<header class="max-fullnav:sticky max-fullnav:top-0 max-fullnav:z-50 px-(--sp-sm) py-(--sp-md) bg-background/80 backdrop-blur-lg shadow-sm">
+<header class="text-md max-fullnav:sticky max-fullnav:top-0 max-fullnav:z-50 py-(--sp-md) bg-background/80 backdrop-blur-lg shadow-sm">
   
   {/* Skip Link (visually hidden but accessible via keyboard focus) */}
-  <a href="#main-content" class:list={[ "py-(--sp-sm) px-(--sp-lg) rounded-lg",
-      "sr-only focus:not-sr-only focus:absolute focus:top-0 focus:left-0",
+  <a href="#main-content" class:list={[
+      "rounded-lg sr-only focus:not-sr-only",
+      "focus:absolute focus:top-(--sp-sm) focus:left-(--sp-sm)",
       "focus:z-50 focus:p-(--sp-sm) focus:bg-wb focus:text-bw"]} >
     Skip to main content
   </a>
 
-  <div class="max-w-(--content-max) h-(--sp-2xl) mx-auto px-(--sp-sm-md) flex flex-wrap justify-between items-center">
+  <div class="max-w-(--content-max) h-(--sp-2xl) px-(--sp-2xs) mx-auto flex flex-wrap justify-between items-center">
     
     {/* Logo / Home Link */}
     <div class="flex shrink-0 items-center">
@@ -76,7 +74,7 @@ const split = doDropdown? maxItems - 1 : items.length;
     </div>
 
     
-    <nav class="">
+    <nav class="select-none">
       {/* Full menu: visible when width >= fullnav */}
       <ul class="space-x-(--sp-xs) hidden fullnav:flex
         [&_li]:flex [&_li]:items-center">
@@ -84,9 +82,8 @@ const split = doDropdown? maxItems - 1 : items.length;
       { /* Main text links along the top. */
         items.slice(0,split).map((item) => (
         <li>
-          <Link href={item.href}
-            class="text-md py-(--sp-2xs) px-(--sp-3xs) underline-offset-3 hover:underline"
-            thisPageClass="underline"
+          <Link href={item.href} variant="nav"
+            class="py-(--sp-2xs) px-(--sp-3xs)"
           >
             {item.label}
           </Link>
@@ -95,23 +92,20 @@ const split = doDropdown? maxItems - 1 : items.length;
 
       { /* Add additional links in a dropdown menu, if necessary. */
         doDropdown && (
-          <li class="ml-(--sp-2xs)">
+          <li>
             <Dropdown>
               <DropdownTrigger asChild>
-                <Button variant="outline" class="aria-expanded:[&_svg]:-scale-y-100">
+                <Button variant="ghost" size="lg"
+                  class="text-md px-1! mx-0! cursor-pointer aria-expanded:[&_svg]:-scale-y-100">
                   More
-                  <ChevronDown />
+                  <Icon name="tabler:chevrons-down" aria-hidden="true" />
                 </Button>
               </DropdownTrigger>
-              <DropdownContent align="end" class="p-(--sp-xs) --space-y-(--sp-xs)">
+              <DropdownContent align="end" class="p-(--sp-xs) --space-y-(--sp-sm)">
 
               {items.slice(split).map((item) => (
                 <DropdownItem>
-                  <Link
-                    href={item.href}
-                    class="text-md underline-offset-3 hover:underline"
-                    thisPageClass="underline"
-                  >
+                  <Link href={item.href} variant="nav" class="text-lg">
                     {item.label}
                   </Link>
                 </DropdownItem>
@@ -124,30 +118,31 @@ const split = doDropdown? maxItems - 1 : items.length;
       }
 
       { /* Add social icons to the icon tray. */
-        icons.map( (item) => {
-          const Icon = item.icon;
-          return (
+        icons.map( (icon) => (
           <li class="flex shrink-0 items-center">
-            <Link href={item.href} aria-label={item.alt}>
-              <Icon />
+            <Link href={icon.href} aria-label={icon.alt} variant="icon-xs">
+              <Icon name={icon.name} aria-hidden="true" size={28}/>
             </Link>
           </li>
-          );
-        })
+        ))
       }
 
       {/* Add dark mode toggle to the icon tray. */}
         <li class="flex shrink-0 items-center">
-          <ThemeToggle ariaLabel="Toggle dark mode"/>
+          <ThemeToggle size="icon-xs" ariaLabel="Toggle dark mode"
+            class:list={["[&_svg]:size-7 cursor-pointer",
+              "motion-safe:hover:[&_svg]:animate-rotate",
+              "motion-safe:focus-visible:[&_svg]:animate-rotate"]}
+          />
         </li>
       </ul>
 
       {/* Menu button: visible when width < fullnav */}
       <div class="flex fullnav:hidden shrink-0 items-center">
         <SheetTrigger asChild for="mobile-nav">
-          <Button>
+          <Button size="lg">
             Menu
-            <Menu aria-hidden="true"/>
+            <Icon name="tabler:menu-2" aria-hidden="true" />
           </Button>
         </SheetTrigger>
       </div>
@@ -157,29 +152,26 @@ const split = doDropdown? maxItems - 1 : items.length;
           <ul class="flex flex-col gap-(--sp-md)">
             {items.map((item) => (
             <li>
-              <Link href={item.href}
-                class="text-lg underline-offset-3 hover:underline"
-                thisPageClass="underline"
-              >
+              <Link href={item.href} variant="nav" class="text-lg">
                 {item.label}
               </Link>
             </li>
             ))}
-            <div class="flex flex-row justify-center items-center mx-(--sp-md)">
+            <div class="flex flex-row justify-center place-items-center gap-(--sp-2xl) mt-(--sp-xs)">
               {/* Add social icons to the icon tray. */
-              icons.map( (item) => {
-                const Icon = item.icon;
-                return (
-                <div class="flex shrink-0 items-center">
-                  <Link href={item.href} aria-label={item.alt}>
-                    <Icon />
+              icons.map( (icon) => (
+                <li>
+                  <Link href={icon.href} aria-label={icon.alt} variant="icon">
+                    <Icon name={icon.name} aria-hidden="true" size={32}/>
                   </Link>
-                </div>
-                );
-              })}
+                </li>
+              ))}
               {/* Add dark mode toggle to the icon tray. */}
               <li class="flex shrink-0 items-center">
-                <ThemeToggle ariaLabel="Toggle dark mode"/>
+                <ThemeToggle ariaLabel="Toggle dark mode"
+                  class:list={["[&_svg]:size-8! cursor-pointer",
+                    "motion-safe:hover:[&_svg]:animate-rotate",
+                    "motion-safe:focus-visible:[&_svg]:animate-rotate"]}/>
               </li>
             </div>
           </ul>

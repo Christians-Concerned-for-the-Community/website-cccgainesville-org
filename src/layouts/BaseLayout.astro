@@ -1,7 +1,7 @@
 ---
 import '@/styles/globals.css'
 import SiteMeta from '@/components/SiteMeta.astro'
-import Header from '@/components/Header.astro'
+import NavBar from '@/components/NavBar.astro'
 import Footer from '@/components/Footer.astro'
 
 
@@ -18,7 +18,7 @@ const {
 } = Astro.props
 ---
 
-<html lang="en" dir="ltr">
+<html lang="en" dir="ltr" class="h-full">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -57,12 +57,12 @@ const {
       author={author}
     />
   </head>
-  <body>
-    <Header />
-    <main id="main-content" class={className}>
+  <body class="h-full flex flex-col overflow-x-clip">
+    <NavBar />
+    <main id="main-content" class:list={["grow shrink-0 basis-auto", className]}>
       <slot />
     </main>
-    <Footer />
+    <Footer class="shrink-0" />
   </body>
 </html>
 

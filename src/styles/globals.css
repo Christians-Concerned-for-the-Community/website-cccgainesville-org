@@ -53,15 +53,13 @@
 
   /*
     Keyboard focus indicator - a dashed outline box.
-    Have to force this for the DarkMode component, it's
-    annoyingly opinionated on style. 
+    Set this globally to enforce a consistent look for all focusable elements.
+    Have to use !important to override existing focus styling in Starwind UI.
    */
-  /*
   *:focus-visible {
-    outline: 0.125rem dashed var(--color-bw);
-    box-shadow: none;
+    outline: 0.125rem dashed var(--color-bw) !important;
+    box-shadow: none !important;
   }
-  */
 }
 
 /* Theme variables. */
@@ -85,6 +83,6 @@
    * Example:
    *   max-w-50 xs:max-w-60 md:max-w-100
    */
-  --breakpoint-xs:      31.25rem;  /* 500 px */
-  --breakpoint-fullnav: 58.125rem; /* 930 px */
+  --breakpoint-xs:      31.25rem; /* 500 px */
+  --breakpoint-fullnav: 56.25rem; /* 900 px */
 }

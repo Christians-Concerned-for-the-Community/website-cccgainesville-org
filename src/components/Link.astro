@@ -1,5 +1,7 @@
 ---
 import type { HTMLAttributes } from "astro/types";
+import { tv, type VariantProps } from "tailwind-variants";
+
 /**
  * Link Component
  * @description A versatile link component that handles links with proper accessibility
@@ -7,7 +9,7 @@ import type { HTMLAttributes } from "astro/types";
  * Will add icons and screen-reader annotations for links that open in a new tab.
  */
 
-interface Props extends HTMLAttributes<"a"> {
+interface Props extends HTMLAttributes<"a">, VariantProps<typeof link> {
   /**
    * Additional classes to apply to the link
    */
@@ -29,17 +31,6 @@ interface Props extends HTMLAttributes<"a"> {
    */
   "aria-label"?: string
 
-  /**
-   * Styling classes that will be applied only if the link points to the
-   * page that the link is located on. This is useful for nav bars, where
-   * you want to indicate somehow which menu entry is the current one.
-   * 
-   * If any classes are passed in here, the aria-current="page" attribute
-   * will also be applied to the link automatically for you, so that screen
-   * readers will also properly notify the user.
-   */
-  thisPageClass?: string
-  
   /**
    * Whether to open in a new tab or not.
    * 
@@ -77,9 +68,9 @@ const {
   class: className,
   href,
   "aria-label": ariaLabel,
-  thisPageClass,
   openAsNew = false,
   showIcon = true,
+  variant,
   ...htmlAttrs
 } = Astro.props;
 
@@ -93,22 +84,61 @@ const pathEq = (path1: string, path2: string) => {
   return removeSlash(path1) === removeSlash(path2);
 }
 
+const isCurrentPage = variant==="nav" && pathEq(thisPage, href);
+
 let autoAttrs: Record<string,string> = {};
-const autoClasses: string[] = [];
 if (openAsNew) {
   autoAttrs.target = '_blank';
 }
 if (ariaLabel) {
   autoAttrs["aria-label"] = ariaLabel;
 }
-if (thisPageClass && pathEq(thisPage, href)) {
+if (isCurrentPage) {
   autoAttrs["aria-current"] = "page";
-  autoClasses.push(thisPageClass);
 }
+
+
+export const link = tv({
+  base: [
+    "gap-(--sp-2xs) items-center justify-center-safe",
+    "duration-200 ease-fast"
+  ],
+  variants: {
+    variant: {
+      text: ["inline-flex [&_svg]:inline underline whitespace-nowrap",
+        "transition:[color,text-decoration-thickness,text-decoration-offset]",
+        "text-theme-link hover:text-theme-link-hover",
+        "decoration-from-font hover:decoration-[1px]",
+        "underline-offset-[0.25rem] hover:underline-offset-[0.125rem]"
+      ],
+      nav: ["flex underline-offset-3 underline transition:[text-decoration-color]",
+        "decoration-transparent hover:decoration-inherit select-none",
+      ],
+      "icon-xs": [
+        "inline-flex gap-1 size-8 shadow-xs rounded-md transition-colors outline-none select-none",
+        "border border-input hover:border-muted-foreground bg-transparent",
+        "focus-visible:border-outline focus-visible:ring-outline/50 focus-visible:ring-3",
+        "motion-safe:hover:[&_svg]:animate-rotate motion-safe:focus-visible:[&_svg]:animate-rotate"
+      ],
+      icon: [
+        "inline-flex gap-2 size-11 shadow-xs rounded-md transition-colors outline-none select-none",
+        "border border-input hover:border-muted-foreground bg-transparent",
+        "focus-visible:border-outline focus-visible:ring-outline/50 focus-visible:ring-3",
+        "motion-safe:hover:[&_svg]:animate-rotate motion-safe:focus-visible:[&_svg]:animate-rotate"
+      ],
+    },
+    isCurrentPage: {
+      true:"decoration-inherit"
+    }
+  },
+  defaultVariants: {
+    variant: "text"
+  },
+});
 ---
 
 <a href={href}
-   class:list={["flex flex-row gap-x-(--sp-2xs) items-center justify-center-safe", ...autoClasses, className]}
+   class={link({ variant, isCurrentPage, class: className })}
    {...autoAttrs}
    {...htmlAttrs}
 >

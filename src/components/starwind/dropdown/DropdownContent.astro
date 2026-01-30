@@ -2,7 +2,7 @@
 import type { HTMLAttributes } from "astro/types";
 import { tv } from "tailwind-variants";
 
-type Props = HTMLAttributes<"div"> & {
+type Props = HTMLAttributes<"ul"> & {
   /**
    * Side of the dropdown
    * @default bottom
@@ -60,15 +60,13 @@ const {
 } = Astro.props;
 ---
 
-<div
+<ul
   class={dropdownContent({ side, align, class: className })}
-  role="menu"
   data-side={side}
   data-align={align}
   data-state="closed"
   data-slot="dropdown-content"
   tabindex="-1"
-  aria-orientation="vertical"
   style={{
     display: "none",
     animationDuration: `${animationDuration}ms`,
@@ -78,4 +76,4 @@ const {
   {...rest}
 >
   <slot />
-</div>
+</ul>
