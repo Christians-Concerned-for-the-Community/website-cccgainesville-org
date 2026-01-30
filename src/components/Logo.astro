@@ -1,16 +1,15 @@
 ---
-import LogoLight from '@/assets/logo-wide-light.svg'
-import LogoDark from '@/assets/logo-wide-dark.svg'
+import { Icon } from 'astro-icon/components'
 
 ---
 
 <a href="/" aria-label="CCC logo - return to home page">
-  <LogoLight
+  <Icon name="logo-wide-light"
     width={488}
     height={120}
     class="block dark:hidden w-54 min-[33.75rem]:w-76 h-auto"
   />
-  <LogoDark
+  <Icon name="logo-wide-dark"
     width={488}
     height={120}
     class="hidden dark:block w-54 min-[33.75rem]:w-76 h-auto"
