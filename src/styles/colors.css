@@ -143,11 +143,11 @@
   --color-error-foreground:
                     var(--color-neutral-50);
   --color-border:
-    var(--tw-light, var(--color-neutral-200))
-    var(--tw-dark,  --alpha(var(--color-neutral-50) / 10%));
+    var(--tw-light, var(--color-neutral-600))
+    var(--tw-dark,  --alpha(var(--color-neutral-50) / 20%));
   --color-input:
     var(--tw-light, var(--color-neutral-200))
-    var(--tw-dark,  --alpha(var(--color-neutral-50) / 15%));
+    var(--tw-dark,  --alpha(var(--color-neutral-50) / 25%));
   --color-outline:
     var(--tw-light, var(--color-neutral-400))
     var(--tw-dark,  var(--color-neutral-500));

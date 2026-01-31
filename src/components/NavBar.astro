@@ -74,7 +74,7 @@ const split = doDropdown? maxItems - 1 : items.length;
   <div class="max-w-(--content-max) mx-auto h-(--sp-2xl) px-(--sp-2xs) flex justify-between items-center">
     
     {/* Logo / Home Link */}
-    <div class="flex shrink place-items-center mr-(--sp-lg)">
+    <div class="flex shrink-2 place-items-center mr-(--sp-lg)">
       <Logo/>
     </div>
 
@@ -101,7 +101,7 @@ const split = doDropdown? maxItems - 1 : items.length;
             <Dropdown>
               <DropdownTrigger asChild>
                 <Button variant="ghost" size="lg"
-                  class="text-md px-1! mx-0! cursor-pointer aria-expanded:[&_svg]:-scale-y-100">
+                  class="text-md px-1! mx-0! font-normal! cursor-pointer aria-expanded:[&_svg]:-scale-y-100">
                   More
                   <Icon name="tabler:chevrons-down" aria-hidden="true" />
                 </Button>
@@ -122,30 +122,35 @@ const split = doDropdown? maxItems - 1 : items.length;
         )
       }
 
-      { /* Add social icons to the icon tray. */
-        icons.map( (icon) => (
-          <li class="flex shrink-0 items-center">
-            <Link href={icon.href} aria-label={icon.alt} variant="icon-xs">
-              <Icon name={icon.name} aria-hidden="true" size={28}/>
-            </Link>
-          </li>
-        ))
-      }
+        <div class="flex space-x-(--sp-xs) pl-(--sp-xs) border-l-2 border-border">
+        { /* Add social icons to the icon tray. */
+          icons.map( (icon) => (
+            <li class="flex shrink-0 items-center">
+              <Link href={icon.href} variant="icon-xs">
+                <span class="sr-only">{icon.alt}</span>
+                <Icon name={icon.name} aria-hidden="true" size={28}/>
+              </Link>
+            </li>
+          ))
+        }
 
-      {/* Add dark mode toggle to the icon tray. */}
-        <li class="flex shrink-0 items-center">
-          <ThemeToggle size="icon-xs" ariaLabel="Toggle dark mode"
-            class:list={["[&_svg]:size-7 cursor-pointer",
-              "motion-safe:hover:[&_svg]:animate-rotate",
-              "motion-safe:focus-visible:[&_svg]:animate-rotate"]}
-          />
-        </li>
+        {/* Add dark mode toggle to the icon tray. */}
+          <li class="flex shrink-0 items-center">
+            <ThemeToggle size="icon-xs" ariaLabel="Toggle dark mode"
+              class:list={["[&_svg]:size-7 cursor-pointer",
+                "motion-safe:hover:[&_svg]:animate-rotate",
+                "motion-safe:focus-visible:[&_svg]:animate-rotate"]}
+            />
+          </li>
+        </div>
       </ul>
 
       {/* Menu button: visible when width < fullnav */}
-      <div class="flex fullnav:hidden shrink-0 items-center">
+      <div class="flex fullnav:hidden shrink items-center">
         <SheetTrigger asChild for="mobile-nav">
-          <Button size="lg" animation="raise-boop">
+          <Button size="custom" animation="raise-boop"
+            class="h-12 px-6 text-md"
+          >
             Menu
             <Icon name="tabler:menu-2" aria-hidden="true" />
           </Button>
@@ -155,7 +160,7 @@ const split = doDropdown? maxItems - 1 : items.length;
       {/* Mobile nav menu that opens when menu button is clicked. */}
       <Sheet id="mobile-nav">
         <SheetContent side="right">
-          <ul class="flex flex-col h-full justify-between mb-(--sp-sm) ml-(--sp-sm)">
+          <ul class="flex flex-col h-full justify-between m-(--sp-sm)">
             {/* List of nav links. */}
             <div class="flex flex-col gap-(--sp-md) text-lg">
               <li>
@@ -174,7 +179,7 @@ const split = doDropdown? maxItems - 1 : items.length;
             </div>
 
             {/* Icon tray */}
-            <div class="flex flex-row justify-around pt-(--sp-md)">
+            <div class="flex flex-row justify-around mt-(--sp-xs) pt-(--sp-xs) border-t-2 border-border">
               {/* Add social icons to the icon tray. */
               icons.map( (icon) => (
                 <li>
