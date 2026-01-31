@@ -160,14 +160,14 @@ const split = doDropdown? maxItems - 1 : items.length;
       {/* Mobile nav menu that opens when menu button is clicked. */}
       <Sheet id="mobile-nav">
         <SheetContent side="right">
-          <h2 class="text-2xl font-medium absolute top-(--sp-2xs) left-(--sp-sm) select-none">
+          <h2 class="text-2xl font-medium absolute top-(--sp-xs) left-(--sp-sm) select-none">
             Menu
           </h2>
           <ul class="flex flex-col h-full mx-(--sp-sm) mb-(--sp-sm) mt-[calc(var(--sp-md)+var(--sp-sm))]">
             {/* List of nav links. */}
             <div class:list={[
               "flex flex-col justify-center grow",
-              "text-lg sm-tall:text-2xl gap-(--sp-2xs) sm-tall:gap-(--sp-xs) [&_a]:py-(--sp-2xs) [&_a]:px-(--sp-sm)",
+              "text-lg sm-tall:text-2xl [&_a]:py-(--sp-xs) sm-tall:[&_a]:py-(--sp-sm) [&_a]:px-(--sp-sm)",
               "mt-(--sp-xs) pt-(--sp-xs) border-t-2 border-border"
             ]}>
               <li>
