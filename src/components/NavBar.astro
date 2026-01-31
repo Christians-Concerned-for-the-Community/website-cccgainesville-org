@@ -56,25 +56,30 @@ const doDropdown = (items.length > maxItems);
 const split = doDropdown? maxItems - 1 : items.length;
 ---
 
-<header class="text-md max-fullnav:sticky max-fullnav:shadow-md max-fullnav:top-0 max-fullnav:z-50 py-(--sp-md) bg-background/80 backdrop-blur-lg">
+<header class:list={[
+  "text-md py-(--sp-md) bg-background/80 backdrop-blur-lg",
+  /* Make the navbar sticky on mobile: */
+  "max-sm:sticky max-sm:shadow-md max-sm:top-0 max-sm:z-50"
+]}>
   
-  {/* Skip Link (visually hidden but accessible via keyboard focus) */}
+  {/* Skip Link (hidden, but becomes visible when focused by pressing "tab" key) */}
   <a href="#main-content" class:list={[
-      "rounded-lg sr-only focus:not-sr-only",
-      "focus:absolute focus:top-(--sp-sm) focus:left-(--sp-sm)",
-      "focus:z-50 focus:p-(--sp-sm) focus:bg-wb focus:text-bw"]} >
+      "rounded-lg sr-only focus-visible:not-sr-only",
+      "focus-visible:bg-wb focus-visible:text-bw",
+      "focus-visible:absolute focus-visible:top-(--sp-sm) focus-visible:left-(--sp-sm)",
+      "focus-visible:z-50 focus-visible:p-(--sp-sm)"]} >
     Skip to main content
   </a>
 
-  <div class="max-w-(--content-max) h-(--sp-2xl) px-(--sp-2xs) mx-auto flex flex-wrap justify-between items-center">
+  <div class="max-w-(--content-max) mx-auto h-(--sp-2xl) px-(--sp-2xs) flex justify-between items-center">
     
     {/* Logo / Home Link */}
-    <div class="flex shrink-0 items-center">
+    <div class="flex shrink place-items-center mr-(--sp-lg)">
       <Logo/>
     </div>
 
     
-    <nav class="select-none">
+    <nav class="shrink-0 select-none">
       {/* Full menu: visible when width >= fullnav */}
       <ul class="space-x-(--sp-xs) hidden fullnav:flex
         [&_li]:flex [&_li]:items-center">
@@ -147,9 +152,12 @@ const split = doDropdown? maxItems - 1 : items.length;
         </SheetTrigger>
       </div>
 
+      {/* Mobile nav menu that opens when menu button is clicked. */}
       <Sheet id="mobile-nav">
-        <SheetContent side="right" class="py-(--sp-lg)">
-          <ul class="flex flex-col h-full justify-between">
+        <SheetContent side="right">
+          <div tabindex="-1"/>
+          <ul class="flex flex-col h-full justify-between mb-(--sp-sm) ml-(--sp-sm)">
+            {/* List of nav links. */}
             <div class="flex flex-col gap-(--sp-md) text-lg">
               <li>
                 <Link href="/" variant="nav">
@@ -165,7 +173,9 @@ const split = doDropdown? maxItems - 1 : items.length;
               </li>
               ))}
             </div>
-            <div class="flex flex-row justify-center place-items-center gap-(--sp-2xl)">
+
+            {/* Icon tray */}
+            <div class="flex flex-row justify-around pt-(--sp-md)">
               {/* Add social icons to the icon tray. */
               icons.map( (icon) => (
                 <li>

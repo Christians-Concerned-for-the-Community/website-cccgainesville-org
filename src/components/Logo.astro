@@ -3,15 +3,11 @@ import { Icon } from 'astro-icon/components'
 
 ---
 
-<a href="/" aria-label="CCC logo - return to home page">
-  <Icon name="logo-wide-light"
-    width={488}
-    height={120}
-    class="block dark:hidden w-54 min-[33.75rem]:w-76 h-auto"
+<a href="/" aria-label="Go to home page" class="hover:bg-muted p-1">
+  <Icon name="logo-wide-light" width="100%" height="100%"
+    class="block dark:hidden max-w-76 aspect-488/120"
   />
-  <Icon name="logo-wide-dark"
-    width={488}
-    height={120}
-    class="hidden dark:block w-54 min-[33.75rem]:w-76 h-auto"
+  <Icon name="logo-wide-dark" width="100%" height="100%"
+    class="hidden dark:block max-w-76 aspect-488/120"
   />
 </a>
