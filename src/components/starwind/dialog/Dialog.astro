@@ -167,23 +167,6 @@ const { class: className, ...rest } = Astro.props;
       this.triggers.forEach((trigger) => {
         trigger.addEventListener("click", (e) => {
           this.open();
-          /* Some browsers (observed on iOS Safari) automatically set keyboard
-           * focus on the first focusable element when a dialog is opened, even
-           * if it wasn't opened via the keyboard.
-           * 
-           * We want to avoid this because it means the focus-visible decorations
-           * will be displayed during mouse navigation, which is distracting.
-           * 
-           * See here for explanation of how detection works:
-           * https://css-tricks.com/when-a-click-is-not-just-a-click/#aa-another-take-to-determine-which-is-which
-           */
-          const fromKeyboard = (e.detail === 0);
-          if (!fromKeyboard && document.activeElement) {
-            /* If focus is active, but we didn't open the dialog with a keyboard action,
-             * clear the focus.
-             */
-            (document.activeElement as HTMLElement).blur();
-          }
         });
       });
 

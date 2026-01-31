@@ -23,6 +23,15 @@
     --tw-light: ;
     --tw-dark: initial;
   }
+
+  /* Don't let SVG's be directly clickable. Fixes a bug in focus-visible
+   * for browsers on iOS/macOS.
+   * 
+   * See: https://github.com/radix-ui/primitives/issues/2953
+   */
+  svg {
+    pointer-events: none !important;
+  }
 }
 
 @layer base {
@@ -43,7 +52,7 @@
       Reserve space for scrollbar. This prevents distracting layout shifts when moving
       between pages with/without scrollbars.
     */
-    scrollbar-gutter: stable;
+    /*scrollbar-gutter: stable;*/
 
     /*
       Use animated scrolls when clicking in-page links, instead of sudden jumps.
