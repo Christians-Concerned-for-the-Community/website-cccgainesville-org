@@ -5,7 +5,7 @@
 }
 @layer theme {
   ::view-transition-group(root) {
-    animation-duration: 100ms;
+    animation-duration: 200ms;
   }
 }
 
