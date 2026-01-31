@@ -8,6 +8,20 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* Breakpoints for different heights on mobile.
+ * Sometimes, mobile varies much more by height than width, so being able
+ * to set a larger text or spacing size for taller screens can lead to a
+ * cleaner look.
+ *
+ * For example:
+ *   iPhone SE: 375w x 667h
+ *   iPhone 14 Pro Max: 430w x 932h
+ *   Samsung Galaxy S8+: 360w x 740h
+ *   Samsun Galaxy S20 Ultra: 412w x 915h
+ */
+/* sm-tall: height >= 750 px, width < 640 px */
+@custom-variant sm-tall (@media (height >= 46.875rem) and (width < 40rem));
+
 :root {
   /*
     This is what changes the color scheme from light to dark when the ".dark"
