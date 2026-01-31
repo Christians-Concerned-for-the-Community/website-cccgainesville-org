@@ -23,15 +23,6 @@
     --tw-light: ;
     --tw-dark: initial;
   }
-
-  /* Don't let SVG's be directly clickable. Fixes a bug in focus-visible
-   * for browsers on iOS/macOS.
-   * 
-   * See: https://github.com/radix-ui/primitives/issues/2953
-   */
-  svg {
-    pointer-events: none !important;
-  }
 }
 
 @layer base {
