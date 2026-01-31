@@ -81,14 +81,14 @@ const split = doDropdown? maxItems - 1 : items.length;
     
     <nav class="shrink-0 select-none">
       {/* Full menu: visible when width >= fullnav */}
-      <ul class="space-x-(--sp-xs) hidden fullnav:flex
+      <ul class="hidden fullnav:flex
         [&_li]:flex [&_li]:items-center">
       
       { /* Main text links along the top. */
         items.slice(0,split).map((item) => (
         <li>
           <Link href={item.href} variant="nav"
-            class="py-(--sp-2xs) px-(--sp-3xs)"
+            class="py-(--sp-2xs) px-(--sp-xs)"
           >
             {item.label}
           </Link>
@@ -101,7 +101,7 @@ const split = doDropdown? maxItems - 1 : items.length;
             <Dropdown>
               <DropdownTrigger asChild>
                 <Button variant="ghost" size="lg"
-                  class="text-md px-1! mx-0! font-normal! cursor-pointer aria-expanded:[&_svg]:-scale-y-100">
+                  class="text-md px-(--sp-xs)! mx-0! font-normal! cursor-pointer aria-expanded:[&_svg]:-scale-y-100">
                   More
                   <Icon name="tabler:chevrons-down" aria-hidden="true" />
                 </Button>
