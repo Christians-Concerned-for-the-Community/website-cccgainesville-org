@@ -188,7 +188,8 @@ const { class: className, ...rest } = Astro.props;
              * clear the focus.
              */
             active.blur();
-            active.focus();
+            // @ts-expect-error
+            active.focus({focusVisible: false});
           }
         });
       });
