@@ -18,7 +18,7 @@ const {
 } = Astro.props
 ---
 
-<html lang="en" dir="ltr" class="h-full">
+<html lang="en" dir="ltr" class="min-h-dvh">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -57,7 +57,7 @@ const {
       author={author}
     />
   </head>
-  <body class="h-full flex flex-col overflow-x-clip">
+  <body class="min-h-dvh flex flex-col overflow-x-clip">
     <NavBar />
     <main id="main-content" class:list={["grow shrink-0 basis-auto", className]}>
       <slot />
