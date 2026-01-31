@@ -149,10 +149,16 @@ const split = doDropdown? maxItems - 1 : items.length;
 
       <Sheet id="mobile-nav">
         <SheetContent side="right" class="pt-(--sp-md)">
-          <ul class="flex flex-col gap-(--sp-md)">
+          <ul class="flex flex-col gap-(--sp-md) text-lg">
+            <li>
+              <Link href="/" variant="nav">
+                Home
+              </Link>
+            </li>
+
             {items.map((item) => (
             <li>
-              <Link href={item.href} variant="nav" class="text-lg">
+              <Link href={item.href} variant="nav">
                 {item.label}
               </Link>
             </li>
