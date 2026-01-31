@@ -69,8 +69,14 @@ const {
   width = 'normal',
   alwaysHide = false,
   showHeading = true,
+  renderBlock,
   ...htmlAttrs
 } = Astro.props
+
+let myRenderBlock = renderBlock;
+if (!myRenderBlock && showHeading) {
+  myRenderBlock = featuredImage? "#featured-image" : "#page-heading";
+}
 
 let classWidth = "";
 switch(width) {
@@ -80,9 +86,9 @@ switch(width) {
 }
 ---
 
-<BaseLayout title={title} preload={featuredImage?.src} alwaysHide={alwaysHide}>
+<BaseLayout title={title} preload={featuredImage?.src} alwaysHide={alwaysHide} renderBlock={myRenderBlock}>
   {showHeading && (
-    <PageHeading title={title} subtitle={subtitle} featuredImage={featuredImage} />
+    <PageHeading id="page-heading" title={title} subtitle={subtitle} featuredImage={featuredImage} />
   )}
   <div id="after-heading" class:list={["mx-auto px-(--sp-sm-md) my-(--sp-xl-2xl)", classWidth, className]} {...htmlAttrs}>
     <slot />

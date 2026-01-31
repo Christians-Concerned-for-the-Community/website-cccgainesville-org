@@ -1,7 +1,6 @@
 ---
 import { Icon } from 'astro-icon/components'
 
-import Logo from "@/components/Logo.astro"
 import Link from "@/components/Link.astro"
 import { Dropdown, DropdownTrigger, DropdownContent, DropdownItem } from "@/components/starwind/dropdown";
 import { Button } from "@/components/starwind/button";
@@ -71,15 +70,24 @@ const split = doDropdown? maxItems - 1 : items.length;
     Skip to main content
   </a>
 
-  <div class="max-w-(--content-max) mx-auto h-(--sp-2xl) px-(--sp-2xs) flex justify-between items-center">
+  <nav id="main-navigation"
+    class="max-w-(--content-max) mx-auto h-(--sp-2xl) px-(--sp-2xs) flex justify-between items-center">
     
     {/* Logo / Home Link */}
     <div class="flex shrink-2 place-items-center mr-(--sp-lg)">
-      <Logo/>
+      <a href="/" class="hover:bg-muted p-1">
+        <Icon name="logo-wide-light" aria-hidden="true" width="100%" height="100%"
+          class="block dark:hidden max-w-76 aspect-488/120"
+        />
+        <Icon name="logo-wide-dark" aria-hidden="true" width="100%" height="100%"
+          class="hidden dark:block max-w-76 aspect-488/120"
+        />
+        <span class="sr-only">Home</span>
+      </a>
     </div>
 
     
-    <nav class="shrink-0 select-none">
+    <div class="shrink-0 select-none">
       {/* Full menu: visible when width >= fullnav */}
       <ul class="hidden fullnav:flex
         [&_li]:flex [&_li]:items-center">
@@ -206,6 +214,6 @@ const split = doDropdown? maxItems - 1 : items.length;
           </ul>
         </SheetContent>
       </Sheet>
-    </nav>
-  </div>
+    </div>
+  </nav>
 </header>

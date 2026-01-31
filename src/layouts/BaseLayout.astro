@@ -14,6 +14,7 @@ const {
   author = 'Christians Concerned for the Community',
   alwaysHide = false,
   preloadImg,
+  renderBlock = "#main-navigation",
   class: className,
 } = Astro.props
 ---
@@ -45,9 +46,9 @@ const {
     <!-- sitemap hint -->
     <link rel="sitemap" href="/sitemap-index.xml" />
 
-    <!-- prevent view transition from happening until whole page is loaded (waits for footer) -->
+    <!-- prevent view transition from happening until enough of page is loaded -->
     <!--   see: https://vtbag.dev/basics/pseudos/#delaying-cross-document-transitions -->
-    <link rel="expect" href="#footer" blocking="render" />
+    <link rel="expect" href={renderBlock} blocking="render" />
 
     <SiteMeta
       title={title}
