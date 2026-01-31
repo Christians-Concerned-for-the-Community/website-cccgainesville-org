@@ -56,7 +56,7 @@ export const sheetContent = tv({
 export const sheetCloseButton = tv({
   base: [
     "starwind-dialog-close cursor-pointer",
-    "absolute top-(--sp-sm) right-(--sp-sm) rounded-xs outline-none",
+    "absolute top-(--sp-xs) right-(--sp-xs) rounded-sm outline-none",
     "hover:[&_svg]:animate-rotate focus-visible:[&_svg]:animate-rotate",
   ],
 });
@@ -84,7 +84,7 @@ export const sheetCloseButton = tv({
     data-slot="sheet-close"
   >
     <slot name="icon">
-      <X aria-hidden="true" class="size-8" />
+      <X aria-hidden="true" class="size-(--sp-md)" />
     </slot>
     <span class="sr-only">Close</span>
   </button>
