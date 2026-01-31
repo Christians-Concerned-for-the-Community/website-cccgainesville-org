@@ -166,7 +166,8 @@ const split = doDropdown? maxItems - 1 : items.length;
           <ul class="flex flex-col h-full mx-(--sp-sm) mb-(--sp-sm) mt-[calc(var(--sp-md)+var(--sp-sm))]">
             {/* List of nav links. */}
             <div class:list={[
-              "flex flex-col justify-center grow gap-(--sp-md) text-lg",
+              "flex flex-col justify-center grow",
+              "text-lg gap-(--sp-2xs) [&_a]:py-(--sp-2xs) [&_a]:px-(--sp-sm)",
               "mt-(--sp-xs) pt-(--sp-xs) border-t-2 border-border"
             ]}>
               <li>
