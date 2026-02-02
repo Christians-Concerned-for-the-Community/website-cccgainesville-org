@@ -88,14 +88,13 @@ const split = doDropdown? maxItems - 1 : items.length;
     
     <div class="shrink-0 select-none">
       {/* Full menu: visible when width >= fullnav */}
-      <ul class="hidden fullnav:flex
-        [&_li]:flex [&_li]:items-center">
+      <ul class="hidden fullnav:flex">
       
       { /* Main text links along the top. */
         items.slice(0,split).map((item) => (
         <li>
           <Link href={item.href} variant="nav"
-            class="py-(--sp-2xs) px-(--sp-xs)"
+            class="py-(--sp-2xs) px-(--sp-xs) flex items-center"
           >
             {item.label}
           </Link>
@@ -107,7 +106,7 @@ const split = doDropdown? maxItems - 1 : items.length;
           <li>
             <NavDropdown
               align="end"
-              class="p-(--sp-sm) --space-y-(--sp-sm)"
+              class="py-(--sp-3xs)"
 
               variant="ghost" size="lg"
               buttonClass={"text-md px-(--sp-xs)! mx-0! font-normal! " +
@@ -122,7 +121,7 @@ const split = doDropdown? maxItems - 1 : items.length;
 
               {items.slice(split).map((item) => (
                 <NavDropdownItem>
-                  <Link href={item.href} variant="nav" class="text-lg">
+                  <Link href={item.href} variant="nav" class="text-md">
                     {item.label}
                   </Link>
                 </NavDropdownItem>

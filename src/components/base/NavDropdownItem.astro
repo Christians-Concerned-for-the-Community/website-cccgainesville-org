@@ -1,13 +1,19 @@
 ---
 import type { HTMLAttributes } from "astro/types";
 
+import { twMerge } from 'tailwind-merge'
+
 interface Props extends HTMLAttributes<"li"> {}
 
 const {
+  class: className,
   ...rest
 } = Astro.props;
 ---
 
-<li {...rest}>
+<li {...rest} class={twMerge(
+  "[&_a]:justify-start [&_a]:px-(--sp-sm) [&_a]:py-(--sp-3xs)",
+  className
+)}>
   <slot />
 </li>
