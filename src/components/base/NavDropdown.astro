@@ -1,0 +1,161 @@
+---
+import { countAddAndGet } from './counter.ts'
+
+import type { HTMLAttributes } from "astro/types";
+import { tv, type VariantProps } from "tailwind-variants";
+import { Button } from '@/components/starwind/button'
+
+const idnum = countAddAndGet("NavDropdown");
+const menuId = `nav-dropdown-menu-${idnum}`;
+
+type Props =
+  Omit<HTMLAttributes<"ul">, "id"> &
+  Pick<VariantProps<typeof Button>, "variant" | "size" | "animation"> &
+{
+  /**
+   * Alignment of the dropdown menu with respect to the trigger button.
+   * @default start
+   */
+  align?: "start" | "center" | "end";
+
+  /**
+   * Additional classes to apply to the dropdown trigger button.
+   */
+  buttonClass?: string
+}
+
+export const menu = tv({
+  base: [
+    "absolute z-50 min-w-36 mt-(--sp-3xs) p-(--sp-3xs)",
+    "bg-popover text-popover-foreground shadow-md border rounded-md",
+    "overflow-x-hidden overflow-y-auto transition-discrete duration-350",
+    "aria-[hidden=false]:visible aria-[hidden=true]:invisible",
+    "aria-[hidden=false]:animate-in aria-[hidden=true]:animate-out aria-[hidden=true]:fill-mode-forwards",
+    "fade-in motion-safe:zoom-in-95 motion-safe:slide-in-from-top-4",
+    "fade-out motion-safe:zoom-out-95 motion-safe:slide-out-to-top-4",
+  ],
+  variants: {
+    align: {
+      start: "motion-safe:slide-in-from-left-1 motion-safe:slide-out-to-left-1 left-0",
+      center: "motion-safe:-translate-x-1/2 left-1/2",
+      end: "motion-safe:slide-in-from-right-1 motion-safe:slide-out-to-right-1 right-0",
+    },
+  },
+  defaultVariants: {
+    align: "start",
+  },
+})
+
+const {
+  class: className,
+  align = "start",
+  variant = "ghost",
+  size = "lg",
+  buttonClass,
+  ...rest
+} = Astro.props;
+---
+
+<div class="relative base-navdropdown">
+
+  <Button type="button"
+    aria-haspopup="true"
+    aria-expanded="false"
+    aria-controls={menuId}
+    variant={variant}
+    size={size}
+    class:list={["peer cursor-pointer", buttonClass]}
+  >
+    <slot name="button"/>
+  </Button>
+
+  <ul id={menuId}
+    aria-hidden="true"
+    class={menu({ align, class: className })}
+    {...rest}
+  >
+    <slot />
+  </ul>
+</div>
+
+<script>
+{
+  class NavDropdownHandler {
+    private button: HTMLButtonElement | null;
+    private menu:   HTMLElement | null;
+    private firstLink: HTMLElement | null | undefined;
+
+    constructor(container: HTMLElement) {
+      this.button = container.querySelector(':scope > button'); 
+      this.menu   = container.querySelector(':scope > ul');
+      this.firstLink = this.menu?.querySelector('a');
+
+      if (!this.button || !this.menu) return;
+
+      // Handle button mouse click / touch / keyboard activation.
+      this.button.addEventListener("click", (e) => {
+        this.toggleMenu(e.detail === 0);
+        e.stopPropagation(); // prevents the global click listener below from triggering
+      }, {passive: true});
+
+      // Close menu when a click happens outside of it.
+      document.addEventListener("click", (e) => {
+        if (this.menu?.ariaHidden === 'false'
+          && !this.menu.contains(e.target as Node)) {
+            this.closeMenu(false);
+        }
+      });
+
+      // Handle closing the menu via the keyboard. Only works while you
+      // have keyboard focus inside the menu.
+      this.menu.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          this.closeMenu(true);
+          e.preventDefault();
+          // If we have nested dropdowns, only close the level we're currently in,
+          // not all levels.
+          e.stopPropagation();
+        }
+      });
+    }
+
+    private openMenu(fromKeyboard: boolean) {
+      if (!this.menu || !this.button || this.menu.ariaHidden === 'false') {
+        return;
+      }
+      this.menu.ariaHidden = 'false';
+      this.button.ariaExpanded = 'true';
+      // Focus on first link inside the dropdown.
+      // @ts-expect-error (focusVisible is experimental, but harmless if unsupported
+      this.firstLink?.focus({ focusVisible: fromKeyboard });
+    }
+
+    private closeMenu(fromKeyboard: boolean) {
+      if (!this.menu || !this.button || this.menu.ariaHidden === 'true') {
+        return;
+      }
+      this.menu.ariaHidden = 'true';
+      this.button.ariaExpanded = 'false';
+      // @ts-expect-error (focusVisible is experimental, but harmless if unsupported
+      this.button.focus({ focusVisible: fromKeyboard });
+    }
+
+    private toggleMenu(fromKeyboard: boolean) {
+      (this.menu?.ariaHidden === 'true')?
+        this.openMenu(fromKeyboard) : this.closeMenu(fromKeyboard);
+    }
+  }
+
+  const navDropdownInstances = new WeakMap<HTMLElement, NavDropdownHandler>();
+  const initNavDropdowns = () => {
+    document.querySelectorAll(".base-navdropdown").forEach((item) => {
+      if (item instanceof HTMLElement && !navDropdownInstances.has(item)) {
+        navDropdownInstances.set(item, new NavDropdownHandler(item));
+      }
+    });
+  }
+
+  initNavDropdowns();
+  document.addEventListener("astro:after-swap", initNavDropdowns);
+}
+</script>
