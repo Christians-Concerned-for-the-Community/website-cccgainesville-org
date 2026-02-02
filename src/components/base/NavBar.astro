@@ -86,7 +86,7 @@ const split = doDropdown? maxItems - 1 : items.length;
     </div>
 
     
-    <div class="shrink-0 select-none">
+    <div class="shrink-0">
       {/* Full menu: visible when width >= fullnav */}
       <ul class="hidden fullnav:flex">
       
@@ -169,7 +169,7 @@ const split = doDropdown? maxItems - 1 : items.length;
       {/* Mobile nav menu that opens when menu button is clicked. */}
       <Sheet id="mobile-nav">
         <SheetContent side="right">
-          <h2 class="text-2xl font-medium absolute top-(--sp-xs) left-(--sp-sm) select-none">
+          <h2 class="text-2xl font-medium absolute top-(--sp-xs) left-(--sp-sm)">
             Menu
           </h2>
           <ul class="flex flex-col h-full mx-(--sp-sm) mb-(--sp-sm) mt-[calc(var(--sp-md)+var(--sp-sm))]">
