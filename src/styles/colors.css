@@ -99,8 +99,8 @@
     var(--tw-light, var(--color-primary-100))
     var(--tw-dark,  var(--color-primary-500));
   --color-primary-foreground:
-    var(--tw-light, hsl(214.3, 30.4%, 4.5%))
-    var(--tw-dark,  hsl(0 0% 100%));
+    var(--tw-light, var(--color-neutral-900))
+    var(--tw-dark,  var(--color-neutral-100));
   --color-primary-accent:
     var(--tw-light, var(--color-primary-500))
     var(--tw-dark,  var(--color-primary-100));
