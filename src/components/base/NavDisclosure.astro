@@ -5,21 +5,21 @@ import type { HTMLAttributes } from "astro/types";
 import { tv, type VariantProps } from "tailwind-variants";
 import { Button } from '@/components/starwind/button'
 
-const idnum = countAddAndGet("NavDropdown");
-const menuId = `nav-dropdown-menu-${idnum}`;
+const idnum = countAddAndGet("NavDisclosure");
+const menuId = `nav-disclosure-${idnum}`;
 
 type Props =
   Omit<HTMLAttributes<"ul">, "id"> &
   Pick<VariantProps<typeof Button>, "variant" | "size" | "animation"> &
 {
   /**
-   * Alignment of the dropdown menu with respect to the trigger button.
+   * Alignment of the disclosure with respect to the trigger button.
    * @default start
    */
   align?: "start" | "center" | "end";
 
   /**
-   * Additional classes to apply to the dropdown trigger button.
+   * Additional classes to apply to the trigger button.
    */
   buttonClass?: string
 }
@@ -56,7 +56,7 @@ const {
 } = Astro.props;
 ---
 
-<div class="relative base-navdropdown">
+<div class="relative base-navdisclosure">
 
   <Button type="button"
     aria-haspopup="true"
@@ -80,7 +80,7 @@ const {
 
 <script>
 {
-  class NavDropdownHandler {
+  class NavDisclosureHandler {
     private button: HTMLButtonElement | null;
     private menu:   HTMLElement | null;
     private firstLink: HTMLElement | null | undefined;
@@ -112,7 +112,7 @@ const {
         if (e.key === 'Escape') {
           this.closeMenu(true);
           e.preventDefault();
-          // If we have nested dropdowns, only close the level we're currently in,
+          // If we have nested disclosures, only close the level we're currently in,
           // not all levels.
           e.stopPropagation();
         }
@@ -125,7 +125,7 @@ const {
       }
       this.menu.ariaHidden = 'false';
       this.button.ariaExpanded = 'true';
-      // Focus on first link inside the dropdown.
+      // Focus on first link inside the disclosure.
       // @ts-expect-error (focusVisible is experimental, but harmless if unsupported
       this.firstLink?.focus({ focusVisible: fromKeyboard });
     }
@@ -146,16 +146,16 @@ const {
     }
   }
 
-  const navDropdownInstances = new WeakMap<HTMLElement, NavDropdownHandler>();
-  const initNavDropdowns = () => {
-    document.querySelectorAll(".base-navdropdown").forEach((item) => {
-      if (item instanceof HTMLElement && !navDropdownInstances.has(item)) {
-        navDropdownInstances.set(item, new NavDropdownHandler(item));
+  const navDisclosureInstances = new WeakMap<HTMLElement, NavDisclosureHandler>();
+  const initNavDisclosures = () => {
+    document.querySelectorAll(".base-navdisclosure").forEach((item) => {
+      if (item instanceof HTMLElement && !navDisclosureInstances.has(item)) {
+        navDisclosureInstances.set(item, new NavDisclosureHandler(item));
       }
     });
   }
 
-  initNavDropdowns();
-  document.addEventListener("astro:after-swap", initNavDropdowns);
+  initNavDisclosures();
+  document.addEventListener("astro:after-swap", initNavDisclosures);
 }
 </script>
