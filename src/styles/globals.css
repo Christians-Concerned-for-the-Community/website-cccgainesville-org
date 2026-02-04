@@ -54,12 +54,6 @@
 
   html {
     /*
-      Reserve space for scrollbar. This prevents distracting layout shifts when moving
-      between pages with/without scrollbars.
-    */
-    /*scrollbar-gutter: stable;*/
-
-    /*
       Use animated scrolls when clicking in-page links, instead of sudden jumps.
     */
     scroll-behavior: smooth;
