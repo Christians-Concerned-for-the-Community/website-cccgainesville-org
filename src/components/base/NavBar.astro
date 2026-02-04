@@ -146,7 +146,7 @@ const split = doDisclosure? maxItems - 1 : items.length;
         {/* Add dark mode toggle to the icon tray. */}
           <li class="flex shrink-0 items-center">
             <ThemeToggle size="icon-xs" ariaLabel="Toggle dark mode"
-              class:list={["[&_svg]:size-7 cursor-pointer",
+              class:list={["[&_svg]:size-7",
                 "motion-safe:hover:[&_svg]:animate-rotate",
                 "motion-safe:focus-visible:[&_svg]:animate-rotate"]}
             />
@@ -207,7 +207,7 @@ const split = doDisclosure? maxItems - 1 : items.length;
               {/* Add dark mode toggle to the icon tray. */}
               <li class="flex shrink-0 items-center">
                 <ThemeToggle ariaLabel="Toggle dark mode"
-                  class:list={["[&_svg]:size-8! cursor-pointer",
+                  class:list={["[&_svg]:size-8!",
                     "motion-safe:hover:[&_svg]:animate-rotate",
                     "motion-safe:focus-visible:[&_svg]:animate-rotate"]}/>
               </li>

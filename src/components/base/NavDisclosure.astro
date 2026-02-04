@@ -1,12 +1,7 @@
 ---
-import { countAddAndGet } from './counter.ts'
-
 import type { HTMLAttributes } from "astro/types";
 import { tv, type VariantProps } from "tailwind-variants";
 import { Button } from '@/components/starwind/button'
-
-const idnum = countAddAndGet("NavDisclosure");
-const menuId = `nav-disclosure-${idnum}`;
 
 type Props =
   Omit<HTMLAttributes<"ul">, "id"> &
@@ -61,15 +56,14 @@ const {
   <Button type="button"
     aria-haspopup="true"
     aria-expanded="false"
-    aria-controls={menuId}
     variant={variant}
     size={size}
-    class:list={["peer cursor-pointer", buttonClass]}
+    class:list={["peer", buttonClass]}
   >
     <slot name="button"/>
   </Button>
 
-  <ul id={menuId}
+  <ul
     aria-hidden="true"
     class={menu({ align, class: className })}
     {...rest}

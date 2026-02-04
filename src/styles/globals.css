@@ -17,7 +17,7 @@
  *   iPhone SE: 375w x 667h
  *   iPhone 14 Pro Max: 430w x 932h
  *   Samsung Galaxy S8+: 360w x 740h
- *   Samsun Galaxy S20 Ultra: 412w x 915h
+ *   Samsung Galaxy S20 Ultra: 412w x 915h
  */
 /* sm-tall: height >= 750 px, width < 640 px */
 @custom-variant sm-tall (@media (height >= 46.875rem) and (width < 40rem));
@@ -73,6 +73,21 @@
   *:focus-visible {
     outline: 0.125rem dashed var(--color-bw) !important;
     box-shadow: none !important;
+  }
+
+  /*
+    Default to the "pointer finger on hand" cursor for buttons.
+
+    Technically, the pointer cursor is only supposed to be used for links.
+
+    Practically speaking though, users interpret this cursor as meaning
+    "clickable", and are likely to not realize that buttons are clickable if
+    you use the default cursor. Especially in modern design where buttons are
+    flat.
+   */
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
   }
 }
 
