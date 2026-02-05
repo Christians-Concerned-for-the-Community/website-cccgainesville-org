@@ -1,6 +1,6 @@
 ---
 import '@/styles/globals.css'
-import { SiteMeta, NavBar } from '@/components/base'
+import { SiteMeta, Nav } from '@/components/base'
 import Footer from '@/components/Footer.astro'
 
 // Used for preloading.
@@ -57,7 +57,7 @@ const {
     />
   </head>
   <body class="min-h-dvh flex flex-col overflow-x-clip">
-    <NavBar />
+    <Nav />
     <main id="main-content" class:list={["grow shrink-0 basis-auto", className]}>
       <slot />
     </main>
