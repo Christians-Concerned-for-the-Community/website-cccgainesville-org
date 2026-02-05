@@ -6,7 +6,7 @@ export const toggle = tv({
   base: [
     "inline-flex items-center justify-center gap-2 rounded-md font-medium whitespace-nowrap",
     "disabled:pointer-events-none disabled:opacity-50",
-    "data-[state=on]:bg-accent data-[state=on]:text-accent-foreground",
+    "aria-pressed:bg-accent aria-pressed:text-accent-foreground",
     "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
     "focus-visible:border-outline focus-visible:ring-outline/50 focus-visible:ring-3",
     "transition-colors outline-none",
@@ -55,7 +55,6 @@ const dataState = defaultPressed ? "on" : "off";
   type="button"
   class={toggle({ variant, size, class: `starwind-toggle ${className || ""}` })}
   data-slot="toggle"
-  data-state={dataState}
   data-sync-group={syncGroup}
   aria-pressed={defaultPressed}
   {...rest}
@@ -125,10 +124,7 @@ const dataState = defaultPressed ? "on" : "off";
     }
 
     private updateState(pressed: boolean, dispatchSync: boolean): void {
-      const newState = pressed ? "on" : "off";
-
       this.toggle.setAttribute("aria-pressed", pressed.toString());
-      this.toggle.setAttribute("data-state", newState);
 
       // Dispatch change event (always fired for user to listen to)
       const changeEvent = new CustomEvent<ToggleChangeEvent["detail"]>("starwind-toggle:change", {
