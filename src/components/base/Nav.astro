@@ -21,7 +21,7 @@ export interface NavData {
   darkModeToggle?: boolean,
   disclosureLabel?: string,
   links: NavLink[],
-  icons: NavIcon[],
+  icons?: NavIcon[],
 }
 
 
@@ -77,6 +77,8 @@ nav.disclosureLabel ??= 'More';
 // to the end.
 const doDisclosure = (nav.links.length > nav.maxVisibleLinks);
 const split = doDisclosure? nav.maxVisibleLinks - 1 : nav.links.length;
+
+const needIconTray = nav.darkModeToggle || nav.icons?.length;
 ---
 
 <header class:list={[
@@ -157,27 +159,33 @@ const split = doDisclosure? nav.maxVisibleLinks - 1 : nav.links.length;
         )
       }
 
+        {needIconTray && (        
         <div class="flex space-x-(--sp-xs) pl-(--sp-xs) border-l-2 border-border">
-        { /* Add social icons to the icon tray. */
-          nav.icons.map( (icon) => (
-            <li class="flex shrink-0 items-center">
-              <Link href={icon.href} variant="icon-xs" class="active:bg-muted-dark">
-                <span class="sr-only">{icon.alt}</span>
-                <Icon name={icon.file} aria-hidden="true" size={28}/>
-              </Link>
-            </li>
-          ))
-        }
+        
+          { /* Add social icons to the icon tray. */
+            nav.icons?.map( (icon) => (
+              <li class="flex shrink-0 items-center">
+                <Link href={icon.href} variant="icon-xs" class="active:bg-muted-dark">
+                  <span class="sr-only">{icon.alt}</span>
+                  <Icon name={icon.file} aria-hidden="true" size={28}/>
+                </Link>
+              </li>
+            ))
+          }
 
-        {/* Add dark mode toggle to the icon tray. */}
-          <li class="flex shrink-0 items-center">
-            <ThemeToggle size="icon-xs" ariaLabel="Toggle dark mode"
-              class:list={["[&_svg]:size-7",
-                "motion-safe:hover:[&_svg]:animate-rotate",
-                "motion-safe:focus-visible:[&_svg]:animate-rotate"]}
-            />
-          </li>
+          {/* Add dark mode toggle to the icon tray. */
+            nav.darkModeToggle && (
+              <li class="flex shrink-0 items-center">
+                <ThemeToggle size="icon-xs" ariaLabel="Toggle dark mode"
+                  class:list={["[&_svg]:size-7",
+                    "motion-safe:hover:[&_svg]:animate-rotate",
+                    "motion-safe:focus-visible:[&_svg]:animate-rotate"]}
+                />
+              </li>
+            )
+          }
         </div>
+        )}
       </ul>
 
       {/* Menu button: visible when width < fullnav */}
@@ -220,25 +228,30 @@ const split = doDisclosure? nav.maxVisibleLinks - 1 : nav.links.length;
               ))}
             </div>
 
-            {/* Icon tray */}
-            <div class="flex flex-row shrink-0 justify-around mt-(--sp-xs) pt-(--sp-xs) border-t-2 border-border">
-              {/* Add social icons to the icon tray. */
-              nav.icons.map( (icon) => (
-                <li>
-                  <Link href={icon.href} variant="icon" class="active:bg-muted-dark">
-                    <span class="sr-only">{icon.alt}</span>
-                    <Icon name={icon.file} aria-hidden="true" size={32}/>
-                  </Link>
+            {/* Icon tray */
+              needIconTray && (
+            
+              <div class="flex flex-row shrink-0 justify-around mt-(--sp-xs) pt-(--sp-xs) border-t-2 border-border">
+                {/* Add social icons to the icon tray. */
+                nav.icons?.map( (icon) => (
+                  <li>
+                    <Link href={icon.href} variant="icon" class="active:bg-muted-dark">
+                      <span class="sr-only">{icon.alt}</span>
+                      <Icon name={icon.file} aria-hidden="true" size={32}/>
+                    </Link>
+                  </li>
+                ))}
+                {/* Add dark mode toggle to the icon tray. */
+                nav.darkModeToggle && (
+                <li class="flex shrink-0 items-center">
+                  <ThemeToggle ariaLabel="Toggle dark mode"
+                    class:list={["[&_svg]:size-8!",
+                      "motion-safe:hover:[&_svg]:animate-rotate",
+                      "motion-safe:focus-visible:[&_svg]:animate-rotate"]}/>
                 </li>
-              ))}
-              {/* Add dark mode toggle to the icon tray. */}
-              <li class="flex shrink-0 items-center">
-                <ThemeToggle ariaLabel="Toggle dark mode"
-                  class:list={["[&_svg]:size-8!",
-                    "motion-safe:hover:[&_svg]:animate-rotate",
-                    "motion-safe:focus-visible:[&_svg]:animate-rotate"]}/>
-              </li>
-            </div>
+                )}
+              </div>
+            )}
           </ul>
         </SheetContent>
       </Sheet>
