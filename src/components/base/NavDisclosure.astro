@@ -1,4 +1,36 @@
 ---
+/**
+ * A disclosure (hidden contents revealed by a button trigger), specialized
+ * for navigation menus.
+ * 
+ * This is not a flyout menu that reveals itself on hover/focus - those are
+ * bad for accessibility, because they require tabbing through submenus to
+ * traverse the entire nav. Instead, you have to activate the trigger button with
+ * enter/space to expand this disclosure, before you can tab down into it.
+ * 
+ * Note that there's a lot of conflicting advice online about how to best
+ * implement nav menus with regards to accessibility details. This component
+ * is loosely based off of the behavior of the Example Disclosure Navigation Menu
+ * from the APG here:
+ *   https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/examples/disclosure-navigation/#javascriptandcsssourcecode
+ * 
+ * I intentionally did not implement the optional arrow key navigation - this
+ * component only uses tab and shift-tab to move around, default browser button
+ * behavior (enter/space) to activate triggers, and escape or tabbing out to
+ * close menus.
+ * 
+ * Most advice I could find does not recommend setting the "menu" and "menuitem"
+ * roles for basic nav. Generally, menu/menu-item roles and the associated
+ * keyboard semantics are really intended for full desktop-style menus (e.g.,
+ * the menu bar in Google Docs), not website nav.
+ * 
+ * aria-controls was intentionally left out - while it's used in the example,
+ * this attribute isn't really supported in modern screen readers, because in
+ * practice it just added noise without providing any useful additional info.
+ * This is especially true when the disclosure contents immediately follow the
+ * triggering button in the DOM, as in this component.
+ */
+
 import type { HTMLAttributes } from "astro/types";
 import { tv, type VariantProps } from "tailwind-variants";
 import { twMerge } from 'tailwind-merge'
@@ -77,61 +109,60 @@ const {
   class NavDisclosureHandler {
     private button: HTMLButtonElement | null;
     private menu:   HTMLElement | null;
-    private firstLink: HTMLElement | null | undefined;
 
     constructor(container: HTMLElement) {
       this.button = container.querySelector(':scope > button'); 
       this.menu   = container.querySelector(':scope > ul');
-      this.firstLink = this.menu?.querySelector('a');
 
       if (!this.button || !this.menu) return;
 
       // Handle button mouse click / touch / keyboard activation.
       this.button.addEventListener("click", (e) => {
-        this.toggleMenu(e.detail === 0);
+        (this.button?.ariaExpanded === 'false')?
+          this.button.ariaExpanded = 'true' : this.closeMenu();
         e.stopPropagation(); // prevents the global click listener below from triggering
       }, {passive: true});
 
-      // Close menu when a click happens outside of it.
-      document.addEventListener("click", (e) => {
-        if (this.button?.ariaExpanded === 'true'
-          && !this.menu?.contains(e.target as Node)) {
-            this.closeMenu(false);
-        }
-      });
-
-      // Handle closing the menu via the keyboard. Only works while you
-      // have keyboard focus inside the menu.
-      this.menu.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-          this.closeMenu(true);
+      this.button.addEventListener('keydown', (e: KeyboardEvent) => {
+        if (this.isOpen() && e.key === 'Escape') {
+          this.closeMenu();
+          // Prevent any default browser behavior for escape key (such as clearing focus).
           e.preventDefault();
           // If we have nested disclosures, only close the level we're currently in,
           // not all levels.
           e.stopPropagation();
         }
       });
+
+      // Handle closing the menu via the keyboard. Only works while you
+      // have keyboard focus inside the menu.
+      this.menu.addEventListener('keydown', (e : KeyboardEvent) => {
+        if (this.isOpen() && e.key === 'Escape') {
+          this.closeMenu();
+          // When closing via escape, focus back on the button that opens the menu.
+          // @ts-expect-error (focusVisible is experimental, but harmless if unsupported
+          this.button.focus({ focusVisible: true});
+          // Prevent any default browser behavior for escape key (such as clearing focus).
+          e.preventDefault();
+          // If we have nested disclosures, only close the level we're currently in,
+          // not all levels.
+          e.stopPropagation();
+        }
+      });
+
+      // Close the menu when focus has left the disclosure container (trigger & contents).
+      // This could happen by tabbing out with the keyboard, or by clicking outside
+      // the disclosure.
+      container.addEventListener('focusout', (e: FocusEvent) => {
+        if (this.isOpen() && !container.contains(e.relatedTarget as Node)) {
+          this.closeMenu();
+        }
+      }, {passive: true});
     }
 
-    private openMenu(fromKeyboard: boolean) {
-      if (this.button?.ariaExpanded === 'false') {
-        this.button.ariaExpanded = 'true';
-      }
-    }
+    private isOpen() { return (this.button?.ariaExpanded === 'true'); }
 
-    private closeMenu(fromKeyboard: boolean) {
-      if (this.button?.ariaExpanded === 'true') {
-        this.button.ariaExpanded = 'false';
-        // On menu close, focus back on the button that opens the menu.
-        // @ts-expect-error (focusVisible is experimental, but harmless if unsupported
-        this.button.focus({ focusVisible: fromKeyboard });
-      }
-    }
-
-    private toggleMenu(fromKeyboard: boolean) {
-      (this.button?.ariaExpanded === 'false')?
-        this.openMenu(fromKeyboard) : this.closeMenu(fromKeyboard);
-    }
+    private closeMenu() { if (this.button) this.button.ariaExpanded = 'false'; }
   }
 
   const navDisclosureInstances = new WeakMap<HTMLElement, NavDisclosureHandler>();
