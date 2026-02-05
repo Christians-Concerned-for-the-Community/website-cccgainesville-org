@@ -5,6 +5,7 @@ import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
 
 import icon from "astro-icon";
+import minify from 'astro-minify-html-swc'
 
 const abspath = (path) => {
   return fileURLToPath(new URL(path, import.meta.url))
@@ -12,15 +13,6 @@ const abspath = (path) => {
 
 // Base Vite config
 const viteConfig = {
-  css: {
-    preprocessorOptions: {
-      scss: {
-        logger: {
-          warn: () => {},
-        },
-      },
-    },
-  },
   plugins: [tailwindcss()],
   resolve: {
     alias: {
@@ -38,7 +30,7 @@ const viteConfig = {
 // Note: site can be overriden by using the "--site" flag when building.
 //       (we do this for staging builds)
 export default defineConfig({
-    prefetch: {
+  prefetch: {
     prefetchAll: true,
   },
   security: {
@@ -76,10 +68,10 @@ export default defineConfig({
     icon({
       iconDir: "src/assets/icons",
     }),
+    minify(),
   ],
   vite: viteConfig,
   image: {
-        plugins: [tailwindcss()],
     // Enable responsive images:
     layout: 'constrained',
     responsiveStyles: true,
