@@ -74,7 +74,7 @@ const split = doDisclosure? maxItems - 1 : items.length;
     
     {/* Logo / Home Link */}
     <div class="flex shrink-2 place-items-center mr-(--sp-lg)">
-      <a href="/" class="hover:bg-muted p-1">
+      <a href="/" class="hover:bg-muted active:bg-muted-dark p-1">
         <Icon name="logo-wide-light" aria-hidden="true" width="100%" height="100%"
           class="block dark:hidden max-w-76 aspect-488/120"
         />
@@ -109,10 +109,11 @@ const split = doDisclosure? maxItems - 1 : items.length;
               class="py-(--sp-3xs)"
 
               variant="ghost" size="lg"
-              buttonClass={"text-md px-(--sp-xs)! mx-0! font-normal! " +
-                "[&_svg]:transition-transform [&_svg]:duration-350 " +
-                "hover:motion-safe:[&_svg]:animate-boop " +
-                "aria-expanded:[&_svg]:-scale-y-100"}
+              buttonClass={["text-md px-(--sp-xs)! mx-0! font-normal!",
+                "[&_svg]:transition-transform [&_svg]:duration-350",
+                "aria-expanded:bg-muted-dark hover:aria-expanded:bg-muted-dark",
+                "hover:motion-safe:[&_svg]:animate-boop",
+                "aria-expanded:[&_svg]:-scale-y-100"]}
             >
               <Fragment slot="button">
                 More
@@ -135,7 +136,7 @@ const split = doDisclosure? maxItems - 1 : items.length;
         { /* Add social icons to the icon tray. */
           icons.map( (icon) => (
             <li class="flex shrink-0 items-center">
-              <Link href={icon.href} variant="icon-xs">
+              <Link href={icon.href} variant="icon-xs" class="active:bg-muted-dark">
                 <span class="sr-only">{icon.alt}</span>
                 <Icon name={icon.name} aria-hidden="true" size={28}/>
               </Link>
@@ -199,7 +200,8 @@ const split = doDisclosure? maxItems - 1 : items.length;
               {/* Add social icons to the icon tray. */
               icons.map( (icon) => (
                 <li>
-                  <Link href={icon.href} aria-label={icon.alt} variant="icon">
+                  <Link href={icon.href} variant="icon" class="active:bg-muted-dark">
+                    <span class="sr-only">{icon.alt}</span>
                     <Icon name={icon.name} aria-hidden="true" size={32}/>
                   </Link>
                 </li>

@@ -116,6 +116,9 @@
   --color-muted:
     var(--tw-light, var(--color-neutral-300))
     var(--tw-dark,  var(--color-neutral-800));
+  --color-muted-dark:
+    var(--tw-light, var(--color-neutral-400))
+    var(--tw-dark,  var(--color-neutral-850));
   --color-muted-foreground: 
     var(--tw-light, var(--color-neutral-600))
     var(--tw-dark,  var(--color-neutral-400));

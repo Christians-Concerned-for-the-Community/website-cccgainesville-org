@@ -1,6 +1,7 @@
 ---
 import type { HTMLAttributes } from "astro/types";
 import { tv, type VariantProps } from "tailwind-variants";
+import { twMerge } from 'tailwind-merge'
 import { Button } from '@/components/starwind/button'
 
 type Props =
@@ -16,7 +17,7 @@ type Props =
   /**
    * Additional classes to apply to the trigger button.
    */
-  buttonClass?: string
+  buttonClass?: string | string[]
 }
 
 export const menu = tv({
@@ -24,8 +25,8 @@ export const menu = tv({
     "absolute z-50 min-w-36 mt-(--sp-3xs) p-(--sp-3xs) flex flex-col",
     "bg-popover text-popover-foreground shadow-md border rounded-md",
     "overflow-x-hidden overflow-y-auto transition-discrete duration-350",
-    "aria-[hidden=false]:visible aria-[hidden=true]:invisible",
-    "aria-[hidden=false]:animate-in aria-[hidden=true]:animate-out aria-[hidden=true]:fill-mode-forwards",
+    "peer-aria-[expanded=true]:visible peer-aria-[expanded=false]:invisible",
+    "peer-aria-[expanded=true]:animate-in peer-aria-[expanded=false]:animate-out peer-aria-[expanded=false]:fill-mode-forwards",
     "fade-in motion-safe:zoom-in-95 motion-safe:slide-in-from-top-4",
     "fade-out motion-safe:zoom-out-95 motion-safe:slide-out-to-top-4",
   ],
@@ -58,13 +59,12 @@ const {
     aria-expanded="false"
     variant={variant}
     size={size}
-    class:list={["peer", buttonClass]}
+    class={twMerge("peer", buttonClass)}
   >
     <slot name="button"/>
   </Button>
 
   <ul
-    aria-hidden="true"
     class={menu({ align, class: className })}
     {...rest}
   >
@@ -94,8 +94,8 @@ const {
 
       // Close menu when a click happens outside of it.
       document.addEventListener("click", (e) => {
-        if (this.menu?.ariaHidden === 'false'
-          && !this.menu.contains(e.target as Node)) {
+        if (this.button?.ariaExpanded === 'true'
+          && !this.menu?.contains(e.target as Node)) {
             this.closeMenu(false);
         }
       });
@@ -114,28 +114,22 @@ const {
     }
 
     private openMenu(fromKeyboard: boolean) {
-      if (!this.menu || !this.button || this.menu.ariaHidden === 'false') {
-        return;
+      if (this.button?.ariaExpanded === 'false') {
+        this.button.ariaExpanded = 'true';
       }
-      this.menu.ariaHidden = 'false';
-      this.button.ariaExpanded = 'true';
-      // Focus on first link inside the disclosure.
-      // @ts-expect-error (focusVisible is experimental, but harmless if unsupported
-      this.firstLink?.focus({ focusVisible: fromKeyboard });
     }
 
     private closeMenu(fromKeyboard: boolean) {
-      if (!this.menu || !this.button || this.menu.ariaHidden === 'true') {
-        return;
+      if (this.button?.ariaExpanded === 'true') {
+        this.button.ariaExpanded = 'false';
+        // On menu close, focus back on the button that opens the menu.
+        // @ts-expect-error (focusVisible is experimental, but harmless if unsupported
+        this.button.focus({ focusVisible: fromKeyboard });
       }
-      this.menu.ariaHidden = 'true';
-      this.button.ariaExpanded = 'false';
-      // @ts-expect-error (focusVisible is experimental, but harmless if unsupported
-      this.button.focus({ focusVisible: fromKeyboard });
     }
 
     private toggleMenu(fromKeyboard: boolean) {
-      (this.menu?.ariaHidden === 'true')?
+      (this.button?.ariaExpanded === 'false')?
         this.openMenu(fromKeyboard) : this.closeMenu(fromKeyboard);
     }
   }
