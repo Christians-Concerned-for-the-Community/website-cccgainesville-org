@@ -21,10 +21,11 @@ interface Props extends HTMLAttributes<"a">, VariantProps<typeof link> {
   href: string
 
   /**
-   * Screen-reader text for the link.
+   * Screen-reader text override for the link.
    * 
    * Only use this if the link text is too generic ("read more", etc), or if
-   * the link is icon-only.
+   * the link is icon-only. Even for the icon-only case, you should prefer to
+   * use a span marked "sr-only" instead of aria-label.
    * 
    * Don't add descriptive text here to indicate that the link opens in a new tab,
    * that will be automatically appended for you when you set openNew = true.
@@ -74,17 +75,9 @@ const {
   ...htmlAttrs
 } = Astro.props;
 
-
-const thisPage = Astro.url.pathname;
-const removeSlash = (path: string) => {
-  // The regex /\\/+$/ matches one or more (\\/+) forward slashes at the end ($)
-  return path.replace("/\\/+$/", "");
-};
-const pathEq = (path1: string, path2: string) => {
-  return removeSlash(path1) === removeSlash(path2);
-}
-
-const isCurrentPage = variant==="nav" && pathEq(thisPage, href);
+const url = new URL(href, Astro.url);
+const isExternal = url.host !== Astro.url.host;
+const isCurrentPage = variant==="nav" && url.href === Astro.url.href;
 
 let autoAttrs: Record<string,string> = {};
 if (openAsNew) {
@@ -92,6 +85,10 @@ if (openAsNew) {
 }
 if (ariaLabel) {
   autoAttrs["aria-label"] = ariaLabel;
+}
+if (isExternal) {
+  // Disable automatic prefetching for external links.
+  autoAttrs["data-astro-prefetch"] = "false";
 }
 if (isCurrentPage) {
   autoAttrs["aria-current"] = "page";
