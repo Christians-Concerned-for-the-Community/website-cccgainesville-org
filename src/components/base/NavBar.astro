@@ -7,51 +7,78 @@ import { ThemeToggle } from "@/components/starwind/theme-toggle";
 import { Sheet, SheetContent, SheetTrigger, } from "@/components/starwind/sheet";
 
 
+export interface NavLink {
+  label: string,
+  href: string
+}
+
+export interface NavIcon {
+  file: string,
+  href: string,
+  alt: string
+}
+
+export interface Nav {
+  maxVisibleLinks?: number,
+  darkModeToggle?: boolean,
+  disclosureLabel?: string,
+  links: NavLink[],
+  icons: NavIcon[],
+}
+
+
 /**
  * Header Component
  *
  * @description A component that displays the logo and navbar of the website
  */
 
-const maxItems = 4;
+const nav: Nav = {
+  maxVisibleLinks: 4,
+  links: [
+    { label: "Services",
+      href:  "/services/",
+    },
+    { label: "Give",
+      href:  "/give/",
+    },
+    { label: "Contact",
+      href:  "/contact/",
+    },
+    { label: "Volunteer",
+      href:  "/volunteer/",
+    },
+    { label: "News",
+      href:  "/news/"
+    },
+    { label: "Our Values",
+      href:  "/our-values/"
+    },
+    { label: "Documents",
+      href:  "/documents/"
+    },
+  ],
+  icons: [
+    { file: 'facebook',
+      href: "https://facebook.com/cccgainesville",
+      alt:  "Go to our Facebook page",
+    },
+    { file: 'instagram',
+      href: "https://instagram.com/cccmainoffice",
+      alt:  "Go to our Instagram page",
+    },
+  ]
+}
 
-const items = [
-  { label: "Services",
-    href:  "/services/",
-  },
-  { label: "Give",
-    href:  "/give/",
-  },
-  { label: "Contact",
-    href:  "/contact/",
-  },
-  { label: "Volunteer",
-    href:  "/volunteer/",
-  },
-  { label: "News",
-    href:  "/news/"
-  },
-  { label: "Our Values",
-    href:  "/our-values/"
-  },
-  { label: "Documents",
-    href:  "/documents/"
-  },
-];
+// Set default values for optional components.
+nav.maxVisibleLinks ??= 4;
+nav.darkModeToggle ??= true;
+nav.disclosureLabel ??= 'More';
 
-const icons = [
-  { name: 'facebook',
-    href: "https://facebook.com/cccgainesville",
-    alt:  "Go to our Facebook page",
-  },
-  { name: 'instagram',
-    href: "https://instagram.com/cccmainoffice",
-    alt:  "Go to our Instagram page",
-  },
-];
-
-const doDisclosure = (items.length > maxItems);
-const split = doDisclosure? maxItems - 1 : items.length;
+// If we have more links than we can visibly display, add a disclosure menu
+// to the end.
+const doDisclosure = (nav.links.length > nav.maxVisibleLinks);
+const split = doDisclosure? nav.maxVisibleLinks - 1 : nav.links.length;
 ---
 
 <header class:list={[
@@ -91,7 +118,7 @@ const split = doDisclosure? maxItems - 1 : items.length;
       <ul class="hidden fullnav:flex">
       
       { /* Main text links along the top. */
-        items.slice(0,split).map((item) => (
+        nav.links.slice(0,split).map((item) => (
         <li>
           <Link href={item.href} variant="nav"
             class="py-(--sp-2xs) px-(--sp-xs) flex items-center"
@@ -116,14 +143,14 @@ const split = doDisclosure? maxItems - 1 : items.length;
                 "aria-expanded:[&_svg]:-scale-y-100"]}
             >
               <Fragment slot="button">
-                More
+                {nav.disclosureLabel}
                 <Icon name="tabler:chevrons-down" aria-hidden="true"/>
               </Fragment>
 
-              {items.slice(split).map((item) => (
+              {nav.links.slice(split).map((link) => (
                 <NavDisclosureItem>
-                  <Link href={item.href} variant="nav" class="text-md">
-                    {item.label}
+                  <Link href={link.href} variant="nav" class="text-md">
+                    {link.label}
                   </Link>
                 </NavDisclosureItem>
               ))}
@@ -134,11 +161,11 @@ const split = doDisclosure? maxItems - 1 : items.length;
 
         <div class="flex space-x-(--sp-xs) pl-(--sp-xs) border-l-2 border-border">
         { /* Add social icons to the icon tray. */
-          icons.map( (icon) => (
+          nav.icons.map( (icon) => (
             <li class="flex shrink-0 items-center">
               <Link href={icon.href} variant="icon-xs" class="active:bg-muted-dark">
                 <span class="sr-only">{icon.alt}</span>
-                <Icon name={icon.name} aria-hidden="true" size={28}/>
+                <Icon name={icon.file} aria-hidden="true" size={28}/>
               </Link>
             </li>
           ))
@@ -186,10 +213,10 @@ const split = doDisclosure? maxItems - 1 : items.length;
                 </Link>
               </li>
 
-              {items.map((item) => (
+              {nav.links.map((link) => (
               <li>
-                <Link href={item.href} variant="nav">
-                  {item.label}
+                <Link href={link.href} variant="nav">
+                  {link.label}
                 </Link>
               </li>
               ))}
@@ -198,11 +225,11 @@ const split = doDisclosure? maxItems - 1 : items.length;
             {/* Icon tray */}
             <div class="flex flex-row shrink-0 justify-around mt-(--sp-xs) pt-(--sp-xs) border-t-2 border-border">
               {/* Add social icons to the icon tray. */
-              icons.map( (icon) => (
+              nav.icons.map( (icon) => (
                 <li>
                   <Link href={icon.href} variant="icon" class="active:bg-muted-dark">
                     <span class="sr-only">{icon.alt}</span>
-                    <Icon name={icon.name} aria-hidden="true" size={32}/>
+                    <Icon name={icon.file} aria-hidden="true" size={32}/>
                   </Link>
                 </li>
               ))}
