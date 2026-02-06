@@ -4,35 +4,16 @@
 
 /* 
 <script is:inline>
-  function initTheme() {
+  const initTheme = () => {
     const colorTheme = localStorage.getItem("colorTheme");
-    if (!colorTheme) {
-      // if no color theme yet, use the users preferences
-      if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
-        document.documentElement.classList.add("dark");
-        localStorage.setItem("colorTheme", "dark");
-      } else {
-        document.documentElement.classList.remove("dark");
-        localStorage.setItem("colorTheme", "light");
-      }
-    } else {
-      // assign the theme based on the value in local storage
-      if (colorTheme === "dark") {
-        document.documentElement.classList.add("dark");
-      } else if (colorTheme === "light") {
-        document.documentElement.classList.remove("dark");
-      } else if (colorTheme === "system") {
-        // use system preference
-        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-        document.documentElement.classList.toggle("dark", prefersDark);
-      }
-    }
+    document.documentElement.classList.toggle("dark",
+      colorTheme?
+        colorTheme==="dark"
+        :
+        window.matchMedia("(prefers-color-scheme: dark)").matches
+    );
   }
-
-  // runs on initial page load
   initTheme();
-
-  // runs on view transitions navigation
   document.addEventListener("astro:after-swap", initTheme);
 </script>
 */
@@ -92,32 +73,41 @@ const {
 <script>
   import type { ToggleChangeEvent } from "@/components/starwind/toggle";
 
+  // Called when the underlying toggle gets clicked.
+  const handleToggle = (e: ToggleChangeEvent) => {
+    const { pressed, toggleId } = e.detail;
+
+    // Enable/disable the "dark" class on the whole document, to match button state.
+    document.documentElement.classList.toggle("dark", pressed);
+    
+    // Persist this state in local storage for future navigation to other pages.
+    localStorage.setItem("colorTheme", pressed? "dark" : "light");
+
+    // Update the "pressed" attribute of all Theme Toggles on the page to match
+    // the new state.
+    document.querySelectorAll(".starwind-theme-toggle").forEach((toggle) => {
+      if (toggle.id != toggleId) {
+        toggle.setAttribute("aria-pressed", pressed.toString());
+      }
+    });
+    
+    e.stopPropagation();
+  };
+
   const initThemeToggles = () => {
+    // Check to see if darkmode is enabled or not (this should've already been
+    // handled by inline script added to <head>).
     const isDark = document.documentElement.classList.contains("dark");
-  
+    
+    // Loop over every theme toggle on the page.
     document.querySelectorAll(".starwind-theme-toggle").forEach((toggle) => {
       // Initialize button pressed state to match whether dark mode is enabled or not.
       toggle.setAttribute("aria-pressed", isDark.toString());
 
       // Add an event listener to each toggle, to handle when the underlying Toggle
       // object processes a button press.
-      toggle.addEventListener("starwind-toggle:change", (event: Event) => {
-        const { pressed, toggleId } = (event as ToggleChangeEvent).detail;
-
-        // Enable/disable the "dark" class on the whole document, to match button state.
-        document.documentElement.classList.toggle("dark", pressed);
-        
-        // Persist this state in local storage for future navigation to other pages.
-        localStorage.setItem("colorTheme", pressed? "dark" : "light");
-
-        // Update the "pressed" attribute of all Theme Toggles on the page to match
-        // the new state.
-        document.querySelectorAll(".starwind-theme-toggle").forEach((toggle) => {
-          if (toggle.id != toggleId) {
-            toggle.setAttribute("aria-pressed", isDark.toString());
-          }
-        });
-        event.stopPropagation();
+      toggle.addEventListener("starwind-toggle:change", (e: Event) => {
+        handleToggle(e as ToggleChangeEvent);
       });
     });
   }
