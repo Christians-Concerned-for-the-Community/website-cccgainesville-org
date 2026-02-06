@@ -1,0 +1,79 @@
+---
+import { Nav, type NavLink, type NavIcon } from "@/components/base"
+
+export interface NavData {
+  maxVisibleLinks?: number,
+  darkModeToggle?: boolean,
+  disclosureLabel?: string,
+  links: NavLink[],
+  icons?: NavIcon[],
+}
+
+const nav: NavData = {
+  maxVisibleLinks: 4,
+  darkModeToggle: true,
+  disclosureLabel: "More",
+  links: [
+    { label: "Home",
+      href: "/",
+      excludeFromFull: true,
+    },
+    { label: "Services",
+      href:  "/services/",
+    },
+    { label: "Give",
+      href:  "/give/",
+    },
+    { label: "Contact",
+      href:  "/contact/",
+    },
+    { label: "Volunteer",
+      href:  "/volunteer/",
+    },
+    { label: "News",
+      href:  "/news/"
+    },
+    { label: "Our Values",
+      href:  "/our-values/"
+    },
+    { label: "Documents",
+      href:  "/documents/"
+    },
+  ],
+  icons: [
+    { file: 'facebook',
+      href: "https://facebook.com/cccgainesville",
+      alt:  "Go to our Facebook page",
+    },
+    { file: 'instagram',
+      href: "https://instagram.com/cccmainoffice",
+      alt:  "Go to our Instagram page",
+    },
+  ]
+}
+
+
+---
+<header class:list={[
+  "text-md py-(--sp-md) bg-background/80 backdrop-blur-lg",
+  /* Make the header sticky on mobile: */
+  "max-sm:sticky max-sm:shadow-md max-sm:top-0 max-sm:z-50"
+]}>
+  
+  {/* Skip Link (hidden, but becomes visible when focused by pressing "tab" key) */}
+  <a href="#main-content" class:list={[
+      "rounded-lg sr-only focus-visible:not-sr-only",
+      "focus-visible:bg-wb focus-visible:text-bw",
+      "focus-visible:absolute focus-visible:top-(--sp-sm) focus-visible:left-(--sp-sm)",
+      "focus-visible:z-50 focus-visible:p-(--sp-sm)"]} >
+    Skip to main content
+  </a>
+
+  {/* Navigation bar on wide screens, disappearing side nav panel on narrow screens. */}
+  <Nav
+    links={nav.links},
+    icons={nav.icons},
+    maxVisibleLinks={nav.maxVisibleLinks},
+  >
+  </Nav>
+</header>

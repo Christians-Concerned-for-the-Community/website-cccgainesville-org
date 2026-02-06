@@ -1,5 +1,8 @@
 ---
 import { Icon } from 'astro-icon/components'
+import { twMerge } from 'tailwind-merge';
+
+import type { HTMLAttributes } from 'astro/types';
 
 import { Link, NavDisclosure, NavDisclosureItem } from "@/components/base"
 import { Button } from "@/components/starwind/button";
@@ -7,254 +10,292 @@ import { ThemeToggle } from "@/components/starwind/theme-toggle";
 import { Sheet, SheetContent, SheetTrigger, } from "@/components/starwind/sheet";
 
 
+/**
+ * A navigation link to display.
+ */
 export interface NavLink {
+  /**
+   * Visible text of the link.
+   */
   label: string,
-  href: string
-}
-export interface NavIcon {
-  file: string,
+  /**
+   * URL of the link's target.
+   */
   href: string,
-  alt: string
-}
-export interface NavData {
-  maxVisibleLinks?: number,
-  darkModeToggle?: boolean,
-  disclosureLabel?: string,
-  links: NavLink[],
-  icons?: NavIcon[],
+  /**
+   * If true, this link will not be included on the full-width nav bar.
+   * @default false
+   */
+  excludeFromFull?: boolean,
+  /**
+   * If true, this link will not be included in the mobile nav panel.
+   * @default false
+   */
+  excludeFromMobile?: boolean,
 }
 
+export interface NavIcon {
+  /**
+   * File ID of the SVG icon to include. Will be resolved using astro-icon.
+   * 
+   * Might be something like "facebook" to resolve a custom icon named "facebook.svg"
+   * in src/assets/icons, or a reference to an installed icon set like "tabler:facebook".
+   */
+  file: string,
+  /**
+   * URL of the icon link's target.
+   */
+  href: string,
+  /**
+   * Alternate text to use for screen readers.
+   */
+  alt: string,
+  /**
+   * If true, this icon link will not be included on the full-width nav bar.
+   * @default false
+   */
+  excludeFromFull?: boolean,
+  /**
+   * If true, this icon link will not be included on the mobile nav panel.
+   * @default false
+   */
+  excludeFromMobile?: boolean,
+}
 
 /**
- * Header Component
+ * Basic nav
  *
- * @description A component that displays the logo and navbar of the website
+ * @description A component that displays the navigation of the website
+ * 
+ * Provides a full nav-bar at the top on wide screens, or a logo + hamburger
+ * bar at the top with a slide-out side nav panel on narrower screens.
+ * 
+ * You have to define a custom breakpoint named "fullnav" with the smallest
+ * alloweable width of the full-width nav bar to get this behavior.
  */
+export interface Props extends HTMLAttributes<"nav"> {
+  /**
+   * List of navigation links.
+   */
+  links: NavLink[],
 
-const nav: NavData = {
-  maxVisibleLinks: 4,
-  links: [
-    { label: "Services",
-      href:  "/services/",
-    },
-    { label: "Give",
-      href:  "/give/",
-    },
-    { label: "Contact",
-      href:  "/contact/",
-    },
-    { label: "Volunteer",
-      href:  "/volunteer/",
-    },
-    { label: "News",
-      href:  "/news/"
-    },
-    { label: "Our Values",
-      href:  "/our-values/"
-    },
-    { label: "Documents",
-      href:  "/documents/"
-    },
-  ],
-  icons: [
-    { file: 'facebook',
-      href: "https://facebook.com/cccgainesville",
-      alt:  "Go to our Facebook page",
-    },
-    { file: 'instagram',
-      href: "https://instagram.com/cccmainoffice",
-      alt:  "Go to our Instagram page",
-    },
-  ]
-}
+  /**
+   * List of custom icons for the navigation icon tray.
+   * 
+   * These are usually used for social links.
+   */
+  icons?: NavIcon[],
 
-// Set default values for optional components.
-nav.maxVisibleLinks ??= 4;
-nav.darkModeToggle ??= true;
-nav.disclosureLabel ??= 'More';
+  /**
+   * Maximum number of visible links that can be displayed side-by-side in the
+   * full nav bar. If you provide more links than this, the remainder will be put
+   * in a disclosure at the end of the list.
+   * 
+   * @default 4
+   */
+  maxVisibleLinks?: number,
 
-// If we have more links than we can visibly display, add a disclosure menu
-// to the end.
-const doDisclosure = (nav.links.length > nav.maxVisibleLinks);
-const split = doDisclosure? nav.maxVisibleLinks - 1 : nav.links.length;
+  /**
+   * Label to use for the disclosure containing any links that wouldn't fit on
+   * the full nav bar.
+   * 
+   * @default More
+   */
+  disclosureLabel?: string,
 
-const needIconTray = nav.darkModeToggle || nav.icons?.length;
+  /**
+   * Include a dark mode toggle button at the end of the icon tray.
+   * 
+   * @default true
+   */
+  darkModeToggle?: boolean;
+};
+
+const {
+  class: className,
+  links,
+  icons,
+  maxVisibleLinks = 4,
+  disclosureLabel = 'More',
+  darkModeToggle = true,
+  ...rest
+} = Astro.props;
+
+// Make separate lists of links and icons for the full and mobile nav, and remove
+// any excluded items from them.
+const fullLinks = links.filter((link) => !link.excludeFromFull);
+const mobileLinks = links.filter((link) => !link.excludeFromMobile);
+
+const fullIcons = icons?.filter((icon) => !icon.excludeFromFull);
+const mobileIcons = icons?.filter((icon) => !icon.excludeFromMobile);
+
+// If we have more links than we can visibly display on the full nav, add a
+// disclosure menu to the end of the list to contain the overflow.
+const doDisclosure = (fullLinks.length > maxVisibleLinks);
+const split = doDisclosure? maxVisibleLinks - 1 : fullLinks.length;
+
+// If we need to display at least one icon, add icon trays for full and mobile
+// nav.
+const fullIconTray = darkModeToggle || fullIcons?.length;
+const mobileIconTray = darkModeToggle || mobileIcons?.length;
 ---
 
-<header class:list={[
-  "text-md py-(--sp-md) bg-background/80 backdrop-blur-lg",
-  /* Make the navbar sticky on mobile: */
-  "max-sm:sticky max-sm:shadow-md max-sm:top-0 max-sm:z-50"
-]}>
+<nav id="main-navigation"
+  class={twMerge([
+    "max-w-(--content-max) mx-auto h-(--sp-2xl) px-(--sp-2xs)",
+    "flex justify-between items-center",
+    className
+  ])}>
   
-  {/* Skip Link (hidden, but becomes visible when focused by pressing "tab" key) */}
-  <a href="#main-content" class:list={[
-      "rounded-lg sr-only focus-visible:not-sr-only",
-      "focus-visible:bg-wb focus-visible:text-bw",
-      "focus-visible:absolute focus-visible:top-(--sp-sm) focus-visible:left-(--sp-sm)",
-      "focus-visible:z-50 focus-visible:p-(--sp-sm)"]} >
-    Skip to main content
-  </a>
+  {/* Logo / Home Link */}
+  <div class="flex shrink-2 place-items-center mr-(--sp-lg)">
+    <a href="/" class="hover:bg-muted active:bg-muted-dark p-1">
+      <Icon name="logo-wide-light" aria-hidden="true" width="100%" height="100%"
+        class="block dark:hidden max-w-76 aspect-488/120"
+      />
+      <Icon name="logo-wide-dark" aria-hidden="true" width="100%" height="100%"
+        class="hidden dark:block max-w-76 aspect-488/120"
+      />
+      <span class="sr-only">Home</span>
+    </a>
+  </div>
 
-  <nav id="main-navigation"
-    class="max-w-(--content-max) mx-auto h-(--sp-2xl) px-(--sp-2xs) flex justify-between items-center">
+  
+  <div class="shrink-0">
+    {/* Full menu: visible when width >= fullnav */}
+    <ul class="hidden fullnav:flex">
     
-    {/* Logo / Home Link */}
-    <div class="flex shrink-2 place-items-center mr-(--sp-lg)">
-      <a href="/" class="hover:bg-muted active:bg-muted-dark p-1">
-        <Icon name="logo-wide-light" aria-hidden="true" width="100%" height="100%"
-          class="block dark:hidden max-w-76 aspect-488/120"
-        />
-        <Icon name="logo-wide-dark" aria-hidden="true" width="100%" height="100%"
-          class="hidden dark:block max-w-76 aspect-488/120"
-        />
-        <span class="sr-only">Home</span>
-      </a>
-    </div>
+    { /* Main text links along the top. */
+      fullLinks.slice(0,split).map((link) => (
+      <li>
+        <Link href={link.href} variant="nav"
+          class="py-(--sp-2xs) px-(--sp-xs) flex items-center"
+        >
+          {link.label}
+        </Link>
+      </li>
+    ))}
 
-    
-    <div class="shrink-0">
-      {/* Full menu: visible when width >= fullnav */}
-      <ul class="hidden fullnav:flex">
-      
-      { /* Main text links along the top. */
-        nav.links.slice(0,split).map((item) => (
+    { /* Add additional links inside a disclosure, if necessary. */
+      doDisclosure && (
         <li>
-          <Link href={item.href} variant="nav"
-            class="py-(--sp-2xs) px-(--sp-xs) flex items-center"
+          <NavDisclosure
+            align="end"
+            class="py-(--sp-3xs)"
+
+            variant="ghost" size="lg"
+            buttonClass={["text-md px-(--sp-xs)! mx-0! font-normal!",
+              "[&_svg]:transition-transform [&_svg]:duration-350",
+              "aria-expanded:bg-muted-dark hover:aria-expanded:bg-muted-dark",
+              "hover:motion-safe:[&_svg]:animate-boop",
+              "aria-expanded:[&_svg]:-scale-y-100"]}
           >
-            {item.label}
-          </Link>
-        </li>
-      ))}
+            <Fragment slot="button">
+              {disclosureLabel}
+              <Icon name="tabler:chevrons-down" aria-hidden="true"/>
+            </Fragment>
 
-      { /* Add additional links inside a disclosure, if necessary. */
-        doDisclosure && (
-          <li>
-            <NavDisclosure
-              align="end"
-              class="py-(--sp-3xs)"
-
-              variant="ghost" size="lg"
-              buttonClass={["text-md px-(--sp-xs)! mx-0! font-normal!",
-                "[&_svg]:transition-transform [&_svg]:duration-350",
-                "aria-expanded:bg-muted-dark hover:aria-expanded:bg-muted-dark",
-                "hover:motion-safe:[&_svg]:animate-boop",
-                "aria-expanded:[&_svg]:-scale-y-100"]}
-            >
-              <Fragment slot="button">
-                {nav.disclosureLabel}
-                <Icon name="tabler:chevrons-down" aria-hidden="true"/>
-              </Fragment>
-
-              {nav.links.slice(split).map((link) => (
-                <NavDisclosureItem>
-                  <Link href={link.href} variant="nav" class="text-md">
-                    {link.label}
-                  </Link>
-                </NavDisclosureItem>
-              ))}
-            </NavDisclosure>
-          </li>
-        )
-      }
-
-        {needIconTray && (        
-        <div class="flex space-x-(--sp-xs) pl-(--sp-xs) border-l-2 border-border">
-        
-          { /* Add social icons to the icon tray. */
-            nav.icons?.map( (icon) => (
-              <li class="flex shrink-0 items-center">
-                <Link href={icon.href} variant="icon-xs" class="active:bg-muted-dark">
-                  <span class="sr-only">{icon.alt}</span>
-                  <Icon name={icon.file} aria-hidden="true" size={28}/>
-                </Link>
-              </li>
-            ))
-          }
-
-          {/* Add dark mode toggle to the icon tray. */
-            nav.darkModeToggle && (
-              <li class="flex shrink-0 items-center">
-                <ThemeToggle size="icon-xs" ariaLabel="Toggle dark mode"
-                  class:list={["[&_svg]:size-7",
-                    "motion-safe:hover:[&_svg]:animate-rotate",
-                    "motion-safe:focus-visible:[&_svg]:animate-rotate"]}
-                />
-              </li>
-            )
-          }
-        </div>
-        )}
-      </ul>
-
-      {/* Menu button: visible when width < fullnav */}
-      <div class="flex fullnav:hidden shrink items-center">
-        <SheetTrigger asChild for="mobile-nav">
-          <Button size="custom" animation="raise-boop"
-            class="h-12 px-6 text-md gap-[1ch]"
-          >
-            Menu
-            <Icon name="tabler:menu-2" aria-hidden="true" />
-          </Button>
-        </SheetTrigger>
-      </div>
-
-      {/* Mobile nav menu that opens when menu button is clicked. */}
-      <Sheet id="mobile-nav">
-        <SheetContent side="right">
-          <h2 class="text-2xl font-medium absolute top-(--sp-xs) left-(--sp-sm)">
-            Menu
-          </h2>
-          <ul class="flex flex-col h-full mx-(--sp-sm) mb-(--sp-sm) mt-[calc(var(--sp-md)+var(--sp-sm))]">
-            {/* List of nav links. */}
-            <div class:list={[
-              "flex flex-col justify-center grow",
-              "text-lg sm-tall:text-2xl [&_a]:py-(--sp-xs) sm-tall:[&_a]:py-(--sp-sm) [&_a]:px-(--sp-sm)",
-              "mt-(--sp-xs) pt-(--sp-xs) border-t-2 border-border"
-            ]}>
-              <li>
-                <Link href="/" variant="nav">
-                  Home
-                </Link>
-              </li>
-
-              {nav.links.map((link) => (
-              <li>
-                <Link href={link.href} variant="nav">
+            {fullLinks.slice(split).map((link) => (
+              <NavDisclosureItem>
+                <Link href={link.href} variant="nav" class="text-md">
                   {link.label}
                 </Link>
-              </li>
-              ))}
-            </div>
+              </NavDisclosureItem>
+            ))}
+          </NavDisclosure>
+        </li>
+      )
+    }
 
-            {/* Icon tray */
-              needIconTray && (
-            
-              <div class="flex flex-row shrink-0 justify-around mt-(--sp-xs) pt-(--sp-xs) border-t-2 border-border">
-                {/* Add social icons to the icon tray. */
-                nav.icons?.map( (icon) => (
-                  <li>
-                    <Link href={icon.href} variant="icon" class="active:bg-muted-dark">
-                      <span class="sr-only">{icon.alt}</span>
-                      <Icon name={icon.file} aria-hidden="true" size={32}/>
-                    </Link>
-                  </li>
-                ))}
-                {/* Add dark mode toggle to the icon tray. */
-                nav.darkModeToggle && (
-                <li class="flex shrink-0 items-center">
-                  <ThemeToggle ariaLabel="Toggle dark mode"
-                    class:list={["[&_svg]:size-8!",
-                      "motion-safe:hover:[&_svg]:animate-rotate",
-                      "motion-safe:focus-visible:[&_svg]:animate-rotate"]}/>
-                </li>
-                )}
-              </div>
-            )}
-          </ul>
-        </SheetContent>
-      </Sheet>
+      {fullIconTray && (        
+      <div class="flex space-x-(--sp-xs) pl-(--sp-xs) border-l-2 border-border">
+      
+        { /* Add social icons to the icon tray. */
+          fullIcons?.map( (icon) => (
+            <li class="flex shrink-0 items-center">
+              <Link href={icon.href} variant="icon-xs" class="active:bg-muted-dark">
+                <span class="sr-only">{icon.alt}</span>
+                <Icon name={icon.file} aria-hidden="true" size={28}/>
+              </Link>
+            </li>
+          ))
+        }
+
+        {/* Add dark mode toggle to the icon tray. */
+          darkModeToggle && (
+            <li class="flex shrink-0 items-center">
+              <ThemeToggle size="icon-xs" ariaLabel="Toggle dark mode"
+                class:list={["[&_svg]:size-7",
+                  "motion-safe:hover:[&_svg]:animate-rotate",
+                  "motion-safe:focus-visible:[&_svg]:animate-rotate"]}
+              />
+            </li>
+          )
+        }
+      </div>
+      )}
+    </ul>
+
+    {/* Menu button: visible when width < fullnav */}
+    <div class="flex fullnav:hidden shrink items-center">
+      <SheetTrigger asChild for="mobile-nav">
+        <Button size="custom" animation="raise-boop"
+          class="h-12 px-6 text-md gap-[1ch]"
+        >
+          Menu
+          <Icon name="tabler:menu-2" aria-hidden="true" />
+        </Button>
+      </SheetTrigger>
     </div>
-  </nav>
-</header>
+
+    {/* Mobile nav menu that opens when menu button is clicked. */}
+    <Sheet id="mobile-nav">
+      <SheetContent side="right">
+        <h2 class="text-2xl font-medium absolute top-(--sp-xs) left-(--sp-sm)">
+          Menu
+        </h2>
+        <ul class="flex flex-col h-full mx-(--sp-sm) mb-(--sp-sm) mt-[calc(var(--sp-md)+var(--sp-sm))]">
+          {/* List of nav links. */}
+          <div class:list={[
+            "flex flex-col justify-center grow",
+            "text-lg sm-tall:text-2xl [&_a]:py-(--sp-xs) sm-tall:[&_a]:py-(--sp-sm) [&_a]:px-(--sp-sm)",
+            "mt-(--sp-xs) pt-(--sp-xs) border-t-2 border-border"
+          ]}>
+            {mobileLinks.map((link) => (
+            <li>
+              <Link href={link.href} variant="nav">
+                {link.label}
+              </Link>
+            </li>
+            ))}
+          </div>
+
+          {/* Icon tray */
+            mobileIconTray && (
+          
+            <div class="flex flex-row shrink-0 justify-around mt-(--sp-xs) pt-(--sp-xs) border-t-2 border-border">
+              {/* Add social icons to the icon tray. */
+              mobileIcons?.map( (icon) => (
+                <li>
+                  <Link href={icon.href} variant="icon" class="active:bg-muted-dark">
+                    <span class="sr-only">{icon.alt}</span>
+                    <Icon name={icon.file} aria-hidden="true" size={32}/>
+                  </Link>
+                </li>
+              ))}
+              {/* Add dark mode toggle to the icon tray. */
+              darkModeToggle && (
+              <li class="flex shrink-0 items-center">
+                <ThemeToggle ariaLabel="Toggle dark mode"
+                  class:list={["[&_svg]:size-8!",
+                    "motion-safe:hover:[&_svg]:animate-rotate",
+                    "motion-safe:focus-visible:[&_svg]:animate-rotate"]}/>
+              </li>
+              )}
+            </div>
+          )}
+        </ul>
+      </SheetContent>
+    </Sheet>
+  </div>
+</nav>
