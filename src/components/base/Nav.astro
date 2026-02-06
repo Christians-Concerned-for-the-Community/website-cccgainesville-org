@@ -109,6 +109,13 @@ export interface Props extends HTMLAttributes<"nav"> {
    * @default true
    */
   darkModeToggle?: boolean;
+
+  /**
+   * Title displayed on mobile nav panel.
+   * 
+   * @default "Main Menu"
+   */
+  mobileTitle?: string;
 };
 
 const {
@@ -118,6 +125,7 @@ const {
   maxVisibleLinks = 4,
   disclosureLabel = 'More',
   darkModeToggle = true,
+  mobileTitle = "Main Menu",
   ...rest
 } = Astro.props;
 
@@ -252,7 +260,7 @@ const mobileIconTray = darkModeToggle || mobileIcons?.length;
     <Sheet id="mobile-nav">
       <SheetContent side="right">
         <h2 class="text-2xl font-medium absolute top-(--sp-xs) left-(--sp-sm)">
-          Menu
+          {mobileTitle}
         </h2>
         <ul class="flex flex-col h-full mx-(--sp-sm) mb-(--sp-sm) mt-[calc(var(--sp-md)+var(--sp-sm))]">
           {/* List of nav links. */}
