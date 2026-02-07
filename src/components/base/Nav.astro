@@ -69,9 +69,6 @@ export interface NavIcon {
  * 
  * Provides a full nav-bar at the top on wide screens, or a logo + hamburger
  * bar at the top with a slide-out side nav panel on narrower screens.
- * 
- * You have to define a custom breakpoint named "fullnav" with the smallest
- * alloweable width of the full-width nav bar to get this behavior.
  */
 export interface Props extends HTMLAttributes<"nav"> {
   /**
@@ -150,8 +147,8 @@ const mobileIconTray = darkModeToggle || mobileIcons?.length;
 
 <nav id="main-navigation"
   class={twMerge([
-    "max-w-(--content-max) mx-auto h-(--sp-2xl) px-(--sp-2xs)",
-    "flex justify-between items-center",
+    "max-w-(--content-max) mx-auto px-(--sp-2xs)",
+    "flex flex-wrap items-start w-full",
     className
   ])}>
   
@@ -169,9 +166,9 @@ const mobileIconTray = darkModeToggle || mobileIcons?.length;
   </div>
 
   
-  <div class="shrink-0">
-    {/* Full menu: visible when width >= fullnav */}
-    <ul class="hidden fullnav:flex">
+  <div class="shrink-0 ml-auto my-auto">
+    {/* Full menu: visible when width >= sm */}
+    <ul class="hidden sm:flex">
     
     { /* Main text links along the top. */
       fullLinks.slice(0,split).map((link) => (
@@ -244,8 +241,8 @@ const mobileIconTray = darkModeToggle || mobileIcons?.length;
       )}
     </ul>
 
-    {/* Menu button: visible when width < fullnav */}
-    <div class="flex fullnav:hidden shrink items-center">
+    {/* Menu button: visible when width < sm */}
+    <div class="flex sm:hidden shrink items-center">
       <SheetTrigger asChild for="mobile-nav">
         <Button size="custom" animation="raise-boop"
           class="h-12 px-6 text-md gap-[1ch]"

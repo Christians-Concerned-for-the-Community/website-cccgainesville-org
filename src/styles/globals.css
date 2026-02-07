@@ -106,11 +106,6 @@
    *
    * Example:
    *   max-w-50 xs:max-w-60 md:max-w-100
-   *
-   * Note that the fullnav breakpoint is experimentally determined - it's the
-   * minimum width at which we want to render the full menu bar. Anything smaller
-   * will replace the menu links with a single "menu" button.
    */
   --breakpoint-xs:      31.25rem; /* 500 px */
-  --breakpoint-fullnav: 56.25rem; /* 900 px */
 }
