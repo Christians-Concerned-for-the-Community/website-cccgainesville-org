@@ -52,7 +52,7 @@ type Props =
   buttonClass?: string | string[]
 }
 
-export const menu = tv({
+export const disclosure = tv({
   base: [
     "absolute z-50 min-w-36 mt-(--sp-3xs) p-(--sp-3xs) flex flex-col",
     "bg-popover text-popover-foreground shadow-md border rounded-md",
@@ -97,7 +97,7 @@ const {
   </Button>
 
   <ul
-    class={menu({ align, class: className })}
+    class={disclosure({ align, class: className })}
     {...rest}
   >
     <slot />
@@ -106,71 +106,54 @@ const {
 
 <script>
 {
-  class NavDisclosureHandler {
-    private button: HTMLButtonElement | null;
-    private menu:   HTMLElement | null;
-
-    constructor(container: HTMLElement) {
-      this.button = container.querySelector(':scope > button'); 
-      this.menu   = container.querySelector(':scope > ul');
-
-      if (!this.button || !this.menu) return;
-
-      // Handle button mouse click / touch / keyboard activation.
-      this.button.addEventListener("click", (e) => {
-        (this.button?.ariaExpanded === 'false')?
-          this.button.ariaExpanded = 'true' : this.closeMenu();
-        e.stopPropagation(); // prevents the global click listener below from triggering
-      }, {passive: true});
-
-      this.button.addEventListener('keydown', (e: KeyboardEvent) => {
-        if (this.isOpen() && e.key === 'Escape') {
-          this.closeMenu();
-          // Prevent any default browser behavior for escape key (such as clearing focus).
-          e.preventDefault();
-          // If we have nested disclosures, only close the level we're currently in,
-          // not all levels.
-          e.stopPropagation();
-        }
-      });
-
-      // Handle closing the menu via the keyboard. Only works while you
-      // have keyboard focus inside the menu.
-      this.menu.addEventListener('keydown', (e : KeyboardEvent) => {
-        if (this.isOpen() && e.key === 'Escape') {
-          this.closeMenu();
-          // When closing via escape, focus back on the button that opens the menu.
-          // @ts-expect-error (focusVisible is experimental, but harmless if unsupported
-          this.button.focus({ focusVisible: true});
-          // Prevent any default browser behavior for escape key (such as clearing focus).
-          e.preventDefault();
-          // If we have nested disclosures, only close the level we're currently in,
-          // not all levels.
-          e.stopPropagation();
-        }
-      });
-
-      // Close the menu when focus has left the disclosure container (trigger & contents).
-      // This could happen by tabbing out with the keyboard, or by clicking outside
-      // the disclosure.
-      container.addEventListener('focusout', (e: FocusEvent) => {
-        if (this.isOpen() && !container.contains(e.relatedTarget as Node)) {
-          this.closeMenu();
-        }
-      }, {passive: true});
-    }
-
-    private isOpen() { return (this.button?.ariaExpanded === 'true'); }
-
-    private closeMenu() { if (this.button) this.button.ariaExpanded = 'false'; }
+  // Handle (mouse / touch / keyboard) activation of the trigger button.
+  function handleButtonClick(this: HTMLElement) {
+    this.ariaExpanded = (this.ariaExpanded === 'true')? 'false' : 'true';
   }
 
-  const navDisclosureInstances = new WeakMap<HTMLElement, NavDisclosureHandler>();
+  // This will catch escape key presses that occur when either the trigger
+  // or anything inside the disclosure is focused.
+  function handleKeyDown(this: HTMLElement, e: KeyboardEvent) {
+    if (e.key === 'Escape') {
+      const button = this.querySelector(':scope > button');
+      if (button?.ariaExpanded === 'true') {
+        // Close the disclosure.
+        button.ariaExpanded = 'false';
+        // Make sure focus winds up back on the trigger button.
+        if (button != e.target) {
+          // @ts-expect-error (focusVisible is experimental, but harmless if unsupported
+          button.focus({ focusVisible: true});
+        }
+        // Prevent browser from reacting to the escape key itself.
+        e.preventDefault();
+        // If we have nested disclosures, only close the level we're currently in,
+        // not all levels.
+        e.stopPropagation();
+      }
+    }
+  }
+
+  // Close the menu when focus has left the disclosure container (trigger & contents).
+  // This could happen by tabbing out with the keyboard, or by clicking outside
+  // the disclosure.
+  function handleFocusOut(this: HTMLElement, e: FocusEvent) {
+    if (!this.contains(e.relatedTarget as Node)) {
+      const button = this.querySelector(':scope > button');
+      // If disclosure is open, close it.
+      if (button?.ariaExpanded === 'true') {
+        button.ariaExpanded = 'false';
+      }
+    }
+  }
+
   const initNavDisclosures = () => {
     document.querySelectorAll(".base-navdisclosure").forEach((item) => {
-      if (item instanceof HTMLElement && !navDisclosureInstances.has(item)) {
-        navDisclosureInstances.set(item, new NavDisclosureHandler(item));
-      }
+      const container = item as HTMLElement;
+      const button = container.querySelector(':scope > button'); 
+
+      button?.addEventListener("click", handleButtonClick);
+      container.addEventListener('keydown', handleKeyDown);      
+      container.addEventListener('focusout', handleFocusOut);
     });
   }
 
