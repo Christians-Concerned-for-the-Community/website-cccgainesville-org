@@ -72,6 +72,12 @@ export interface NavIcon {
  */
 export interface Props extends HTMLAttributes<"nav"> {
   /**
+   * The main site logo or title - rendered in the default slot.
+   * This should typically be a link to Home, but can be any valid HTML content.
+   */
+  children: any; 
+
+  /**
    * List of navigation links.
    */
   links: NavLink[],
@@ -154,17 +160,8 @@ const mobileIconTray = darkModeToggle || mobileIcons?.length;
   
   {/* Logo / Home Link */}
   <div class="flex shrink-2 place-items-center mr-(--sp-lg)">
-    <a href="/" class="duration-200 transition-[background-color] hover:bg-muted active:bg-muted-dark p-1">
-      <Icon name="logo-wide-light" aria-hidden="true" width="100%" height="100%"
-        class="block dark:hidden max-w-76 aspect-488/120"
-      />
-      <Icon name="logo-wide-dark" aria-hidden="true" width="100%" height="100%"
-        class="hidden dark:block max-w-76 aspect-488/120"
-      />
-      <span class="sr-only">Home</span>
-    </a>
+    <slot />
   </div>
-
   
   <div class="shrink-0 ml-auto my-auto">
     {/* Full menu: visible when width >= sm */}
