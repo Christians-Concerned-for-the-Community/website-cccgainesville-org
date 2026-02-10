@@ -68,6 +68,7 @@
     outline: 0.125rem dashed var(--color-bw) !important;
     outline-offset: 0.125rem !important;
     box-shadow: none !important;
+    border-radius: var(--radius-lg);
   }
 
   /*
