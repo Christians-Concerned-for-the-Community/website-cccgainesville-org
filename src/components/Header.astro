@@ -11,7 +11,7 @@ export interface NavData {
 }
 
 const nav: NavData = {
-  maxVisibleLinks: 4,
+  maxVisibleLinks: 5,
   darkModeToggle: true,
   disclosureLabel: "More",
   links: [
@@ -44,10 +44,12 @@ const nav: NavData = {
     { file: 'facebook',
       href: "https://facebook.com/cccgainesville",
       alt:  "Go to our Facebook page",
+      excludeFromFull: true
     },
     { file: 'instagram',
       href: "https://instagram.com/cccmainoffice",
       alt:  "Go to our Instagram page",
+      excludeFromFull: true
     },
   ]
 }
