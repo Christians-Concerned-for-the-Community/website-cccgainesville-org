@@ -16,14 +16,6 @@
       "version": "1.0.0"
     },
     {
-      "name": "toggle",
-      "version": "1.0.1"
-    },
-    {
-      "name": "theme-toggle",
-      "version": "1.0.0"
-    },
-    {
       "name": "dialog",
       "version": "1.4.3"
     },

@@ -1,0 +1,119 @@
+---
+/* A lightweight darkmode switch, based off of this code:
+ * https://preline.co/docs/switch.html
+ *
+ * Nicer than the dark mode toggle in Starwind, because it uses much less Javascript.
+ * 
+ * To set the size of the toggle, just pass in a height to the "class" prop.
+ * The internal styling will adjust appropriately.
+ */
+
+// put the following script in the <head> of each page of your site
+// this ensures it is run early to eliminate any flashes of incorrect color theme
+/* 
+<script is:inline>
+  const initTheme = () => {
+    const colorTheme = localStorage.getItem("colorTheme");
+    document.documentElement.classList.toggle("dark",
+      colorTheme?
+        colorTheme==="dark"
+        :
+        window.matchMedia("(prefers-color-scheme: dark)").matches
+    );
+  }
+  initTheme();
+  document.addEventListener("astro:after-swap", initTheme);
+</script>
+*/
+
+import type { HTMLAttributes } from "astro/types";
+import { Icon } from "astro-icon/components";
+import { twMerge } from "tailwind-merge";
+
+type Props = Omit<HTMLAttributes<"button">, "role" | "type"> & {
+
+};
+
+const {
+  class: className,
+  ...rest
+} = Astro.props;
+---
+
+<button type="button" {...rest} class={twMerge("base-darkmodetoggle",
+  "@container relative inline-block aspect-2/1 rounded-full border-4",
+  "bg-foreground border-foreground",
+  "dark:bg-muted-foreground dark:border-muted-foreground",
+  "transition-[background-color,border-color] duration-200 ease-in-out",
+  "disabled:opacity-50 **:pointer-events-none",
+  className
+)}>
+  {/* Slider Thumb */}
+  <span aria-hidden="true" class:list={[
+    "absolute inset-0 aspect-square h-full",
+    "rounded-full shadow-sm bg-background dark:bg-muted",
+    "transition-[translate,background-color] duration-200 ease-in-out",
+    "dark:translate-x-[calc(100cqw-100%)]"
+  ]}/>
+
+  <span aria-hidden="true" class:list={[
+    "absolute left-0 top-0 aspect-square rounded-full h-full p-1 bg-transparent",
+    "transition-[color,opacity] duration-200 ease-in-out",
+    "text-foreground dark:opacity-60 dark:text-muted-dark"
+  ]}>
+    <slot name="icon-off">
+      <Icon name="tabler:sun" size="100%"/>
+    </slot>
+  </span>
+  
+  <span aria-hidden="true" class:list={[
+    "absolute left-0 top-0 aspect-square rounded-full h-full p-1 bg-transparent",
+    "translate-x-[calc(100cqw-100%)]",
+    "transition-[color,opacity] duration-200 ease-in-out",
+    "text-background opacity-60 dark:text-foreground dark:opacity-100"
+  ]}>
+    <slot name="icon-on">
+      <Icon name="tabler:moon" size="100%"/>
+    </slot>
+  </span>
+
+  <slot name="label">
+    <span class="sr-only">dark mode toggle</span>
+  </slot>
+</label>
+
+<script>
+{
+  const handleClick = (e: Event) => {
+    const toggle = e.target as HTMLElement;
+    const enableDark = toggle.getAttribute("aria-pressed") !== "true";
+
+    // Toggle darkmode on/off throughout the site, by adding/removing a CSS class.
+    // (see the "dark" custom variant near the top of styles/globals.css).
+    document.documentElement.classList.toggle("dark", enableDark);
+
+    // Persist this state in local storage for future navigation.
+    localStorage.setItem("colorTheme", enableDark? "dark" : "light");
+
+    // Update the "pressed" status of all the darkmode toggles on the page to match
+    // the new state. These updates will not trigger more click events.
+    const enableDarkStr = enableDark.toString();
+    document.querySelectorAll(".base-darkmodetoggle").forEach((item) => {
+        item.setAttribute("aria-pressed", enableDarkStr);
+    });
+  }
+
+  const initDarkModeToggles = () => {
+    const enableDarkStr = document.documentElement.classList.contains("dark").toString();
+    document.querySelectorAll(".base-darkmodetoggle").forEach((toggle) => {
+      // Initialize checked state to match current darkmode setting.
+      toggle.setAttribute("aria-pressed", enableDarkStr);
+      // Add handler for when the user toggles the darkmode switch.
+      toggle.addEventListener("click", handleClick);
+    });
+  }
+
+  initDarkModeToggles();
+  document.addEventListener("astro:after-swap", initDarkModeToggles);
+}
+</script>

@@ -22,6 +22,12 @@
 /* sm-tall: height >= 750 px, width < 640 px */
 @custom-variant sm-tall (@media (height >= 46.875rem) and (width < 40rem));
 
+@utility def-ring {
+  outline: 0.125rem dashed var(--color-bw) !important;
+  outline-offset: 0.125rem !important;
+  box-shadow: none !important;
+}
+
 :root {
   /*
     This is what changes the color scheme from light to dark when the ".dark"
@@ -65,9 +71,7 @@
     Have to use !important to override existing focus styling in Starwind UI.
    */
   *:focus-visible {
-    outline: 0.125rem dashed var(--color-bw) !important;
-    outline-offset: 0.125rem !important;
-    box-shadow: none !important;
+    @apply def-ring;
     border-radius: var(--radius-lg);
   }
 
