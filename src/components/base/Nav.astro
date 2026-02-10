@@ -171,7 +171,7 @@ const mobileIconTray = darkModeToggle || mobileIcons?.length;
       fullLinks.slice(0,split).map((link) => (
       <li>
         <Link href={link.href} variant="nav"
-          class="py-(--sp-2xs) px-(--sp-xs) flex items-center"
+          class="py-(--sp-2xs) px-[1ch] flex items-center"
         >
           {link.label}
         </Link>
@@ -185,8 +185,8 @@ const mobileIconTray = darkModeToggle || mobileIcons?.length;
             align="end"
             class="py-(--sp-3xs)"
 
-            variant="ghost" size="lg"
-            buttonClass={["text-md px-(--sp-xs)! mx-0! font-normal!",
+            variant="ghost" size="custom"
+            buttonClass={["text-md px-[1ch] font-normal h-full",
               "[&_svg]:transition-transform [&_svg]:duration-350",
               "aria-expanded:bg-muted-dark hover:aria-expanded:bg-muted-dark",
               "hover:motion-safe:[&_svg]:animate-boop",
