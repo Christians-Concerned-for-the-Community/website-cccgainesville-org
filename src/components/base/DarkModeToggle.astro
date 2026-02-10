@@ -1,6 +1,5 @@
 ---
-/* A lightweight darkmode switch, based off of this code:
- * https://preline.co/docs/switch.html
+/* A lightweight darkmode switch.
  *
  * Nicer than the dark mode toggle in Starwind, because it uses much less Javascript.
  * 
@@ -58,7 +57,7 @@ const {
 
   <span aria-hidden="true" class:list={[
     "absolute left-0 top-0 aspect-square rounded-full h-full p-1 bg-transparent",
-    "transition-[color,opacity] duration-200 ease-in-out",
+    "transition-[color,opacity] duration-250 ease-in",
     "text-foreground dark:opacity-60 dark:text-muted-dark"
   ]}>
     <slot name="icon-off">
@@ -69,7 +68,7 @@ const {
   <span aria-hidden="true" class:list={[
     "absolute left-0 top-0 aspect-square rounded-full h-full p-1 bg-transparent",
     "translate-x-[calc(100cqw-100%)]",
-    "transition-[color,opacity] duration-200 ease-in-out",
+    "transition-[color,opacity] duration-250 ease-in",
     "text-background opacity-60 dark:text-foreground dark:opacity-100"
   ]}>
     <slot name="icon-on">
@@ -80,7 +79,7 @@ const {
   <slot name="label">
     <span class="sr-only">dark mode toggle</span>
   </slot>
-</label>
+</button>
 
 <script>
 {
