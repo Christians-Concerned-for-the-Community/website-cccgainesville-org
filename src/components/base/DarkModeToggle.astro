@@ -40,23 +40,22 @@ const {
 ---
 
 <button type="button" {...rest} class={twMerge("base-darkmodetoggle",
-  "@container relative inline-block aspect-2/1 rounded-full border-4",
-  "bg-foreground border-foreground",
-  "dark:bg-muted-foreground dark:border-muted-foreground",
-  "transition-[background-color,border-color] duration-200 ease-in-out",
+  "@container-[size] relative inline-block aspect-2/1 rounded-full",
+  "bg-foreground dark:bg-muted-foreground",
+  "transition-[background-color] duration-250 ease-in",
   "disabled:opacity-50 **:pointer-events-none",
   className
 )}>
   {/* Slider Thumb */}
   <span aria-hidden="true" class:list={[
-    "absolute inset-0 aspect-square h-full",
+    "absolute left-[8cqb] top-[8cqb] aspect-square h-[84cqb]",
     "rounded-full shadow-sm bg-background dark:bg-muted",
     "transition-[translate,background-color] duration-200 ease-in-out",
-    "dark:translate-x-[calc(100cqw-100%)]"
+    "dark:translate-x-[calc(100cqi-16cqb-100%)]"
   ]}/>
 
   <span aria-hidden="true" class:list={[
-    "absolute left-0 top-0 aspect-square rounded-full h-full p-1 bg-transparent",
+    "absolute left-[8cqb] top-[8cqb] aspect-square rounded-full h-[84cqb] p-1 bg-transparent",
     "transition-[color,opacity] duration-250 ease-in",
     "text-foreground dark:opacity-60 dark:text-muted-dark"
   ]}>
@@ -66,8 +65,8 @@ const {
   </span>
   
   <span aria-hidden="true" class:list={[
-    "absolute left-0 top-0 aspect-square rounded-full h-full p-1 bg-transparent",
-    "translate-x-[calc(100cqw-100%)]",
+    "absolute left-[8cqb] top-[8cqb] aspect-square rounded-full h-[84cqb] p-1 bg-transparent",
+    "translate-x-[calc(100cqi-16cqb-100%)]",
     "transition-[color,opacity] duration-250 ease-in",
     "text-background opacity-60 dark:text-foreground dark:opacity-100"
   ]}>
