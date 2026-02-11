@@ -112,5 +112,6 @@
    * Example:
    *   max-w-50 xs:max-w-60 md:max-w-100
    */
-  --breakpoint-xs:      31.25rem; /* 500 px */
+  --breakpoint-2xs: 25rem;    /* 400 px */
+  --breakpoint-xs:  31.25rem; /* 500 px */
 }

@@ -153,7 +153,7 @@ const mobileIconTray = darkModeToggle || mobileIcons?.length;
 <nav id="main-navigation"
   class={twMerge([
     "max-w-(--content-max) mx-auto px-(--sp-2xs)",
-    "flex flex-wrap items-start w-full",
+    "flex sm:flex-wrap items-start w-full",
     className
   ])}>
   
@@ -214,9 +214,11 @@ const mobileIconTray = darkModeToggle || mobileIcons?.length;
         { /* Add icons to the icon tray. */
           fullIcons?.map( (icon) => (
             <li class="flex shrink-0 items-center">
-              <Link href={icon.href} variant="icon-xs" class="active:bg-muted-dark">
+              <Link href={icon.href} variant="icon"
+                class="h-[2em] active:bg-muted-dark"
+              >
                 <span class="sr-only">{icon.alt}</span>
-                <Icon name={icon.file} aria-hidden="true" size="1.5em"/>
+                <Icon name={icon.file} aria-hidden="true" class="aspect-square" size="100%"/>
               </Link>
             </li>
           ))
@@ -234,10 +236,10 @@ const mobileIconTray = darkModeToggle || mobileIcons?.length;
     </ul>
 
     {/* Menu button: visible when width < sm */}
-    <div class="flex sm:hidden shrink items-center">
+    <div class="flex sm:hidden shrink items-center max-2xs:text-base">
       <SheetTrigger asChild for="mobile-nav">
         <Button size="custom" animation="raise-boop"
-          class="h-12 px-6 text-md gap-[1ch]"
+          class="h-[2em] px-[1.5ch] xs:px-[2ch] gap-[1ch]"
         >
           Menu
           <Icon name="tabler:menu-2" aria-hidden="true" />
@@ -270,13 +272,18 @@ const mobileIconTray = darkModeToggle || mobileIcons?.length;
           {/* Icon tray */
             mobileIconTray && (
           
-            <div class="flex flex-row shrink-0 justify-around mt-(--sp-xs) pt-(--sp-xs) border-t-2 border-border">
+            <div class:list={[
+              "flex flex-row shrink-0 justify-around text-md sm-tall:text-lg",
+              "mt-(--sp-xs) pt-(--sp-xs) border-t-2 border-border"
+            ]}>
               {/* Add social icons to the icon tray. */
               mobileIcons?.map( (icon) => (
                 <li>
-                  <Link href={icon.href} variant="icon" class="active:bg-muted-dark">
+                  <Link href={icon.href} variant="icon"
+                   class="h-[2.25em] active:bg-muted-dark"
+                  >
                     <span class="sr-only">{icon.alt}</span>
-                    <Icon name={icon.file} aria-hidden="true" size={32}/>
+                    <Icon name={icon.file} aria-hidden="true" class="aspect-square" size="100%"/>
                   </Link>
                 </li>
               ))}
