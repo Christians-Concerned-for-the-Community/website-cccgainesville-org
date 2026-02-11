@@ -27,9 +27,9 @@ const {
 } = Astro.props;
 ---
 
-<section class:list={["my-(--sp-2xl-3xl) grid grid-cols-1 items-center gap-(--sp-xl-2xl) lg:grid-cols-2", className]}>
+<section class:list={["my-2xl-3xl grid grid-cols-1 items-center gap-xl-2xl lg:grid-cols-2", className]}>
   
-  <div class="flex flex-col items-start xs:items-center gap-(--sp-lg) lg:items-start">
+  <div class="flex flex-col items-start xs:items-center gap-lg lg:items-start">
     
     <h1 class="text-left text-wrap-balance xs:text-center text-6xl lg:text-left lg:text-7xl">
       <span class="bg-linear-315 from-theme-grad1 from-25% to-theme-grad2 bg-clip-text text-transparent">
@@ -38,7 +38,7 @@ const {
       Helping Neighbors
     </h1>
 
-    <div class="flex flex-col gap-(--sp-xs) sm:flex-row">
+    <div class="flex flex-col gap-xs sm:flex-row">
       <Button
         href="/services/"
         variant="primary"

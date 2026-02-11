@@ -40,15 +40,15 @@ const lists = [
 
 <PageLayout title="Documents" subtitle="Take a look through the archives." featuredImage={feat}
   class={"grid" +
-   + " grid-cols-1 gap-(--sp-3xl) items-start"
-   + " md:grid-cols-3 md:gap-(--sp-lg) md:justify-items-center"}
+   + " grid-cols-1 gap-3xl items-start"
+   + " md:grid-cols-3 md:gap-lg md:justify-items-center"}
 >
   <!-- Loop over each list of files: -->
   {lists.map((dir) => (
     
-    <section class="grid grid-cols-1 gap-(--sp-xs) items-left file-list">
+    <section class="grid grid-cols-1 gap-xs items-left file-list">
       {/* Write out title of list. */}
-      <h2 class="text-h3 mb-(--sp-sm)">{dir.title}</h2>
+      <h2 class="text-h3 mb-sm">{dir.title}</h2>
 
       {/* Loop over paths in list, write out link for each one. */}
       {dir.paths.map((doc) => (

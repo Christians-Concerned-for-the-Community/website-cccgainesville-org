@@ -23,11 +23,11 @@ const {
 } = Astro.props
 ---
 
-<section class={"flex flex-col items-center gap-(--sp-xl) rounded-xl"
-  + " my-(--sp-3xl) py-(--sp-xl) px-(--sp-sm) md:px-(--sp-2xl) text-neutral-900"
+<section class={"flex flex-col items-center gap-xl rounded-xl"
+  + " my-3xl py-xl px-sm md:px-2xl text-neutral-900"
   + " bg-linear-315 from-theme-grad3 from-25% to-theme-grad4"
 }>
-  <div class="px-(--sp-sm) md:px-(--sp-2xl)">
+  <div class="px-sm md:px-2xl">
     <h2 class="text-center text-3xl md:text-6xl">{title}</h2>
     <Button href={href} variant="primary" size="lg" animation="raise-boop">
       <slot />

@@ -9,64 +9,6 @@
 
 @layer base {
   :root {
-    /* Relative spacing scale from utopia.fyi (adapts to viewport width).
-     *
-     * Note that these vars do not replace the default number system used by Tailwind
-     * utilities for spacing, those remain fixed because they can't be customized
-     * to do a full adaptive scale.
-     * 
-     * For example, "py-8" means:
-     *    padding, y-dir, 8 * (--spacing)
-     *
-     * ...where "--spacing" defaults to 0.25 rem. The scale is always linear and fixed,
-     * you can only change the multiplier by setting --spacing to something else.
-     *
-     * Instead, to use this sliding scale, you need to use CSS variables in your
-     * calls to tailwind utility classes, instead of numbers:
-     *
-     * For example: "py-(--sp-m)" varies from "py-6.75" to "py-7.5" as the viewport
-     * gets wider.
-     *
-     * @link https://utopia.fyi/space/calculator?c=360,18,1.2,1200,20,1.25,10,2,&s=0.75|0.5|0.25,1.5|2|3|4|6,&g=s,l,xl,12
-     */
-    /* Space 3xs: 1.25 → 1.25 */
-    --sp-3xs: clamp(0.3125rem, 0.3125rem + 0vw, 0.3125rem);
-    /* Space 2xs: 2.25 → 2.5 */
-    --sp-2xs: clamp(0.5625rem, 0.5357rem + 0.119vw, 0.625rem);
-    /* Space xs: 3.5 → 3.75 */
-    --sp-xs: clamp(0.875rem, 0.8482rem + 0.119vw, 0.9375rem);
-    /* Space sm: 4.5 → 5 */
-    --sp-sm: clamp(1.125rem, 1.0714rem + 0.2381vw, 1.25rem);
-    /* Space md: 6.75 → 7.5 */
-    --sp-md: clamp(1.6875rem, 1.6071rem + 0.3571vw, 1.875rem);
-    /* Space lg: 9 → 10 */
-    --sp-lg: clamp(2.25rem, 2.1429rem + 0.4762vw, 2.5rem);
-    /* Space xl: 13.5 → 15 */
-    --sp-xl: clamp(3.375rem, 3.2143rem + 0.7143vw, 3.75rem);
-    /* Space 2xl: 18 → 20 */
-    --sp-2xl: clamp(4.5rem, 4.2857rem + 0.9524vw, 5rem);
-    /* Space 3xl: 27 → 30 */
-    --sp-3xl: clamp(6.75rem, 6.4286rem + 1.4286vw, 7.5rem);
-
-    /* One-up pairs */
-    /* Space 3xs-2xs: 1.25 → 2.5 */
-    --sp-3xs-2xs: clamp(0.3125rem, 0.1786rem + 0.5952vw, 0.625rem);
-    /* Space 2xs-xs: 2.25 → 3.75 */
-    --sp-2xs-xs: clamp(0.5625rem, 0.4018rem + 0.7143vw, 0.9375rem);
-    /* Space xs-sm: 3.5 → 5 */
-    --sp-xs-sm: clamp(0.875rem, 0.7143rem + 0.7143vw, 1.25rem);
-    /* Space sm-md: 4.5 → 7.5 */
-    --sp-sm-md: clamp(1.125rem, 0.8036rem + 1.4286vw, 1.875rem);
-    /* Space md-lg: 6.75 → 10 */
-    --sp-md-lg: clamp(1.6875rem, 1.3393rem + 1.5476vw, 2.5rem);
-    /* Space lg-xl: 9 → 15 */
-    --sp-lg-xl: clamp(2.25rem, 1.6071rem + 2.8571vw, 3.75rem);
-    /* Space xl-2xl: 13.5 → 20 */
-    --sp-xl-2xl: clamp(3.375rem, 2.6786rem + 3.0952vw, 5rem);
-    /* Space 2xl-3xl: 18 → 30 */
-    --sp-2xl-3xl: clamp(4.5rem, 3.2143rem + 5.7143vw, 7.5rem);
-
-
     /* Support for system-native emojis (added to end of each font stack below). */
     --add-emojis:
       "Apple Color Emoji",
@@ -132,6 +74,64 @@
   --text-7xl:  clamp(4.2998rem, 3.2688rem + 4.5823vw, 6.7055rem);
   --text-8xl:  clamp(5.1598rem, 3.7789rem + 6.1374vw, 8.3819rem);
   --text-9xl:  clamp(6.1917rem, 4.355rem + 8.1631vw, 10.4774rem);
+
+  /* Relative spacing scale from utopia.fyi (adapts to viewport width).
+   *
+   * Note that these vars do not replace the default number system used by Tailwind
+   * utilities for spacing, those remain fixed because they can't be customized
+   * to do a full adaptive scale.
+   * 
+   * For example, "py-8" means:
+   *    padding, y-dir, 8 * (--spacing)
+   *
+   * ...where "--spacing" defaults to 0.25 rem. The scale is always linear and fixed,
+   * you can only change the multiplier by setting --spacing to something else.
+   *
+   * Instead, to use this sliding scale, this creates named spacing variants
+   * (md, 2xs, etc) instead of numbers. You use these in the same places you
+   * would usually use the numbers, like padding, margin, or width classes.
+   *
+   * For example, you'd use "py-md" to create vertical padding that varies
+   * from "py-6.75" to "py-7.5" as the viewport gets wider.
+   *
+   * @link https://utopia.fyi/space/calculator?c=360,18,1.2,1200,20,1.25,10,2,&s=0.75|0.5|0.25,1.5|2|3|4|6,&g=s,l,xl,12
+   */
+  /* Space 3xs: 1.25 → 1.25 */
+  --spacing-3xs: clamp(0.3125rem, 0.3125rem + 0vw, 0.3125rem);
+  /* Space 2xs: 2.25 → 2.5 */
+  --spacing-2xs: clamp(0.5625rem, 0.5357rem + 0.119vw, 0.625rem);
+  /* Space xs: 3.5 → 3.75 */
+  --spacing-xs: clamp(0.875rem, 0.8482rem + 0.119vw, 0.9375rem);
+  /* Space sm: 4.5 → 5 */
+  --spacing-sm: clamp(1.125rem, 1.0714rem + 0.2381vw, 1.25rem);
+  /* Space md: 6.75 → 7.5 */
+  --spacing-md: clamp(1.6875rem, 1.6071rem + 0.3571vw, 1.875rem);
+  /* Space lg: 9 → 10 */
+  --spacing-lg: clamp(2.25rem, 2.1429rem + 0.4762vw, 2.5rem);
+  /* Space xl: 13.5 → 15 */
+  --spacing-xl: clamp(3.375rem, 3.2143rem + 0.7143vw, 3.75rem);
+  /* Space 2xl: 18 → 20 */
+  --spacing-2xl: clamp(4.5rem, 4.2857rem + 0.9524vw, 5rem);
+  /* Space 3xl: 27 → 30 */
+  --spacing-3xl: clamp(6.75rem, 6.4286rem + 1.4286vw, 7.5rem);
+
+  /* One-up pairs */
+  /* Space 3xs-2xs: 1.25 → 2.5 */
+  --spacing-3xs-2xs: clamp(0.3125rem, 0.1786rem + 0.5952vw, 0.625rem);
+  /* Space 2xs-xs: 2.25 → 3.75 */
+  --spacing-2xs-xs: clamp(0.5625rem, 0.4018rem + 0.7143vw, 0.9375rem);
+  /* Space xs-sm: 3.5 → 5 */
+  --spacing-xs-sm: clamp(0.875rem, 0.7143rem + 0.7143vw, 1.25rem);
+  /* Space sm-md: 4.5 → 7.5 */
+  --spacing-sm-md: clamp(1.125rem, 0.8036rem + 1.4286vw, 1.875rem);
+  /* Space md-lg: 6.75 → 10 */
+  --spacing-md-lg: clamp(1.6875rem, 1.3393rem + 1.5476vw, 2.5rem);
+  /* Space lg-xl: 9 → 15 */
+  --spacing-lg-xl: clamp(2.25rem, 1.6071rem + 2.8571vw, 3.75rem);
+  /* Space xl-2xl: 13.5 → 20 */
+  --spacing-xl-2xl: clamp(3.375rem, 2.6786rem + 3.0952vw, 5rem);
+  /* Space 2xl-3xl: 18 → 30 */
+  --spacing-2xl-3xl: clamp(4.5rem, 3.2143rem + 5.7143vw, 7.5rem);
 
   /* Text sizes, line heights and weights for headers.
    *

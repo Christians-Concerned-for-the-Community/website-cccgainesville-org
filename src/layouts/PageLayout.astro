@@ -90,7 +90,7 @@ switch(width) {
   {showHeading && (
     <PageHeading id="page-heading" title={title} subtitle={subtitle} featuredImage={featuredImage} />
   )}
-  <div id="after-heading" class:list={["mx-auto px-(--sp-sm-md) my-(--sp-xl-2xl)", classWidth, className]} {...htmlAttrs}>
+  <div id="after-heading" class:list={["mx-auto px-sm-md my-xl-2xl", classWidth, className]} {...htmlAttrs}>
     <slot />
   </div>
 </BaseLayout>

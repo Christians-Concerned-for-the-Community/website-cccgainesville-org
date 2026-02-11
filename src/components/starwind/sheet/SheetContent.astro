@@ -24,7 +24,7 @@ export const dialogBackdrop = tv({
 export const sheetContent = tv({
   base: [
     "starwind-dialog-content",
-    "bg-background fixed z-50 flex-col gap-(--sp-sm) shadow-lg transition ease-in-out open:flex",
+    "bg-background fixed z-50 flex-col gap-sm shadow-lg transition ease-in-out open:flex",
     "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fill-mode-forwards",
     "data-[state=closed]:duration-300 data-[state=open]:duration-500",
   ],
@@ -56,7 +56,7 @@ export const sheetContent = tv({
 export const sheetCloseButton = tv({
   base: [
     "starwind-dialog-close",
-    "absolute top-(--sp-xs) right-(--sp-xs) rounded-sm outline-none",
+    "absolute top-xs right-xs rounded-sm outline-none",
     "hover:[&_svg]:animate-rotate focus-visible:[&_svg]:animate-rotate",
   ],
 });
@@ -84,7 +84,7 @@ export const sheetCloseButton = tv({
     data-slot="sheet-close"
   >
     <slot name="icon">
-      <X aria-hidden="true" class="size-(--sp-lg)" />
+      <X aria-hidden="true" class="size-lg" />
     </slot>
     <span class="sr-only">Close</span>
   </button>

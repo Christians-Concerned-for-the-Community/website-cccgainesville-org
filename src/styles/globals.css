@@ -114,4 +114,13 @@
    */
   --breakpoint-2xs: 25rem;    /* 400 px */
   --breakpoint-xs:  31.25rem; /* 500 px */
+
+  /* Set spacing values with a 'vw' prefix for all breakpoint sizes. */
+  --spacing-vw-2xs:  var(--breakpoint-2xs);
+  --spacing-vw-xs:   var(--breakpoint-xs);
+  --spacing-vw-sm:   var(--breakpoint-sm);
+  --spacing-vw-md:   var(--breakpoint-md);
+  --spacing-vw-lg:   var(--breakpoint-lg);
+  --spacing-vw-xl:   var(--breakpoint-xl);
+  --spacing-vw-2xl:  var(--breakpoint-2xl);
 }

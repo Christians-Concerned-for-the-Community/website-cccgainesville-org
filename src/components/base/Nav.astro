@@ -152,13 +152,13 @@ const mobileIconTray = darkModeToggle || mobileIcons?.length;
 
 <nav id="main-navigation"
   class={twMerge([
-    "max-w-(--content-max) mx-auto px-(--sp-2xs)",
+    "max-w-(--content-max) mx-auto px-2xs",
     "flex sm:flex-wrap items-start w-full",
     className
   ])}>
   
   {/* Logo / Home Link */}
-  <div class="flex shrink-2 place-items-center mr-(--sp-lg)">
+  <div class="flex shrink-2 place-items-center mr-lg">
     <slot />
   </div>
   
@@ -170,7 +170,7 @@ const mobileIconTray = darkModeToggle || mobileIcons?.length;
       fullLinks.slice(0,split).map((link) => (
       <li>
         <Link href={link.href} variant="nav"
-          class="py-(--sp-2xs) px-[1ch] flex items-center"
+          class="py-2xs px-[1ch] flex items-center"
         >
           {link.label}
         </Link>
@@ -180,11 +180,7 @@ const mobileIconTray = darkModeToggle || mobileIcons?.length;
     { /* Add additional links inside a disclosure, if necessary. */
       doDisclosure && (
         <li>
-          <NavDisclosure
-            align="end"
-            class="py-(--sp-3xs)"
-
-            variant="ghost" size="custom"
+          <NavDisclosure align="end" class="py-3xs" variant="ghost" size="custom"
             buttonClass={["px-[1ch] font-normal h-full",
               "[&_svg]:transition-[scale] [&_svg]:duration-350",
               "aria-expanded:bg-muted-dark hover:aria-expanded:bg-muted-dark",
@@ -248,15 +244,15 @@ const mobileIconTray = darkModeToggle || mobileIcons?.length;
     {/* Mobile nav menu that opens when menu button is clicked. */}
     <Sheet id="mobile-nav">
       <SheetContent side="right">
-        <h2 class="text-2xl font-medium absolute top-(--sp-xs) left-(--sp-sm)">
+        <h2 class="text-2xl font-medium absolute top-xs left-sm">
           {mobileTitle}
         </h2>
-        <ul class="flex flex-col h-full mx-(--sp-sm) mb-(--sp-sm) mt-[calc(var(--sp-md)+var(--sp-sm))]">
+        <ul class="flex flex-col h-full mx-sm mb-sm mt-[calc(var(--spacing-md)+var(--spacing-sm))]">
           {/* List of nav links. */}
           <div class:list={[
             "flex flex-col justify-center grow text-lg sm-tall:text-2xl",
-            "[&_a]:py-(--sp-xs) sm-tall:[&_a]:py-(--sp-sm) [&_a]:px-(--sp-sm)",
-            "mt-(--sp-xs) pt-(--sp-xs) border-t-2 border-border"
+            "[&_a]:py-xs sm-tall:[&_a]:py-sm [&_a]:px-sm",
+            "mt-xs pt-xs border-t-2 border-border"
           ]}>
             {mobileLinks.map((link) => (
             <li>
@@ -270,9 +266,7 @@ const mobileIconTray = darkModeToggle || mobileIcons?.length;
           {/* Icon tray */
             mobileIconTray && (
           
-            <div class:list={["flex justify-around text-lg",
-              "mt-(--sp-xs) pt-(--sp-xs) border-t-2 border-border"
-            ]}>
+            <div class="flex justify-around text-lg mt-xs pt-xs border-t-2 border-border">
               {/* Add social icons to the icon tray. */
               mobileIcons?.map( (icon) => (
                 <li>
