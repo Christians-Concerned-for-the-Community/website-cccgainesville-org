@@ -40,7 +40,7 @@ const {
 ---
 
 <button type="button" {...rest} class={twMerge("base-darkmodetoggle",
-  "@container-[size] relative inline-block aspect-2/1 rounded-full",
+  "@container-[size] relative inline-block aspect-21/10 rounded-full",
   "bg-foreground dark:bg-muted-foreground",
   "transition-[background-color] duration-250 ease-in",
   "disabled:opacity-50 **:pointer-events-none",
@@ -48,16 +48,17 @@ const {
 )}>
   {/* Slider Thumb */}
   <span aria-hidden="true" class:list={[
-    "absolute left-[8cqb] top-[8cqb] aspect-square h-[84cqb]",
-    "rounded-full shadow-sm bg-background dark:bg-muted",
+    "absolute left-[8cqb] top-[8cqb] h-[84cqb] aspect-square rounded-full",
+    "shadow-sm bg-background dark:bg-muted",
     "transition-[translate,background-color] duration-200 ease-in-out",
     "dark:translate-x-[calc(100cqi-16cqb-100%)]"
   ]}/>
 
   <span aria-hidden="true" class:list={[
-    "absolute left-[8cqb] top-[8cqb] aspect-square rounded-full h-[84cqb] p-1 bg-transparent",
+    "absolute left-[8cqb] top-[8cqb] h-[84cqb] aspect-square",
+    "p-[8cqb] bg-transparent rounded-full",
     "transition-[color,opacity] duration-250 ease-in",
-    "text-foreground dark:opacity-60 dark:text-muted-dark"
+    "text-foreground dark:opacity-55 dark:text-muted-dark"
   ]}>
     <slot name="icon-off">
       <Icon name="tabler:sun" size="100%"/>
@@ -65,10 +66,10 @@ const {
   </span>
   
   <span aria-hidden="true" class:list={[
-    "absolute left-[8cqb] top-[8cqb] aspect-square rounded-full h-[84cqb] p-1 bg-transparent",
-    "translate-x-[calc(100cqi-16cqb-100%)]",
+    "absolute right-[8cqb] top-[8cqb] h-[84cqb] aspect-square",
+    "p-[8cqb] bg-transparent rounded-full",
     "transition-[color,opacity] duration-250 ease-in",
-    "text-background opacity-60 dark:text-foreground dark:opacity-100"
+    "text-background opacity-55 dark:text-foreground dark:opacity-100"
   ]}>
     <slot name="icon-on">
       <Icon name="tabler:moon" size="100%"/>
