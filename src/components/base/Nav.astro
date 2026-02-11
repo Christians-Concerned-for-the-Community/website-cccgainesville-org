@@ -164,7 +164,7 @@ const mobileIconTray = darkModeToggle || mobileIcons?.length;
   
   <div class="shrink-0 ml-auto my-auto">
     {/* Full menu: visible when width >= sm */}
-    <ul class="hidden sm:flex">
+    <ul class="hidden sm:flex text-md">
     
     { /* Main text links along the top. */
       fullLinks.slice(0,split).map((link) => (
@@ -185,7 +185,7 @@ const mobileIconTray = darkModeToggle || mobileIcons?.length;
             class="py-(--sp-3xs)"
 
             variant="ghost" size="custom"
-            buttonClass={["text-md px-[1ch] font-normal h-full",
+            buttonClass={["px-[1ch] font-normal h-full",
               "[&_svg]:transition-[scale] [&_svg]:duration-350",
               "aria-expanded:bg-muted-dark hover:aria-expanded:bg-muted-dark",
               "hover:motion-safe:[&_svg]:animate-boop",
@@ -198,7 +198,7 @@ const mobileIconTray = darkModeToggle || mobileIcons?.length;
 
             {fullLinks.slice(split).map((link) => (
               <NavDisclosureItem>
-                <Link href={link.href} variant="nav" class="text-md">
+                <Link href={link.href} variant="nav">
                   {link.label}
                 </Link>
               </NavDisclosureItem>
@@ -214,9 +214,7 @@ const mobileIconTray = darkModeToggle || mobileIcons?.length;
         { /* Add icons to the icon tray. */
           fullIcons?.map( (icon) => (
             <li class="flex shrink-0 items-center">
-              <Link href={icon.href} variant="icon"
-                class="h-[2em] active:bg-muted-dark"
-              >
+              <Link href={icon.href} variant="icon" class="active:bg-muted-dark">
                 <span class="sr-only">{icon.alt}</span>
                 <Icon name={icon.file} aria-hidden="true" class="aspect-square" size="100%"/>
               </Link>
@@ -227,7 +225,7 @@ const mobileIconTray = darkModeToggle || mobileIcons?.length;
         {/* Add dark mode toggle to the icon tray. */
           darkModeToggle && (
             <li class="flex items-center">
-              <DarkModeToggle class="h-[2em]"/>
+              <DarkModeToggle />
             </li>
           )
         }
@@ -256,8 +254,8 @@ const mobileIconTray = darkModeToggle || mobileIcons?.length;
         <ul class="flex flex-col h-full mx-(--sp-sm) mb-(--sp-sm) mt-[calc(var(--sp-md)+var(--sp-sm))]">
           {/* List of nav links. */}
           <div class:list={[
-            "flex flex-col justify-center grow",
-            "text-lg sm-tall:text-2xl [&_a]:py-(--sp-xs) sm-tall:[&_a]:py-(--sp-sm) [&_a]:px-(--sp-sm)",
+            "flex flex-col justify-center grow text-lg sm-tall:text-2xl",
+            "[&_a]:py-(--sp-xs) sm-tall:[&_a]:py-(--sp-sm) [&_a]:px-(--sp-sm)",
             "mt-(--sp-xs) pt-(--sp-xs) border-t-2 border-border"
           ]}>
             {mobileLinks.map((link) => (
@@ -272,16 +270,13 @@ const mobileIconTray = darkModeToggle || mobileIcons?.length;
           {/* Icon tray */
             mobileIconTray && (
           
-            <div class:list={[
-              "flex flex-row shrink-0 justify-around text-md sm-tall:text-lg",
+            <div class:list={["flex justify-around text-lg",
               "mt-(--sp-xs) pt-(--sp-xs) border-t-2 border-border"
             ]}>
               {/* Add social icons to the icon tray. */
               mobileIcons?.map( (icon) => (
                 <li>
-                  <Link href={icon.href} variant="icon"
-                   class="h-[2.25em] active:bg-muted-dark"
-                  >
+                  <Link href={icon.href} variant="icon" class="active:bg-muted-dark">
                     <span class="sr-only">{icon.alt}</span>
                     <Icon name={icon.file} aria-hidden="true" class="aspect-square" size="100%"/>
                   </Link>
@@ -290,7 +285,7 @@ const mobileIconTray = darkModeToggle || mobileIcons?.length;
               {/* Add dark mode toggle to the icon tray. */
               darkModeToggle && (
               <li class="flex items-center">
-                <DarkModeToggle class="h-[2.25em]"/>
+                <DarkModeToggle />
               </li>
               )}
             </div>
