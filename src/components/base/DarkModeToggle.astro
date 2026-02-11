@@ -86,15 +86,7 @@ const {
 
     // Toggle darkmode on/off throughout the site, by adding/removing a CSS class.
     // (see the "dark" custom variant near the top of styles/globals.css).
-    const doToggle = () => (document.documentElement.classList.toggle('dark', enableDark));
-    if ("startViewTransition" in document) {
-      // If browser supports view transitions, use one to smoothly fade the
-      // dark mode transition.
-      document.startViewTransition(doToggle);
-    } else {
-      // Otherwise, just toggle it all at once without any smoothness.
-      doToggle();
-    }
+    document.documentElement.classList.toggle('dark', enableDark);
 
     // Persist this state in local storage for future navigation.
     localStorage.setItem("colorTheme", enableDark? "dark" : "light");
