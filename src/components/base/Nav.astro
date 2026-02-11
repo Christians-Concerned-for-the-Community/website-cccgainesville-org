@@ -209,10 +209,10 @@ const mobileIconTray = darkModeToggle || mobileIcons?.length;
       
         { /* Add icons to the icon tray. */
           fullIcons?.map( (icon) => (
-            <li class="flex items-center">
-              <Link href={icon.href} variant="icon" class="active:bg-muted-dark">
+            <li>
+              <Link href={icon.href} variant="icon" class="active:bg-muted-dark aspect-square">
                 <span class="sr-only">{icon.alt}</span>
-                <Icon name={icon.file} aria-hidden="true" class="aspect-square" size="100%"/>
+                <Icon name={icon.file} aria-hidden="true" size="100%"/>
               </Link>
             </li>
           ))
@@ -220,7 +220,7 @@ const mobileIconTray = darkModeToggle || mobileIcons?.length;
 
         {/* Add dark mode toggle to the icon tray. */
           darkModeToggle && (
-            <li class="flex items-center">
+            <li>
               <DarkModeToggle />
             </li>
           )
@@ -269,16 +269,16 @@ const mobileIconTray = darkModeToggle || mobileIcons?.length;
             <div class="flex justify-around text-lg mt-xs pt-xs border-t-2 border-border">
               {/* Add social icons to the icon tray. */
               mobileIcons?.map( (icon) => (
-                <li class="flex items-center">
-                  <Link href={icon.href} variant="icon" class="active:bg-muted-dark">
+                <li>
+                  <Link href={icon.href} variant="icon" class="active:bg-muted-dark aspect-square">
                     <span class="sr-only">{icon.alt}</span>
-                    <Icon name={icon.file} aria-hidden="true" class="aspect-square" size="100%"/>
+                    <Icon name={icon.file} aria-hidden="true" size="100%"/>
                   </Link>
                 </li>
               ))}
               {/* Add dark mode toggle to the icon tray. */
               darkModeToggle && (
-              <li class="flex items-center">
+              <li>
                 <DarkModeToggle />
               </li>
               )}
