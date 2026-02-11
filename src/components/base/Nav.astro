@@ -209,7 +209,7 @@ const mobileIconTray = darkModeToggle || mobileIcons?.length;
       
         { /* Add icons to the icon tray. */
           fullIcons?.map( (icon) => (
-            <li class="flex shrink-0 items-center">
+            <li class="flex items-center">
               <Link href={icon.href} variant="icon" class="active:bg-muted-dark">
                 <span class="sr-only">{icon.alt}</span>
                 <Icon name={icon.file} aria-hidden="true" class="aspect-square" size="100%"/>
@@ -269,7 +269,7 @@ const mobileIconTray = darkModeToggle || mobileIcons?.length;
             <div class="flex justify-around text-lg mt-xs pt-xs border-t-2 border-border">
               {/* Add social icons to the icon tray. */
               mobileIcons?.map( (icon) => (
-                <li>
+                <li class="flex items-center">
                   <Link href={icon.href} variant="icon" class="active:bg-muted-dark">
                     <span class="sr-only">{icon.alt}</span>
                     <Icon name={icon.file} aria-hidden="true" class="aspect-square" size="100%"/>
