@@ -164,7 +164,7 @@ const mobileIconTray = darkModeToggle || mobileIcons?.length;
   
   <div class="shrink-0 ml-auto my-auto">
     {/* Full menu: visible when width >= sm */}
-    <ul class="hidden sm:flex text-md">
+    <ul class="hidden sm:flex text-md [&>li]:flex [&>li]:place-items-center">
     
     { /* Main text links along the top. */
       fullLinks.slice(0,split).map((link) => (
@@ -205,7 +205,7 @@ const mobileIconTray = darkModeToggle || mobileIcons?.length;
     }
 
       {fullIconTray && (        
-      <div class="flex space-x-[1.25ch] pl-[1ch] border-l-2 border-border">
+      <div class="flex space-x-[1.25ch] pl-[1ch] border-l-2 border-border [&>li]:flex [&>li]:items-center">
       
         { /* Add icons to the icon tray. */
           fullIcons?.map( (icon) => (
@@ -247,11 +247,14 @@ const mobileIconTray = darkModeToggle || mobileIcons?.length;
         <h2 class="text-2xl font-medium absolute top-xs left-sm">
           {mobileTitle}
         </h2>
-        <ul class="flex flex-col h-full mx-sm mb-sm mt-[calc(var(--spacing-md)+var(--spacing-sm))]">
+        <ul class:list={[
+          "flex flex-col h-full",
+          "mx-sm mb-sm mt-[calc(var(--spacing-md)+var(--spacing-sm))]"
+        ]}>
           {/* List of nav links. */}
           <div class:list={[
             "flex flex-col justify-center grow text-lg sm-tall:text-2xl",
-            "[&_a]:py-xs sm-tall:[&_a]:py-sm [&_a]:px-sm",
+            "[&_a]:py-xs sm-tall:[&_a]:py-sm",
             "mt-xs pt-xs border-t-2 border-border"
           ]}>
             {mobileLinks.map((link) => (
@@ -266,7 +269,7 @@ const mobileIconTray = darkModeToggle || mobileIcons?.length;
           {/* Icon tray */
             mobileIconTray && (
           
-            <div class="flex justify-around text-lg mt-xs pt-xs border-t-2 border-border">
+            <div class="flex justify-around text-lg mt-xs pt-xs border-t-2 border-border [&>li]:flex [&>li]:place-items-center">
               {/* Add social icons to the icon tray. */
               mobileIcons?.map( (icon) => (
                 <li>
