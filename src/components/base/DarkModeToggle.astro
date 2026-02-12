@@ -40,38 +40,30 @@ const {
 ---
 
 <button type="button" {...rest} class={twMerge("base-darkmodetoggle",
-  "@container-[size] relative inline-block h-[2em] aspect-21/10 rounded-full",
-  "bg-foreground dark:bg-muted-foreground",
-  "disabled:opacity-50 **:pointer-events-none",
+  "@container-[size] inline-grid h-[2em] aspect-21/10 rounded-full",
+  "bg-gray-400 dark:bg-muted-foreground disabled:opacity-50 **:pointer-events-none",
   className
 )}>
-  {/* Slider Thumb */}
-  <span aria-hidden="true" class:list={[
-    "absolute left-[8cqh] top-[8cqh] h-[84cqh] aspect-square rounded-full",
-    "shadow-sm bg-background dark:bg-muted",
-    "transition-[translate] duration-200 ease-out",
-    "dark:translate-x-[calc(100cqw-100cqh)]"
+  {/* Slider thumb */}
+  <div aria-hidden="true" class:list={[
+    "col-start-1 row-start-1 flex items-center justify-start",
+    "mt-[10cqh] size-[80cqh] ms-[10cqh] dark:ms-[calc(100cqw-90cqh)]",
+    "transition-[margin-inline-start] duration-200 ease-out",
+    "rounded-full shadow-sm bg-gray-100 dark:bg-muted",
   ]}/>
 
-  <span aria-hidden="true" class:list={[
-    "absolute left-[8cqh] top-[8cqh] h-[84cqh] aspect-square",
-    "p-[8cqh] bg-transparent rounded-full",
-    "text-foreground dark:opacity-55 dark:text-muted-dark"
-  ]}>
+  {/* Overlay icons */}
+  <div aria-hidden="true"
+   class="col-start-1 row-start-1 flex justify-between p-[20cqh] rounded-full">
     <slot name="icon-off">
-      <Icon name="tabler:sun" size="100%"/>
+      <Icon name="tabler:sun" size="60cqh"
+       class="text-foreground dark:opacity-55 dark:text-muted-dark"/>
     </slot>
-  </span>
-  
-  <span aria-hidden="true" class:list={[
-    "absolute right-[8cqh] top-[8cqh] h-[84cqh] aspect-square",
-    "p-[8cqh] bg-transparent rounded-full",
-    "text-background opacity-55 dark:text-foreground dark:opacity-100"
-  ]}>
     <slot name="icon-on">
-      <Icon name="tabler:moon" size="100%"/>
+      <Icon name="tabler:moon" size="60cqh"
+       class="text-background opacity-55 dark:text-foreground dark:opacity-100"/>
     </slot>
-  </span>
+  </div>
 
   <slot name="label">
     <span class="sr-only">dark mode toggle</span>
@@ -80,13 +72,20 @@ const {
 
 <script>
 {
+  const cl = document.documentElement.classList;
   const handleClick = (e: Event) => {
     const toggle = e.target as HTMLElement;
     const enableDark = toggle.getAttribute("aria-pressed") !== "true";
 
-    // Toggle darkmode on/off throughout the site, by adding/removing a CSS class.
-    // (see the "dark" custom variant near the top of styles/globals.css).
-    document.documentElement.classList.toggle('dark', enableDark);
+    /*
+      Toggle darkmode on/off throughout the site, by adding/removing a CSS class.
+      (see the "dark" custom variant near the top of styles/globals.css).
+
+      If browser supports view transitions, use it to smoothly fade to/from
+      dark mode.
+    */
+    const doToggle = () => (cl.toggle('dark', enableDark));
+    (document.startViewTransition)? document.startViewTransition(doToggle) : doToggle();
 
     // Persist this state in local storage for future navigation.
     localStorage.setItem("colorTheme", enableDark? "dark" : "light");
@@ -100,7 +99,7 @@ const {
   }
 
   const initDarkModeToggles = () => {
-    const enableDarkStr = document.documentElement.classList.contains("dark").toString();
+    const enableDarkStr = cl.contains("dark").toString();
     document.querySelectorAll(".base-darkmodetoggle").forEach((toggle) => {
       // Initialize checked state to match current darkmode setting.
       toggle.setAttribute("aria-pressed", enableDarkStr);
