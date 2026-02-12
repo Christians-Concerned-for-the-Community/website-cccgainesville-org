@@ -30,11 +30,29 @@ import { Icon } from "astro-icon/components";
 import { twMerge } from "tailwind-merge";
 
 type Props = Omit<HTMLAttributes<"button">, "role" | "type"> & {
+  /**
+   * Icon to display in the "off" position.
+   * 
+   * Lookup performed by astro-icon module.
+   * 
+   * @default none
+   */
+  iconOff?: string,
 
+  /**
+   * Icon to display in the "on" position.
+   * 
+   * Lookup performed by astro-icon module.
+   * 
+   * @default none
+   */
+  iconOn?: string,
 };
 
 const {
   class: className,
+  iconOff,
+  iconOn,
   ...rest
 } = Astro.props;
 ---
@@ -53,17 +71,23 @@ const {
   ]}/>
 
   {/* Overlay icons */}
-  <div aria-hidden="true"
-   class="col-start-1 row-start-1 flex justify-between p-[20cqh] rounded-full">
-    <slot name="icon-off">
-      <Icon name="tabler:sun" size="60cqh"
-       class="text-foreground dark:opacity-55 dark:text-muted-dark"/>
-    </slot>
-    <slot name="icon-on">
-      <Icon name="tabler:moon" size="60cqh"
-       class="text-background opacity-55 dark:text-foreground dark:opacity-100"/>
-    </slot>
-  </div>
+  { (iconOff || iconOn) && (
+    <div aria-hidden="true"
+    class="col-start-1 row-start-1 flex justify-between p-[20cqh] rounded-full">
+      {iconOff? (
+        <Icon name={iconOff} size="60cqh"
+         class="text-foreground dark:opacity-55 dark:text-muted-dark"/>
+      ) : (
+        <span class="grow"/>
+      )}
+      {iconOn? (
+        <Icon name={iconOn} size="60cqh"
+         class="text-background opacity-55 dark:text-foreground dark:opacity-100"/>
+      ) : (
+        <span class="grow"/>
+      )}
+    </div>
+  )}
 
   <slot name="label">
     <span class="sr-only">dark mode toggle</span>
