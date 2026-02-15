@@ -9,18 +9,20 @@
   }
 }
 
-@utility animate-raise {
-  transition: all 200ms var(--ease-fast);
-  translate: 0 -3px;
-}
-
 
 @theme inline {
   --ease-fast: cubic-bezier(0.165, 0.84, 0.44, 1);
 
+  --animate-raise: raise 200ms var(--ease-fast) forwards;
+
   --animate-boop: boop 500ms var(--ease-fast) forwards;
 
   --animate-rotate: rotate 500ms var(--ease-fast) forwards;
+
+  @keyframes raise {
+    0% { translate: 0 0; }
+    100% { translate: 0 -0.1875rem}
+  }
 
   @keyframes boop {
     0% {

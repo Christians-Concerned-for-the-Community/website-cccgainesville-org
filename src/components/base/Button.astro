@@ -1,0 +1,163 @@
+---
+import { Icon } from "astro-icon/components";
+import type { HTMLAttributes } from "astro/types";
+import { twMerge } from "tailwind-merge";
+import { tv, type VariantProps } from "tailwind-variants";
+
+/**
+ * Button component.
+ * 
+ * By default, the button is sized appropriately for the current font size -
+ * so it can be resized by applying classes like 'text-lg'.
+ * 
+ * If you make the button a link by providing 'href', the underlying HTML
+ * element will be <a> instead of <button>, for accessibility.
+ */
+interface Props extends
+  HTMLAttributes<"button">,
+  Omit<HTMLAttributes<"a">, "type">,
+  Omit<VariantProps<typeof button>, "content"> {
+
+  /**
+   * Text to display inside the button.
+   * 
+   * You can omit this and only provide one of the icons instead, though
+   * make sure you set "alt" to something descriptive for screenreaders if
+   * you do so.
+   */
+  label?: string,
+
+  /**
+   * Text description for screen-readers.
+   * 
+   * Only use this if the button doesn't already contain visible descriptive
+   * text, or if the visible descriptive text is something useless like "Read more!".
+   */
+  alt?: string,
+
+  /**
+   * Icon to display inside the button, inline after any contents.
+   * 
+   * Icon lookup will be performed by the astro-icon library.
+   */
+  icon?: string,
+
+  /**
+   * Icon to display inside the button, inline before any contents.
+   * 
+   * Icon lookup will be performed by the astro-icon library.
+   */
+  iconBefore?: string,
+
+  /**
+   * Any additional classes or overrides to pass to the embedded icon(s).
+   */
+  iconClass?: string,
+}
+
+const {
+  label,
+  variant,
+  animation,
+  alt,
+  iconBefore,
+  icon,
+  iconClass,
+  class: className,
+  ...rest
+} = Astro.props;
+
+const content = label? "hasText" : "iconOnly";
+
+const iconClassName = twMerge("h-[1.5em] w-auto pointer-events-none", iconClass);
+
+export const button = tv({
+  base: [
+    "inline-flex items-center justify-center font-medium whitespace-nowrap",
+    "h-[2em] gap-[0.8ch] rounded-sm shadow-xs border-solid border-[0.15em]",
+    "transition-[color,background-color] duration-200"
+  ],
+  variants: {
+    /* Don't try to set this yourself, this variable is hardcoded above. */
+    content: {
+      hasText: "h-[3em] px-[1.5ch]",
+      iconOnly: "h-[2em] px-[0.25em]",
+    },
+    variant: {
+      /* Default button: swap the site-default background/foreground */
+      default: [
+        "text-background bg-foreground border-foreground/80",
+        "hocus:bg-foreground/90 active:bg-foreground/80",
+      ],
+
+      /* These buttons use specific colors defined in our theme, both normally and on hover.*/
+      primary: [
+        "text-primary-foreground bg-primary border-primary-accent",
+        "hocus:bg-primary/90 activated:bg-primary-accent",
+      ],
+      secondary: [
+        "text-secondary-foreground bg-secondary border-secondary-accent",
+        "hocus:bg-secondary/90 activated:bg-secondary-accent",
+      ],
+      info: [
+        "text-info-foreground bg-info border-info/80",
+        "hocus:bg-info/90 activated:bg-info/80",
+      ],
+      success: [
+        "text-success-foreground bg-success border-success/80",
+        "hocus:bg-success/90 activated:bg-success/80",
+      ],
+      warning: [
+        "text-warning-foreground bg-warning border-warning/80",
+        "hocus:bg-warning/90 activated:bg-warning/80",
+      ],
+      error: [
+        "text-error-foreground bg-error border-error/80",
+        "hocus:bg-error/90 activated:bg-error/80"
+      ],
+      
+      /* These buttons use the current color normally, but change their look to a specific color on hover. */
+      outline: [
+        "hocus:text-foreground border-input",
+        "hocus:bg-muted activated:bg-muted-dark",
+      ],
+      ghost: [
+        "hocus:text-foreground shadow-none border-none",
+        "hocus:bg-muted activated:bg-muted-dark",
+      ],
+    },
+    animation: {
+      "none": "",
+      "rotate": "motion-safe:hocus:[&_svg]:animate-rotate",
+      "raise": "motion-safe:hocus:animate-raise",
+      "boop": "motion-safe:hocus:[&_svg]:animate-boop",
+      "raise-boop": [
+        "motion-safe:hocus:animate-raise",
+        "motion-safe:hocus:[&_svg]:animate-boop",
+      ],
+    },
+  },
+  defaultVariants: {
+    variant: "default",
+    animation: "raise-boop"
+  },
+});
+
+const Tag = Astro.props.href ? "a" : "button";
+---
+
+<Tag class={button({ content, variant, animation, class: className })} {...rest}>
+  {iconBefore && (
+    <Icon name={iconBefore} aria-hidden="true" class={iconClassName}/>
+  )}
+
+  {label}
+  
+  {icon && (
+    <Icon name={icon} aria-hidden="true" class={iconClassName}/>
+  )}
+
+  {alt && (
+    <span class="sr-only">{alt}</span>
+  )}
+</Tag>

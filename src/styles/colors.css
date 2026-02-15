@@ -99,17 +99,17 @@
     var(--tw-light, var(--color-primary-100))
     var(--tw-dark,  var(--color-primary-500));
   --color-primary-foreground:
-    var(--tw-light, var(--color-neutral-900))
-    var(--tw-dark,  var(--color-neutral-100));
+    var(--tw-light, var(--color-neutral-800))
+    var(--tw-dark,  var(--color-neutral-50));
   --color-primary-accent:
     var(--tw-light, var(--color-primary-500))
     var(--tw-dark,  var(--color-primary-100));
   --color-secondary: /* background*/
     var(--tw-light, var(--color-secondary-100))
-    var(--tw-dark, var(--color-secondary-500));
+    var(--tw-dark,  var(--color-secondary-500));
   --color-secondary-foreground:
-    var(--tw-light, hsl(214.3, 30.4%, 4.5%))
-    var(--tw-dark,  hsl(0 0% 100%));
+    var(--tw-light, var(--color-neutral-800))
+    var(--tw-dark,  var(--color-neutral-50));
   --color-secondary-accent:
     var(--tw-light, var(--color-secondary-500))
     var(--tw-dark,  var(--color-secondary-100));
@@ -183,22 +183,14 @@
   --color-banner:
     var(--tw-light, var(--color-neutral-800))
     var(--tw-dark,  var(--color-neutral-850));
-  
-  --color-theme-icon:
-    var(--tw-light, var(--color-neutral-800))
-    var(--tw-dark,  var(--color-neutral-100));
-  --color-theme-link:
+  --color-link:
     var(--tw-light, var(--color-primary-500))
     var(--tw-dark,  var(--color-primary-100));
-  --color-theme-link-hover:
+  --color-link-hover:
     var(--tw-light, var(--color-primary-400))
     var(--tw-dark,  var(--color-primary-200));
-  --color-theme-border:
-    var(--tw-light, var(--color-neutral-900))
-    var(--tw-dark,  var(--color-neutral-100));
-  --color-theme-subtle:
-    var(--tw-light, var(--color-neutral-300))
-    var(--tw-dark,  var(--color-neutral-800));
+
+
   --color-theme-grad1:
     var(--tw-light, var(--color-neutral-700))
     var(--tw-dark,  var(--color-secondary-100));

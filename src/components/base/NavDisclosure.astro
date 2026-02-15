@@ -34,11 +34,12 @@
 import type { HTMLAttributes } from "astro/types";
 import { tv, type VariantProps } from "tailwind-variants";
 import { twMerge } from 'tailwind-merge'
-import { Button } from '@/components/starwind/button'
+import { Button } from '@/components/base'
 
 type Props =
   Omit<HTMLAttributes<"ul">, "id"> &
-  Pick<VariantProps<typeof Button>, "variant" | "size" | "animation"> &
+  Pick<VariantProps<typeof Button>,
+    "variant" | "animation" | "label" | "iconBefore" | "icon" | "iconClass"> &
 {
   /**
    * Alignment of the disclosure with respect to the trigger button.
@@ -54,13 +55,13 @@ type Props =
 
 export const disclosure = tv({
   base: [
-    "absolute z-50 min-w-36 mt-3xs p-3xs flex flex-col",
+    "absolute z-50 min-w-0 mt-3xs p-3xs flex flex-col",
     "bg-popover text-popover-foreground shadow-md border rounded-md",
     "overflow-x-hidden overflow-y-auto transition-discrete duration-350",
     "peer-aria-[expanded=true]:visible peer-aria-[expanded=false]:invisible",
     "peer-aria-[expanded=true]:animate-in peer-aria-[expanded=false]:animate-out peer-aria-[expanded=false]:fill-mode-forwards",
-    "fade-in motion-safe:zoom-in-95 motion-safe:slide-in-from-top-4",
-    "fade-out motion-safe:zoom-out-95 motion-safe:slide-out-to-top-4",
+    "fade-in motion-safe:slide-in-from-top-4",
+    "fade-out motion-safe:slide-out-to-top-4",
   ],
   variants: {
     align: {
@@ -78,7 +79,11 @@ const {
   class: className,
   align = "start",
   variant = "ghost",
-  size = "lg",
+  animation,
+  label,
+  iconBefore,
+  icon,
+  iconClass,
   buttonClass,
   ...rest
 } = Astro.props;
@@ -89,8 +94,12 @@ const {
   <Button type="button"
     aria-haspopup="true"
     aria-expanded="false"
+    label={label}
     variant={variant}
-    size={size}
+    animation={animation}
+    icon={icon}
+    iconBefore={iconBefore}
+    iconClass={iconClass}
     class={twMerge("peer", buttonClass)}
   >
     <slot name="button"/>

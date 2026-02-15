@@ -4,8 +4,7 @@ import { twMerge } from 'tailwind-merge';
 
 import type { HTMLAttributes } from 'astro/types';
 
-import { Link, NavDisclosure, NavDisclosureItem, DarkModeToggle } from "@/components/base"
-import { Button } from "@/components/starwind/button";
+import { Link, NavDisclosure, NavDisclosureItem, DarkModeToggle, Button } from "@/components/base"
 import { Sheet, SheetContent, SheetTrigger, } from "@/components/starwind/sheet";
 
 
@@ -166,65 +165,54 @@ const mobileIconTray = darkModeToggle || mobileIcons?.length;
     {/* Full menu: visible when width >= sm */}
     <ul class="hidden sm:flex text-md [&>li]:flex [&>li]:place-items-center">
     
-    { /* Main text links along the top. */
-      fullLinks.slice(0,split).map((link) => (
-      <li>
-        <Link href={link.href} variant="nav"
-          class="py-2xs px-[1ch] flex items-center"
-        >
-          {link.label}
-        </Link>
-      </li>
+    {/* Main text links along the top. */}
+    {fullLinks.slice(0,split).map((link) => (
+    <li>
+      <Link href={link.href} variant="nav"
+        class="py-2xs px-[1ch] flex items-center"
+      >
+        {link.label}
+      </Link>
+    </li>
     ))}
 
-    { /* Add additional links inside a disclosure, if necessary. */
-      doDisclosure && (
-        <li>
-          <NavDisclosure align="end" class="py-3xs" variant="ghost" size="custom"
-            buttonClass={["px-[1ch] font-normal h-full",
-              "[&_svg]:transition-[scale] [&_svg]:duration-350",
-              "aria-expanded:bg-muted-dark hover:aria-expanded:bg-muted-dark",
-              "hover:motion-safe:[&_svg]:animate-boop",
-              "aria-expanded:[&_svg]:-scale-y-100"]}
-          >
-            <Fragment slot="button">
-              {disclosureLabel}
-              <Icon name="tabler:chevrons-down" aria-hidden="true"/>
-            </Fragment>
-
-            {fullLinks.slice(split).map((link) => (
-              <NavDisclosureItem>
-                <Link href={link.href} variant="nav">
-                  {link.label}
-                </Link>
-              </NavDisclosureItem>
-            ))}
-          </NavDisclosure>
-        </li>
-      )
-    }
+    {/* Add additional links inside a disclosure, if necessary. */}
+    {doDisclosure && (
+    <li>
+      <NavDisclosure align="end" variant="ghost" animation="boop"
+        label={disclosureLabel}
+        icon="tabler:chevrons-down"
+        buttonClass="group px-[1ch] font-normal h-full"
+        iconClass="-ml-[0.5ch] transition-[scale] duration-350 group-aria-expanded:-scale-y-100"
+      >
+        {fullLinks.slice(split).map((link) => (
+        <NavDisclosureItem>
+          <Link href={link.href} variant="nav">
+            {link.label}
+          </Link>
+        </NavDisclosureItem>
+        ))}
+      </NavDisclosure>
+    </li>
+    )}
 
       {fullIconTray && (        
       <div class="flex space-x-[1.25ch] pl-[1ch] border-l-2 border-border [&>li]:flex [&>li]:items-center">
       
-        { /* Add icons to the icon tray. */
-          fullIcons?.map( (icon) => (
-            <li>
-              <Link href={icon.href} variant="icon" class="active:bg-muted-dark aspect-square">
-                <span class="sr-only">{icon.alt}</span>
-                <Icon name={icon.file} aria-hidden="true" size="100%"/>
-              </Link>
-            </li>
-          ))
-        }
+        {/* Add icons to the icon tray. */}
+        {fullIcons?.map( (icon) => (
+        <li>
+          <Button href={icon.href} alt={icon.alt} icon={icon.file}
+                  animation="rotate" variant="outline"/>
+        </li>
+        ))}
 
-        {/* Add dark mode toggle to the icon tray. */
-          darkModeToggle && (
-            <li>
-              <DarkModeToggle iconOff="tabler:sun" iconOn="tabler:moon"/>
-            </li>
-          )
-        }
+        {/* Add dark mode toggle to the icon tray. */}
+        {darkModeToggle && (
+        <li>
+          <DarkModeToggle iconOff="tabler:sun" iconOn="tabler:moon"/>
+        </li>
+        )}
       </div>
       )}
     </ul>
@@ -232,12 +220,7 @@ const mobileIconTray = darkModeToggle || mobileIcons?.length;
     {/* Menu button: visible when width < sm */}
     <div class="flex sm:hidden shrink items-center max-2xs:text-base">
       <SheetTrigger asChild for="mobile-nav">
-        <Button size="custom" animation="raise-boop"
-          class="h-[2em] px-[1.5ch] xs:px-[2ch] gap-[1ch]"
-        >
-          Menu
-          <Icon name="tabler:menu-2" aria-hidden="true" />
-        </Button>
+        <Button animation="raise-boop" label="Menu" type="button" icon="tabler:menu-2"/>
       </SheetTrigger>
     </div>
 
@@ -266,26 +249,23 @@ const mobileIconTray = darkModeToggle || mobileIcons?.length;
             ))}
           </div>
 
-          {/* Icon tray */
-            mobileIconTray && (
-          
-            <div class="flex justify-around text-lg mt-xs pt-xs border-t-2 border-border [&>li]:flex [&>li]:place-items-center">
-              {/* Add social icons to the icon tray. */
-              mobileIcons?.map( (icon) => (
-                <li>
-                  <Link href={icon.href} variant="icon" class="active:bg-muted-dark aspect-square">
-                    <span class="sr-only">{icon.alt}</span>
-                    <Icon name={icon.file} aria-hidden="true" size="100%"/>
-                  </Link>
-                </li>
-              ))}
-              {/* Add dark mode toggle to the icon tray. */
-              darkModeToggle && (
-              <li>
-                <DarkModeToggle iconOff="tabler:sun" iconOn="tabler:moon"/>
-              </li>
-              )}
-            </div>
+          {/* Icon tray */}
+          {mobileIconTray && (
+          <div class="flex justify-around text-lg mt-xs pt-xs border-t-2 border-border [&>li]:flex [&>li]:place-items-center">
+            {/* Add social icons to the icon tray. */}
+            {mobileIcons?.map( (icon) => (
+            <li>
+              <Button href={icon.href} alt={icon.alt} icon={icon.file}
+                      animation="rotate" variant="outline"/>
+            </li>
+            ))}
+            {/* Add dark mode toggle to the icon tray. */}
+            {darkModeToggle && (
+            <li>
+              <DarkModeToggle iconOff="tabler:sun" iconOn="tabler:moon"/>
+            </li>
+            )}
+          </div>
           )}
         </ul>
       </SheetContent>

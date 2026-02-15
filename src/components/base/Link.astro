@@ -1,15 +1,25 @@
 ---
+import { Icon } from "astro-icon/components";
 import type { HTMLAttributes } from "astro/types";
 import { tv, type VariantProps } from "tailwind-variants";
 
 /**
  * Link Component
- * @description A versatile link component that handles links with proper accessibility
+ * @description A component that handles links with proper accessibility
  * 
- * Will add icons and screen-reader annotations for links that open in a new tab.
+ * This is for links that are styled as text (links in prose, or links in a nav
+ * bar). If you want a link that looks like a button, use the Button component instead.
+ * 
+ * For links that open in a new tab, the appropriate icon and screen-reader annotation
+ * will be added automatically for you.
+ * 
+ * For nav-style links, automatically handles adding aria-current and a visible text
+ * decoration if the link points to the current page.
  */
 
-interface Props extends HTMLAttributes<"a">, VariantProps<typeof link> {
+interface Props extends
+  HTMLAttributes<"a">,
+  Omit<VariantProps<typeof link>, "isCurrentPage"> {
   /**
    * Additional classes to apply to the link
    */
@@ -21,22 +31,10 @@ interface Props extends HTMLAttributes<"a">, VariantProps<typeof link> {
   href: string
 
   /**
-   * Screen-reader text override for the link.
-   * 
-   * Only use this if the link text is too generic ("read more", etc), or if
-   * the link is icon-only. Even for the icon-only case, you should prefer to
-   * use a span marked "sr-only" instead of aria-label.
-   * 
-   * Don't add descriptive text here to indicate that the link opens in a new tab,
-   * that will be automatically appended for you when you set openNew = true.
-   */
-  "aria-label"?: string
-
-  /**
    * Whether to open in a new tab or not.
    * 
    * If true, will add a standard "opens in new tab" icon,
-   * as well as some screen-reader text.
+   * as well as some screen-reader text. You can override
    * 
    * You should ALMOST NEVER use this, opening in new tabs is bad for
    * accessibility, and really not that great for usability in general.
@@ -52,25 +50,24 @@ interface Props extends HTMLAttributes<"a">, VariantProps<typeof link> {
    * 
    * @default false
    */
-  openAsNew?: boolean
+  openAsNew?: boolean,
 
   /**
-   * Whether to show the "opens in new tab" icon or not.
-   * Only affects anything if openNew = true.
+   * If you wish to use a different icon for the external link indicator,
+   * specify it here.
    * 
-   * You should only set this to false for icon-only links, it's generally
-   * considered bad for accessibility, otherwise.
-   * @default true
+   * Icon lookup will be performed by the astro-icon library.
+   * 
+   * @default "tabler:external-link"
    */
-  showIcon?: boolean
+  externalLinkIcon?: string
 }
 
 const {
   class: className,
   href,
-  "aria-label": ariaLabel,
   openAsNew = false,
-  showIcon = true,
+  externalLinkIcon = "tabler:external-link",
   variant,
   ...htmlAttrs
 } = Astro.props;
@@ -83,9 +80,6 @@ let autoAttrs: Record<string,string> = {};
 if (openAsNew) {
   autoAttrs.target = '_blank';
 }
-if (ariaLabel) {
-  autoAttrs["aria-label"] = ariaLabel;
-}
 if (isExternal) {
   // Disable automatic prefetching for external links.
   autoAttrs["data-astro-prefetch"] = "false";
@@ -96,23 +90,23 @@ if (isCurrentPage) {
 
 
 export const link = tv({
-  base: ["gap-2xs items-center justify-center-safe duration-200 ease-fast"],
+  base: [
+    "inline-flex gap-[0.25ch] items-center",
+    "underline underline-offset-[0.25em]",
+    "duration-200 ease-fast",
+  ],
   variants: {
     variant: {
-      text: ["inline-flex [&_svg]:inline underline whitespace-nowrap",
-        "transition:[color,text-decoration-thickness,text-decoration-offset]",
-        "text-theme-link hover:text-theme-link-hover",
-        "decoration-from-font hover:decoration-[1px]",
-        "underline-offset-[0.25em] hover:underline-offset-[0.125em]"
+      text: [
+        "transition-[color,text-decoration-thickness,text-underline-offset]",
+        "text-link hocus:text-link-hover active:bg-current/10",
+        "decoration-from-font hocus:decoration-[1px]",
+        "hocus:underline-offset-[0.125em]",
       ],
-      nav: ["flex underline-offset-3 underline transition:[text-decoration-color]",
+      nav: [
+        "transition-[background-color,text-decoration-color]",
         "active:bg-muted-dark",
-        "decoration-transparent hover:decoration-inherit",
-      ],
-      icon: [
-        "inline-flex h-[1.75em] p-[0.175em] shadow-sm rounded-md bg-transparent transition-colors",
-        "border border-input hover:border-muted-foreground",
-        "motion-safe:hover:[&_svg]:animate-rotate motion-safe:focus-visible:[&_svg]:animate-rotate"
+        "decoration-transparent hocus:decoration-inherit",
       ],
     },
     isCurrentPage: {
@@ -132,22 +126,8 @@ export const link = tv({
    {...htmlAttrs}
 >
   <slot />
-  {openAsNew && showIcon && (
-    <slot name="icon">
-      <svg
-        aria-hidden="true"
-        width="1em"
-        height="1em"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      >
-        <path d="M15 3h6v6m-11 5L21 3m-3 10v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-      </svg>
-    </slot>
+  {openAsNew && (
+    <Icon name={externalLinkIcon} size="1em" aria-hidden="true"/>
     <span class="sr-only">Opens in a new tab</span>
   )}
 </a>

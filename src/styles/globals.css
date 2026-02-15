@@ -6,7 +6,30 @@
 @import "./typography.css";
 @import "./animations.css";
 
+/* Variant that only applies the selected classes when the "dark" class
+ * has been added to the root of the document (i.e., when dark mode is enabled).
+ *
+ * Example usage: text black normally, but white in dark mode:
+ *   text-black dark:text-white
+ */
 @custom-variant dark (&:where(.dark, .dark *));
+
+/* We often want to apply the same animations or color changes on either
+ * mouse hover or keyboard focus. This custom variant lets us specify
+ * the changes once, so we don't have to repeat ourselves.
+ *
+ * i.e.,
+ *    hover:text-foreground focus-visible:text-foreground
+ * becomes:
+ *    hocus:text-foreground
+ */
+@custom-variant hocus (&:hover, &:focus-visible);
+
+/* Makes specifying the active state of buttons a lot easier, since different
+ * kinds of buttons might have different ways of indicating whether or not they
+ * are active.
+ */
+@custom-variant activated (&:active, &[aria-expanded="true"], &[aria-pressed="true"]);
 
 /* Breakpoints for different heights on mobile.
  * Sometimes, mobile varies much more by height than width, so being able
@@ -21,12 +44,6 @@
  */
 /* sm-tall: height >= 750 px, width < 640 px */
 @custom-variant sm-tall (@media (height >= 46.875rem) and (width < 40rem));
-
-@utility def-ring {
-  outline: 0.125rem dashed var(--color-bw) !important;
-  outline-offset: 0.125rem !important;
-  box-shadow: none !important;
-}
 
 :root {
   /*
@@ -56,6 +73,12 @@
       50rem -> 800 px -> 200
      */
     --content-narrow: 50rem;
+
+    /* Default outline width. */
+    --outline-width-default: 0.125rem;
+
+    /* Default outline offset. */
+    --outline-offset-default: 0.125rem;
   }
 
   html {
@@ -63,16 +86,42 @@
       Use animated scrolls when clicking in-page links, instead of sudden jumps.
     */
     scroll-behavior: smooth;
+
+    /*
+      Needed to prevent annoying layout shifts when opening dialogs, such as the
+      sidebar nav menu.
+     */
+    scrollbar-gutter: stable;
   }
 
   /*
-    Keyboard focus indicator - a dashed outline box.
-    Set this globally to enforce a consistent look for all focusable elements.
-    Have to use !important to override existing focus styling in Starwind UI.
+    Default styling for keyboard-focused elements.
    */
   *:focus-visible {
-    @apply def-ring;
+    outline: var(--outline-width-default) dashed var(--color-bw);
+    outline-offset: var(--outline-offset-default);
+    box-shadow: none;
+    &:invalid {
+      outline-color: var(--color-error);
+    }
     border-radius: var(--radius-lg);
+  }
+
+  /*
+    Default styling for disabled elements.
+   */
+  *:disabled {
+    pointer-events: none;
+    opacity: 50%;
+  }
+
+  /*
+    Default styling for invalid elements (when not keyboard focused).
+   */
+  *:invalid:not(:focus-visible) {
+    outline: var(--outline-width-default) dotted var(--color-error);
+    outline-offset: var(--outline-offset-default);
+    box-shadow: none;
   }
 
   /*
