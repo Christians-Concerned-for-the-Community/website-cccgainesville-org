@@ -28,8 +28,16 @@
 /* Makes specifying the active state of buttons a lot easier, since different
  * kinds of buttons might have different ways of indicating whether or not they
  * are active.
+ *
+ * For this to work with popover trigger buttons, you need a container enclosing
+ * both the button and the popover, with the "group" class added to it.
  */
-@custom-variant activated (&:active, &[aria-expanded="true"], &[aria-pressed="true"]);
+@custom-variant activated (
+  &:active,
+  &:is(:where(.group):has(*:is([open], :popover-open, :open)) *),
+  &[aria-expanded="true"],
+  &[aria-pressed="true"]
+);
 
 /* Breakpoints for different heights on mobile.
  * Sometimes, mobile varies much more by height than width, so being able
@@ -92,6 +100,15 @@
       sidebar nav menu.
      */
     scrollbar-gutter: stable;
+  }
+
+  /*
+     Remove default popover styles.
+     See: https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/anchor#using_anchor_to_position_popovers
+   */
+  [popover] {
+    margin: 0;
+    inset: auto;
   }
 
   /*
