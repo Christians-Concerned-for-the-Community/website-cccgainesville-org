@@ -1,34 +1,18 @@
 ---
 /**
  * A disclosure (hidden contents revealed by a button trigger), specialized
- * for navigation menus.
+ * for navigation menus. Uses the native popover API, which handles accessibility
+ * for us without needing javascript.
+ * 
+ * TODO: this uses the CSS Anchor API to position the popover. This is supported
+ * across all major browsers, but only as of January 2026, so we should probably
+ * implement a fallback for the next year or two.
  * 
  * This is not a flyout menu that reveals itself on hover/focus - those are
  * bad for accessibility, because they require tabbing through submenus to
  * traverse the entire nav. Instead, you have to activate the trigger button with
  * enter/space to expand this disclosure, before you can tab down into it.
  * 
- * Note that there's a lot of conflicting advice online about how to best
- * implement nav menus with regards to accessibility details. This component
- * is loosely based off of the behavior of the Example Disclosure Navigation Menu
- * from the APG here:
- *   https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/examples/disclosure-navigation/#javascriptandcsssourcecode
- * 
- * I intentionally did not implement the optional arrow key navigation - this
- * component only uses tab and shift-tab to move around, default browser button
- * behavior (enter/space) to activate triggers, and escape or tabbing out to
- * close menus.
- * 
- * Most advice I could find does not recommend setting the "menu" and "menuitem"
- * roles for basic nav. Generally, menu/menu-item roles and the associated
- * keyboard semantics are really intended for full desktop-style menus (e.g.,
- * the menu bar in Google Docs), not website nav.
- * 
- * aria-controls was intentionally left out - while it's used in the example,
- * this attribute isn't really supported in modern screen readers, because in
- * practice it just added noise without providing any useful additional info.
- * This is especially true when the disclosure contents immediately follow the
- * triggering button in the DOM, as in this component.
  */
 
 import type { HTMLAttributes } from "astro/types";
@@ -55,25 +39,27 @@ type Props =
 
 export const disclosure = tv({
   base: [
-    "absolute z-50 min-w-0 mt-3xs p-3xs flex flex-col",
+    "mt-[0.25em] p-[0.35em] flex flex-col",
     "bg-popover text-popover-foreground shadow-md border rounded-md",
     "overflow-x-hidden overflow-y-auto transition-discrete duration-350",
-    "peer-aria-[expanded=true]:visible peer-aria-[expanded=false]:invisible",
-    "peer-aria-[expanded=true]:animate-in peer-aria-[expanded=false]:animate-out peer-aria-[expanded=false]:fill-mode-forwards",
-    "fade-in motion-safe:slide-in-from-top-4",
-    "fade-out motion-safe:slide-out-to-top-4",
+    "open:block not-open:hidden  open:fade-in not-open:fade-out",
+    "open:animate-in not-open:animate-out not-open:fill-mode-forwards",
+    "open:motion-safe:slide-in-from-top-4 not-open:motion-safe:slide-out-to-top-4",
   ],
   variants: {
     align: {
-      start: "motion-safe:slide-in-from-left-1 motion-safe:slide-out-to-left-1 left-0",
-      center: "motion-safe:-translate-x-1/2 left-1/2",
-      end: "motion-safe:slide-in-from-right-1 motion-safe:slide-out-to-right-1 right-0",
+      start: "top-[anchor(bottom)] left-[anchor(left)]",
+      center: "[position-area:bottom_center]",
+      end: "top-[anchor(bottom)] right-[anchor(right)]",
     },
   },
   defaultVariants: {
     align: "start",
   },
 })
+
+// see middleware.ts for the "id" function.
+const disclosureId = Astro.locals.id("base-nav-disclosure");
 
 const {
   class: className,
@@ -89,84 +75,22 @@ const {
 } = Astro.props;
 ---
 
-<div class="relative base-navdisclosure h-full">
+<div class="base-navdisclosure h-full group">
 
-  <Button type="button"
-    aria-haspopup="true"
-    aria-expanded="false"
+  <Button type="button" popovertarget={disclosureId}
     label={label}
     variant={variant}
     animation={animation}
     icon={icon}
     iconBefore={iconBefore}
     iconClass={iconClass}
-    class={twMerge("peer", buttonClass)}
-  >
-    <slot name="button"/>
-  </Button>
+    class={twMerge(buttonClass)}
+  />
 
-  <ul
+  <ul id={disclosureId} popover="auto"
     class={disclosure({ align, class: className })}
     {...rest}
   >
     <slot />
   </ul>
 </div>
-
-<script>
-{
-  // Handle (mouse / touch / keyboard) activation of the trigger button.
-  function handleButtonClick(this: HTMLElement) {
-    this.ariaExpanded = (this.ariaExpanded === 'true')? 'false' : 'true';
-  }
-
-  // This will catch escape key presses that occur when either the trigger
-  // or anything inside the disclosure is focused.
-  function handleKeyDown(this: HTMLElement, e: KeyboardEvent) {
-    if (e.key === 'Escape') {
-      const button = this.querySelector(':scope > button');
-      if (button?.ariaExpanded === 'true') {
-        // Close the disclosure.
-        button.ariaExpanded = 'false';
-        // Make sure focus winds up back on the trigger button.
-        if (button != e.target) {
-          // @ts-expect-error (focusVisible is experimental, but harmless if unsupported
-          button.focus({ focusVisible: true});
-        }
-        // Prevent browser from reacting to the escape key itself.
-        e.preventDefault();
-        // If we have nested disclosures, only close the level we're currently in,
-        // not all levels.
-        e.stopPropagation();
-      }
-    }
-  }
-
-  // Close the menu when focus has left the disclosure container (trigger & contents).
-  // This could happen by tabbing out with the keyboard, or by clicking outside
-  // the disclosure.
-  function handleFocusOut(this: HTMLElement, e: FocusEvent) {
-    if (!this.contains(e.relatedTarget as Node)) {
-      const button = this.querySelector(':scope > button');
-      // If disclosure is open, close it.
-      if (button?.ariaExpanded === 'true') {
-        button.ariaExpanded = 'false';
-      }
-    }
-  }
-
-  const initNavDisclosures = () => {
-    document.querySelectorAll(".base-navdisclosure").forEach((item) => {
-      const container = item as HTMLElement;
-      const button = container.querySelector(':scope > button'); 
-
-      button?.addEventListener("click", handleButtonClick);
-      container.addEventListener('keydown', handleKeyDown);      
-      container.addEventListener('focusout', handleFocusOut);
-    });
-  }
-
-  initNavDisclosures();
-  document.addEventListener("astro:after-swap", initNavDisclosures);
-}
-</script>

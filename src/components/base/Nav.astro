@@ -182,8 +182,8 @@ const mobileIconTray = darkModeToggle || mobileIcons?.length;
       <NavDisclosure align="end" variant="ghost" animation="boop"
         label={disclosureLabel}
         icon="tabler:chevrons-down"
-        buttonClass="group px-[1ch] font-normal h-full"
-        iconClass="-ml-[0.5ch] transition-[scale] duration-350 group-aria-expanded:-scale-y-100"
+        buttonClass="px-[1ch] font-normal h-full activated:[&>svg]:-scale-y-100"
+        iconClass="-ml-[0.5ch] transition-[scale] duration-350"
       >
         {fullLinks.slice(split).map((link) => (
         <NavDisclosureItem>
