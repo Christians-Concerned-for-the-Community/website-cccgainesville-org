@@ -4,15 +4,19 @@
  * for navigation menus. Uses the native popover API, which handles accessibility
  * for us without needing javascript.
  * 
- * TODO: this uses the CSS Anchor API to position the popover. This is supported
- * across all major browsers, but only as of January 2026, so we should probably
- * implement a fallback for the next year or two.
- * 
  * This is not a flyout menu that reveals itself on hover/focus - those are
  * bad for accessibility, because they require tabbing through submenus to
  * traverse the entire nav. Instead, you have to activate the trigger button with
  * enter/space to expand this disclosure, before you can tab down into it.
  * 
+ * NOTE: this uses the CSS Anchor and Popover API's, which are fairly recent
+ * additions:
+ *     Popover: Baseline Jan 2025 (86.67% coverage as of Feb 2026)
+ *     Anchor: Baseline Jan 2026 (76.65% coverage as of Feb 2026)
+ * 
+ * To support users that don't have updated browsers, a fallback is implemented
+ * in Nav.astro that bypasses the disclosure if the Anchor API isn't supported.
+ * You should be able to remove this fallback in Jan 2028.
  */
 
 import type { HTMLAttributes } from "astro/types";
@@ -34,7 +38,12 @@ type Props =
   /**
    * Additional classes to apply to the trigger button.
    */
-  buttonClass?: string | string[]
+  buttonClass?: string | string[];
+
+  /**
+   * Additional classes to apply to the container that holds the trigger and disclosure.
+   */
+  containerClass?: string | string[];
 }
 
 export const disclosure = tv({
@@ -71,11 +80,12 @@ const {
   icon,
   iconClass,
   buttonClass,
+  containerClass,
   ...rest
 } = Astro.props;
 ---
 
-<div class="base-navdisclosure h-full group">
+<div class={twMerge("base-navdisclosure h-full group", containerClass)}>
 
   <Button type="button" popovertarget={disclosureId}
     label={label}
