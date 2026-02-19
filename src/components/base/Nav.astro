@@ -1,5 +1,4 @@
 ---
-import { Icon } from 'astro-icon/components'
 import { twMerge } from 'tailwind-merge';
 
 import type { HTMLAttributes } from 'astro/types';
@@ -39,7 +38,7 @@ export interface NavIcon {
    * Might be something like "facebook" to resolve a custom icon named "facebook.svg"
    * in src/assets/icons, or a reference to an installed icon set like "tabler:facebook".
    */
-  file: string,
+  icon: string,
   /**
    * URL of the icon link's target.
    */
@@ -47,17 +46,7 @@ export interface NavIcon {
   /**
    * Alternate text to use for screen readers.
    */
-  alt: string,
-  /**
-   * If true, this icon link will not be included on the full-width nav bar.
-   * @default false
-   */
-  excludeFromFull?: boolean,
-  /**
-   * If true, this icon link will not be included on the mobile nav panel.
-   * @default false
-   */
-  excludeFromMobile?: boolean,
+  alt: string
 }
 
 /**
@@ -78,23 +67,21 @@ export interface Props extends HTMLAttributes<"nav"> {
   /**
    * List of navigation links.
    */
-  links: NavLink[],
+  links: NavLink[];
 
   /**
-   * List of custom icons for the navigation icon tray.
-   * 
-   * These are usually used for social links.
+   * List of social icons for the mobile nav menu icon tray.
    */
-  icons?: NavIcon[],
+  icons?: NavIcon[];
 
   /**
    * Maximum number of visible links that can be displayed side-by-side in the
    * full nav bar. If you provide more links than this, the remainder will be put
    * in a disclosure at the end of the list.
    * 
-   * @default 4
+   * @default 5
    */
-  maxVisibleLinks?: number,
+  maxVisibleLinks?: number;
 
   /**
    * Label to use for the disclosure containing any links that wouldn't fit on
@@ -102,7 +89,7 @@ export interface Props extends HTMLAttributes<"nav"> {
    * 
    * @default More
    */
-  disclosureLabel?: string,
+  disclosureLabel?: string;
 
   /**
    * Include a dark mode toggle button at the end of the icon tray.
@@ -123,7 +110,7 @@ const {
   class: className,
   links,
   icons,
-  maxVisibleLinks = 4,
+  maxVisibleLinks = 5,
   disclosureLabel = 'More',
   darkModeToggle = true,
   mobileTitle = "Main Menu",
@@ -135,9 +122,6 @@ const {
 const fullLinks = links.filter((link) => !link.excludeFromFull);
 const mobileLinks = links.filter((link) => !link.excludeFromMobile);
 
-const fullIcons = icons?.filter((icon) => !icon.excludeFromFull);
-const mobileIcons = icons?.filter((icon) => !icon.excludeFromMobile);
-
 // If we have more links than we can visibly display on the full nav, add a
 // disclosure menu to the end of the list to contain the overflow.
 const doDisclosure = (fullLinks.length > maxVisibleLinks);
@@ -145,14 +129,13 @@ const split = doDisclosure? maxVisibleLinks - 1 : fullLinks.length;
 
 // If we need to display at least one icon, add icon trays for full and mobile
 // nav.
-const fullIconTray = darkModeToggle || fullIcons?.length;
-const mobileIconTray = darkModeToggle || mobileIcons?.length;
+const mobileIconTray = darkModeToggle || icons?.length;
 ---
 
 <nav id="main-navigation"
   class={twMerge([
     "max-w-(--content-max) mx-auto px-2xs",
-    "flex sm:flex-wrap items-start w-full",
+    "flex sm:flex-wrap gap-y-sm items-center w-full",
     className
   ])}>
   
@@ -183,7 +166,7 @@ const mobileIconTray = darkModeToggle || mobileIcons?.length;
           label={disclosureLabel}
           icon="tabler:chevrons-down"
           containerClass="not-supports-position-anchor:hidden!"
-          buttonClass="px-[1ch] font-normal h-full activated:[&>svg]:-scale-y-100"
+          buttonClass="px-[1ch] shadow-none font-normal h-full activated:[&>svg]:-scale-y-100"
           iconClass="-ml-[0.5ch] transition-[scale] duration-350"
         >
           {fullLinks.slice(split).map((link) => (
@@ -206,26 +189,6 @@ const mobileIconTray = darkModeToggle || mobileIcons?.length;
         </Link>
       </li>
       ))}
-
-      {fullIconTray && (        
-      <div class="flex space-x-[1.25ch] pl-[1ch] border-l-2 border-border [&>li]:flex [&>li]:items-center">
-      
-        {/* Add icons to the icon tray. */}
-        {fullIcons?.map( (icon) => (
-        <li>
-          <Button href={icon.href} alt={icon.alt} icon={icon.file}
-                  animation="rotate" variant="outline"/>
-        </li>
-        ))}
-
-        {/* Add dark mode toggle to the icon tray. */}
-        {darkModeToggle && (
-        <li>
-          <DarkModeToggle iconOff="tabler:sun" iconOn="tabler:moon"/>
-        </li>
-        )}
-      </div>
-      )}
     </ul>
 
     {/* Menu button: visible when width < sm */}
@@ -264,10 +227,10 @@ const mobileIconTray = darkModeToggle || mobileIcons?.length;
           {mobileIconTray && (
           <div class="flex justify-around text-lg mt-xs pt-xs border-t-2 border-border [&>li]:flex [&>li]:place-items-center">
             {/* Add social icons to the icon tray. */}
-            {mobileIcons?.map( (icon) => (
+            {icons?.map((item) => (
             <li>
-              <Button href={icon.href} alt={icon.alt} icon={icon.file}
-                      animation="rotate" variant="outline"/>
+              <Button href={item.href} alt={item.alt} icon={item.icon}
+                      animation="rotate" variant="ghost"/>
             </li>
             ))}
             {/* Add dark mode toggle to the icon tray. */}

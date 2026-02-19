@@ -1,0 +1,10 @@
+[
+  { "icon": "facebook",
+    "href": "https://facebook.com/cccgainesville",
+    "alt":  "Go to our Facebook page"
+  },
+  { "icon": "instagram",
+    "href": "https://instagram.com/cccmainoffice",
+    "alt":  "Go to our Instagram page"
+  }
+]

@@ -1,58 +1,9 @@
 ---
 import { Icon } from 'astro-icon/components'
-import { Nav, type NavLink, type NavIcon } from "@/components/base"
+import { Button, Nav } from "@/components/base"
 
-export interface NavData {
-  maxVisibleLinks?: number,
-  darkModeToggle?: boolean,
-  disclosureLabel?: string,
-  links: NavLink[],
-  icons?: NavIcon[],
-}
-
-const nav: NavData = {
-  maxVisibleLinks: 5,
-  darkModeToggle: true,
-  disclosureLabel: "More",
-  links: [
-    { label: "Home",
-      href: "/",
-    },
-    { label: "Services",
-      href:  "/services/",
-    },
-    { label: "Give",
-      href:  "/give/",
-    },
-    { label: "Contact",
-      href:  "/contact/",
-    },
-    { label: "Volunteer",
-      href:  "/volunteer/",
-    },
-    { label: "News",
-      href:  "/news/"
-    },
-    { label: "Our Values",
-      href:  "/our-values/"
-    },
-    { label: "Documents",
-      href:  "/documents/"
-    },
-  ],
-  icons: [
-    { file: 'facebook',
-      href: "https://facebook.com/cccgainesville",
-      alt:  "Go to our Facebook page",
-      excludeFromFull: true
-    },
-    { file: 'instagram',
-      href: "https://instagram.com/cccmainoffice",
-      alt:  "Go to our Instagram page",
-      excludeFromFull: true
-    },
-  ]
-}
+import nav from '@/assets/nav.json'
+import socials from '@/assets/socials.json'
 
 
 ---
@@ -72,15 +23,13 @@ const nav: NavData = {
   </a>
 
   {/* Navigation bar on wide screens, disappearing side nav panel on narrow screens. */}
-  <Nav links={nav.links} icons={nav.icons} maxVisibleLinks={nav.maxVisibleLinks}>
+  <Nav links={nav} icons={socials} maxVisibleLinks={5}>
     {/* Logo / Home Link */}
-    <a href="/" class:list={["p-1 hover:bg-muted active:bg-muted-dark",
-      "duration-200 transition-[background-color]"
-    ]}>
-      <Icon name="ccc-logo-wide" aria-hidden="true" width="100%" height="100%"
-        class="block aspect-488/120 text-foreground"
-      />
-      <span class="sr-only">Christians Concerned for the Community</span>
-    </a>
+    <Button href="/" variant="ghost" icon="ccc-logo-wide"
+      class="shadow-none h-[4em]"
+      iconClass="block aspect-488/120 h-full text-foreground"
+      alt="Home - CCC Logo"
+      animation="none"
+    />
   </Nav>
 </header>

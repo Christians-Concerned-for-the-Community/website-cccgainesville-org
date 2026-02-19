@@ -1,24 +1,31 @@
 ---
-import { Link } from '@/components/base'
+import { Button, DarkModeToggle, type NavIcon } from '@/components/base'
+
+import socials from '@/assets/socials.json'
 
 /**
  * Footer Component
  *
  * @description A component that displays the footer of the website
  */
-const currentYear = new Date().getFullYear()
+const currentYear = new Date().getFullYear();
+const navIcons = socials as NavIcon[];
 ---
 
-<footer id="footer" class="py-md border-t border-muted">
-  <section class="mx-auto max-w-(--content-max) px-md">
-    <h2 class="sr-only">Footer</h2>
-    <div class="flex flex-wrap gap-x-3xl gap-y-xs justify-between text-md">
-      <p>
-        &copy; {currentYear} - Christians Concerned for the Community
-      </p>
-      <p>
-        Made with ❤️ by <Link href="https://github.com/stephen-sorley">Stephen Sorley</Link>.
-      </p>
+<footer id="footer" class="text-md py-md border-t border-muted not-dark:bg-gray-100">
+  <section class:list={[
+    "flex flex-wrap-reverse items-center justify-around max-w-(--content-max)",
+    "px-md gap-x-[3ch] gap-y-[0.8em]"
+  ]}>
+    <p>
+      &copy; {currentYear} ❤️ Christians Concerned for the Community
+    </p>
+    <div class="hidden sm:flex items-center gap-[1.25ch]">
+      {navIcons.map((item) => (
+        <Button href={item.href} alt={item.alt} icon={item.icon}
+                animation="rotate" variant="ghost"/>
+      ))}
+      <DarkModeToggle iconOff="tabler:sun" iconOn="tabler:moon"/>
     </div>
   </section>
 </footer>
