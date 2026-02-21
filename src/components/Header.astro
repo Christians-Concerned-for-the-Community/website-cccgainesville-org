@@ -1,6 +1,6 @@
 ---
 import { Icon } from 'astro-icon/components'
-import { Button, Nav } from "@/components/base"
+import { Nav } from "@/components/base"
 
 import nav from '@/assets/nav.json'
 import socials from '@/assets/socials.json'
@@ -25,11 +25,13 @@ import socials from '@/assets/socials.json'
   {/* Navigation bar on wide screens, disappearing side nav panel on narrow screens. */}
   <Nav links={nav} icons={socials} maxVisibleLinks={5}>
     {/* Logo / Home Link */}
-    <Button href="/" variant="ghost" icon="ccc-logo-wide"
-      class="shadow-none h-[4em]"
-      iconClass="block aspect-488/120 h-full text-foreground"
-      alt="Home - CCC Logo"
-      animation="none"
-    />
+      <a href="/" class:list={["p-1 hocus:bg-muted active:bg-muted-dark",
+        "duration-200 transition-[background-color]"
+      ]}>
+      <Icon name="ccc-logo-wide" aria-hidden="true" width="100%" height="100%"
+        class="block aspect-488/120 text-foreground"
+      />
+      <span class="sr-only">Home - CCC Logo</span>
+    </a>
   </Nav>
 </header>
