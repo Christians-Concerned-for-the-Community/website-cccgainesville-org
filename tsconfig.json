@@ -12,10 +12,7 @@
         "src/*"
       ],
       "@icons/*": [
-        "node_modules/@tabler/icons/icons/outline"
-      ],
-      "@icons-filled/*": [
-        "node_modules/@tabler/icons/icons/filled"
+        "node_modules/@tabler/icons/icons/outline/*"
       ]
     }
   }

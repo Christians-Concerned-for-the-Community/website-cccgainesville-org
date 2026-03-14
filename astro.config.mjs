@@ -18,9 +18,7 @@ const viteConfig = {
     alias: {
       '@':       abspath('./src'),
       '@public': abspath('./public'),
-
-      '@icons':        abspath('./node_modules/@tabler/icons/icons/outline'),
-      '@icons-filled': abspath('./node_modules/@tabler/icons/icons/filled'),
+      '@icons': abspath('./node_modules/@tabler/icons/icons/outline'),
     },
   },
 }
