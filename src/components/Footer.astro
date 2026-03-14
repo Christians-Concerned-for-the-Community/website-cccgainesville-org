@@ -12,12 +12,12 @@ const currentYear = new Date().getFullYear();
 const navIcons = socials as NavIcon[];
 ---
 
-<footer id="footer" class="text-md py-md border-t border-muted not-dark:bg-gray-100">
+<footer id="footer" class="flex justify-center text-md py-md border-t border-muted not-dark:bg-gray-100">
   <section class:list={[
-    "flex flex-wrap-reverse items-center justify-around max-w-(--content-max)",
+    "flex max-w-(--content-max) w-full items-center justify-center sm:flex-wrap-reverse sm:justify-around",
     "px-md gap-x-[3ch] gap-y-[0.8em]"
   ]}>
-    <p>
+    <p class="sm:text-center">
       &copy; {currentYear} ❤️ Christians Concerned for the Community
     </p>
     <div class="hidden sm:flex items-center gap-[1.25ch]">
