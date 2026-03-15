@@ -26,9 +26,6 @@ const viteConfig = {
 // Note: site can be overriden by using the "--site" flag when building.
 //       (we do this for staging builds)
 export default defineConfig({
-  prefetch: {
-    prefetchAll: true,
-  },
   security: {
     /*
     // This still doesn't work, as of Astro 6.0.0-beta-1 (1/18/2026). Keep trying, though. 
