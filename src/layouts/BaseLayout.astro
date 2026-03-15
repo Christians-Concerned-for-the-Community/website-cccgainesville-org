@@ -1,11 +1,51 @@
 ---
 import '@/styles/globals.css'
+import type { HTMLAttributes } from 'astro/types'
 import { SiteMeta } from '@/components/base'
 import Header from '@/components/Header.astro'
 import Footer from '@/components/Footer.astro'
 
 // Used for preloading.
 const fontPath = "/fonts/AtkinsonHyperlegibleNext-VariableFont_wght.woff2";
+
+/**
+ * BaseLayout Component
+ *
+ * @description contains common code for every page on the website
+ */
+interface Props extends HTMLAttributes<"main"> {
+  /**
+   * The title of the page
+   */
+  title?: string,
+  
+  /**
+   * Site / page description (used in site metadata tags)
+   */
+  description?: string,
+
+  /**
+   * Author of page (used in site metadata tags).
+   */
+  author?: string,
+
+  /**
+   * Always hide this page from search engines, even on production builds.
+   * @default false
+   */
+  alwaysHide?: boolean,
+
+  /**
+   * If provided, preload this image. Useful for big header or hero images.
+   */
+  preloadImg?: string,
+
+  /**
+   * Anchor to use for render blocking. Page transition will not commence
+   * until the element with this ID has finished loading.
+   */
+  renderBlock?: string,
+}
 
 const {
   title = 'Christians Concerned for the Community',
