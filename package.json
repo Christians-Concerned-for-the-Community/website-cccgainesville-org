@@ -1,7 +1,7 @@
 {
   "name": "website-cccgainesville-org",
   "description": "Main website for Christians Concerned for the Community",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "type": "module",
   "scripts": {
     "dev": "astro build && astro dev",

@@ -4,8 +4,9 @@
  * using a name string.
  */
 
-import FileUnknown from "./assets/file-unknown.svg"
-import type { HTMLAttributes, SvgComponent } from "astro/types";
+import ErrorIcon from "./assets/file-unknown.svg"
+import type { HTMLAttributes } from "astro/types";
+import { iconMap } from "@/icons.ts";
 
 interface Props extends Omit< HTMLAttributes<"svg">, "aria-hidden" > {
   /**
@@ -16,6 +17,7 @@ interface Props extends Omit< HTMLAttributes<"svg">, "aria-hidden" > {
    * If no prefix was added, icons will be searched for in src/assets/icons.
    * 
    * Supported libraries:
+   *   - local: same as having no prefix
    *   - tabler: requires @tabler/icons package, pulls from "outline" dir
    *   - tabler-filled: requires @tabler/icons package, pulls from "filled" dir
    * 
@@ -35,50 +37,17 @@ const {
   ...rest
 } = Astro.props;
 
-
 let sizeAttrs: Record<string,string> = {};
 if (size) {
   sizeAttrs.width = size;
   sizeAttrs.height = size;
 }
 
-// Split lib and file name (ex: "tabler:phone").
-let [libName, fileName] = name.split(':',2).map(str => str.trim());
-if (fileName == null) {
-  // If no ":" was present, use the whole string as the file name, and set lib to local.
-  fileName = libName;
-  libName = "local";
-} else if (libName.length === 0) {
-  // If ":" was present but the library name was empty (e.g., ":phone"), set lib to local.
-  libName = "local";
-}
+const icon = iconMap.get(name.includes(":")? name : "local:"+name);
+const IconComponent = icon ?? ErrorIcon;
 
-let IconComponent: SvgComponent = FileUnknown;
-try {
-  switch(libName) {
-    case "tabler":
-      ({default: IconComponent} = await
-        import(`../../../node_modules/@tabler/icons/icons/outline/${fileName}.svg`));
-      break;
-    
-    case "tabler-filled":
-      ({default: IconComponent} = await
-        import(`../../../node_modules/@tabler/icons/icons/filled/${fileName}.svg`));
-      break;
-
-    case "local":
-      ({default: IconComponent} = await
-        import(`../../assets/icons/${fileName}.svg`));
-      break;
-    
-    default:
-      console.warn(`[base/Icon]: Unrecognized icon library "${libName}".`);
-      break;
-  };
-} catch(e) {
-  if (import.meta.env.DEV) {
-    console.warn(`[base/Icon]: Icon "${name}" not found. Error:\n${e}`);
-  }
+if (!icon) {
+  console.warn(`[base/Icon]: Icon "${name}" not found.`);
 }
 ---
 

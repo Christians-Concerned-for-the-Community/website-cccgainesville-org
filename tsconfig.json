@@ -4,12 +4,16 @@
     "baseUrl": ".",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
+    "verbatimModuleSyntax": true,
     "paths": {
       "@/*": [
         "src/*"
       ],
       "@public/*": [
         "public/*"
+      ],
+      "@node_modules/*": [
+        "node_modules/*"
       ]
     }
   }
