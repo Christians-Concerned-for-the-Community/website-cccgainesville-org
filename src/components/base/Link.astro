@@ -1,5 +1,5 @@
 ---
-import { Icon } from "astro-icon/components";
+import { Icon } from "@/components/base";
 import type { HTMLAttributes } from "astro/types";
 import { tv, type VariantProps } from "tailwind-variants";
 
@@ -56,7 +56,7 @@ interface Props extends
    * If you wish to use a different icon for the external link indicator,
    * specify it here.
    * 
-   * Icon lookup will be performed by the astro-icon library.
+   * Icon lookup will be performed by the base/icon library.
    * 
    * @default "tabler:external-link"
    */
@@ -127,7 +127,7 @@ export const link = tv({
 >
   <slot />
   {openAsNew && (
-    <Icon name={externalLinkIcon} size="1em" aria-hidden="true"/>
+    <Icon name={externalLinkIcon} size="1em"/>
     <span class="sr-only">Opens in a new tab</span>
   )}
 </a>

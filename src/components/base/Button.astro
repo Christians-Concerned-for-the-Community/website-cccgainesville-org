@@ -1,5 +1,5 @@
 ---
-import { Icon } from "astro-icon/components";
+import { Icon } from "@/components/base";
 import type { HTMLAttributes } from "astro/types";
 import { twMerge } from "tailwind-merge";
 import { tv, type VariantProps } from "tailwind-variants";
@@ -38,14 +38,14 @@ interface Props extends
   /**
    * Icon to display inside the button, inline after any contents.
    * 
-   * Icon lookup will be performed by the astro-icon library.
+   * Icon lookup will be performed by the base/icon component.
    */
   icon?: string,
 
   /**
    * Icon to display inside the button, inline before any contents.
    * 
-   * Icon lookup will be performed by the astro-icon library.
+   * Icon lookup will be performed by the base/icon component.
    */
   iconBefore?: string,
 
@@ -152,13 +152,13 @@ const Tag = Astro.props.href ? "a" : "button";
 
 <Tag class={button({ content, variant, animation, class: className })} {...rest}>
   {iconBefore && (
-    <Icon name={iconBefore} aria-hidden="true" class={iconClassName}/>
+    <Icon name={iconBefore} class={iconClassName}/>
   )}
 
   {label}
   
   {icon && (
-    <Icon name={icon} aria-hidden="true" class={iconClassName}/>
+    <Icon name={icon} class={iconClassName}/>
   )}
 
   {alt && (

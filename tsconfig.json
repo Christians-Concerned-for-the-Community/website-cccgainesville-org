@@ -5,14 +5,11 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "paths": {
-      "@public/*": [
-        "public/*"
-      ],
       "@/*": [
         "src/*"
       ],
-      "@icons/*": [
-        "node_modules/@tabler/icons/icons/outline/*"
+      "@public/*": [
+        "public/*"
       ]
     }
   }

@@ -1,18 +1,24 @@
 ---
-import { Button } from "@/components/starwind/button";
+import { Button } from "@/components/base";
 import PageLayout from '@/layouts/PageLayout.astro'
-import Rocket from '@icons/rocket.svg'
 ---
 
-<PageLayout title="404" subtitle="Page Not Found" alwaysHide={true}>
+<PageLayout title="404" subtitle="Page Not Found" alwaysHide={true} showHeading={false}
+ class="text-lg">
   
-  <p class="text-2xl mb-sm">
+  <h2 class="mb-lg">404 - Not Found</h2>
+
+  <p class="mb-sm">
     This page does not exist. Don't worry though, we got you.
   </p>
   
-  <Button href="/" variant="primary" animation="raise-boop">
-    Let's get you home, Astronaut
-    <Rocket aria-hidden="true" width="1.5rem" height="1.5rem" />
-  </Button>
+  <Button
+    label="Let's get you home, Astronaut"
+    icon="tabler:rocket"
+    href="/"
+    variant="primary"
+    animation="raise-boop"
+    class="text-base"
+  />
 
 </PageLayout>

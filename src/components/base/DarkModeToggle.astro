@@ -26,14 +26,14 @@
 */
 
 import type { HTMLAttributes } from "astro/types";
-import { Icon } from "astro-icon/components";
+import { Icon } from "@/components/base";
 import { twMerge } from "tailwind-merge";
 
 type Props = Omit<HTMLAttributes<"button">, "role" | "type"> & {
   /**
    * Icon to display in the "off" position.
    * 
-   * Lookup performed by astro-icon module.
+   * Lookup performed by the base/icon component.
    * 
    * @default none
    */
@@ -42,7 +42,7 @@ type Props = Omit<HTMLAttributes<"button">, "role" | "type"> & {
   /**
    * Icon to display in the "on" position.
    * 
-   * Lookup performed by astro-icon module.
+   * Lookup performed by base/icon component.
    * 
    * @default none
    */

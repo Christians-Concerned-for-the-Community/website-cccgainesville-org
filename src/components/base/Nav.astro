@@ -33,10 +33,10 @@ export interface NavLink {
 
 export interface NavIcon {
   /**
-   * File ID of the SVG icon to include. Will be resolved using astro-icon.
+   * File ID of the SVG icon to include. Will be resolved using base/icon.
    * 
    * Might be something like "facebook" to resolve a custom icon named "facebook.svg"
-   * in src/assets/icons, or a reference to an installed icon set like "tabler:facebook".
+   * in src/assets/icons, or a reference to an installed icon set like "tabler:brand-facebook".
    */
   icon: string,
   /**
@@ -166,8 +166,8 @@ const mobileIconTray = darkModeToggle || icons?.length;
           label={disclosureLabel}
           icon="tabler:chevrons-down"
           containerClass="not-supports-position-anchor:hidden!"
-          buttonClass="px-[1ch] shadow-none font-normal h-full activated:[&>svg]:-scale-y-100"
-          iconClass="-ml-[0.5ch] transition-[scale] duration-350"
+          buttonClass="px-[1ch] gap-[0.8ch] shadow-none font-normal h-full activated:[&>svg]:-scale-y-100"
+          iconClass="-ml-[0.5ch] transition-[scale] duration-350 h-[1.5em]"
         >
           {fullLinks.slice(split).map((link) => (
           <NavDisclosureItem>

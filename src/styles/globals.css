@@ -155,6 +155,24 @@
   [role="button"]:not(:disabled) {
     cursor: pointer;
   }
+
+  /* This is equivalent to setting image.responsiveStyles = true in Astro,
+   * but in this case we're applying it to the base layer instead of using
+   * :where clauses. This allows tailwind CSS's utility classes to override
+   * these settings.
+   *
+   * See: https://docs.astro.build/en/guides/images/#responsive-image-styles
+   */
+  [data-astro-image] {
+    object-fit: var(--fit);
+    object-position: var(--pos);
+  }
+  [data-astro-image='full-width'] {
+    width: 100%;
+  }
+  [data-astro-image='constrained'] {
+    max-width: 100%;
+  }
 }
 
 /* Theme variables. */

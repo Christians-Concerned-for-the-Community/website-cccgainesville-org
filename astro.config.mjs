@@ -4,7 +4,6 @@ import { fileURLToPath } from "url";
 import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
 
-import icon from "astro-icon";
 import minify from 'astro-minify-html-swc'
 
 const abspath = (path) => {
@@ -18,7 +17,6 @@ const viteConfig = {
     alias: {
       '@':       abspath('./src'),
       '@public': abspath('./public'),
-      '@icons': abspath('./node_modules/@tabler/icons/icons/outline'),
     },
   },
 }
@@ -63,15 +61,11 @@ export default defineConfig({
         video: false,
       }
     }),
-    icon({
-      iconDir: "src/assets/icons",
-    }),
     minify(),
   ],
   vite: viteConfig,
   image: {
     // Enable responsive images:
     layout: 'constrained',
-    responsiveStyles: true,
   },
 })
