@@ -33,13 +33,7 @@ interface Props extends HTMLAttributes<"main"> {
    * Always hide this page from search engines, even on production builds.
    * @default false
    */
-  alwaysHide?: boolean,
-
-  /**
-   * Anchor to use for render blocking. Page transition will not commence
-   * until the element with this ID has finished loading.
-   */
-  renderBlock?: string,
+  alwaysHide?: boolean
 }
 
 const {
@@ -47,7 +41,6 @@ const {
   description = 'CCC is a Christian charity based in Gainesville, FL that provides used furniture and builds wheelchair ramps for our neighbors in Alachua County.',
   author = 'Christians Concerned for the Community',
   alwaysHide = false,
-  renderBlock = "#main-navigation",
   class: className,
 } = Astro.props
 ---
@@ -74,10 +67,6 @@ const {
     
     <!-- sitemap hint -->
     <link rel="sitemap" href="/sitemap-index.xml" />
-
-    <!-- prevent view transition from happening until enough of page is loaded -->
-    <!--   see: https://vtbag.dev/basics/pseudos/#delaying-cross-document-transitions -->
-    <link rel="expect" href={renderBlock} blocking="render" />
 
     <SiteMeta
       title={title}

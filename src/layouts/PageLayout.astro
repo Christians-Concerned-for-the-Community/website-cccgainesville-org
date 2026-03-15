@@ -73,11 +73,6 @@ const {
   ...htmlAttrs
 } = Astro.props
 
-let myRenderBlock = renderBlock;
-if (!myRenderBlock && showHeading) {
-  myRenderBlock = featuredImage? "#featured-image" : "#page-heading";
-}
-
 let classWidth = "";
 switch(width) {
   case 'normal':  classWidth = "max-w-(--content-max)"; break;
@@ -86,7 +81,7 @@ switch(width) {
 }
 ---
 
-<BaseLayout title={title} alwaysHide={alwaysHide} renderBlock={myRenderBlock}>
+<BaseLayout title={title} alwaysHide={alwaysHide}>
   {showHeading && (
     <PageHeading id="page-heading" title={title} subtitle={subtitle} featuredImage={featuredImage} />
   )}
