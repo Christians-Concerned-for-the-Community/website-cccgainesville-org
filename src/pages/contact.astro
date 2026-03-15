@@ -1,16 +1,7 @@
 ---
-import { Button } from '@/components/starwind/button'
 import PageLayout from '@/layouts/PageLayout.astro'
-import { Link } from '@/components/base'
+import { Link, Button, Icon } from '@/components/base'
 import ContactForm from '@/components/forms/ContactForm.astro'
-
-import Phone from '@icons/phone.svg'
-import MapPin from '@icons/map-pin.svg'
-import Mail from '@icons/mail.svg'
-import Clock from '@icons/clock.svg'
-import Facebook from '@icons/brand-facebook.svg'
-import Instagram from '@icons/brand-instagram.svg'
-import MailPlus from '@icons/mail-plus.svg'
 
 import feat from '@/assets/contact-feat.jpg'
 ---
@@ -26,9 +17,9 @@ import feat from '@/assets/contact-feat.jpg'
 
   <!-- Info Section -->
   <section class="space-y-md">
-    <h2 class="text-h3 mb-lg">Hi there, neighbor</h2>
+    <h2 class="text-h3 mb-md">Hi there, neighbor</h2>
 
-    <p class="text-lg">
+    <p>
       Whether you're looking for furnishings, need a ramp built, or just have a question,
       we'd love to hear from you. Please make sure to give us good contact info so we can
       follow up.
@@ -39,7 +30,7 @@ import feat from '@/assets/contact-feat.jpg'
     </p>
 
     <div class="gap-2xs flex items-center">
-      <Phone aria-hidden="true" class="shrink-0" />
+      <Icon name="tabler:phone" size="1.5em" />
       <p>
         <span class="font-bold">Phone:</span>
         <Link href="tel:+13523581768">(352) 358-1768</Link>
@@ -48,7 +39,7 @@ import feat from '@/assets/contact-feat.jpg'
     </div>
 
     <div class="gap-2xs flex items-center">
-      <Mail aria-hidden="true" class="shrink-0"/>
+      <Icon name="tabler:mail" size="1.5em" />
       <p>
         <span class="font-bold">Email:</span>
         <Link href="mailto:office@cccgainesville.org">office@cccgainesville.org</Link>
@@ -56,7 +47,7 @@ import feat from '@/assets/contact-feat.jpg'
     </div>
 
     <div class="gap-2xs flex items-center">
-      <MapPin aria-hidden="true" class="shrink-0" />
+      <Icon name="tabler:map-pin" size="1.5em" />
       <p>
         <span class="font-bold">Address:</span>
         PO Box 358173, Gainesville, FL 32653
@@ -64,30 +55,38 @@ import feat from '@/assets/contact-feat.jpg'
     </div>
 
     <div class="gap-2xs flex items-center">
-      <Clock aria-hidden="true" class="shrink-0" />
+      <Icon name="tabler:clock" size="1.5em" />
       <p>
         <span class="font-bold">Office Hours:</span>
         Tuesday - Thursday, 10:00 AM - 3:00 PM
       </p>
     </div>
 
-    <ul class="flex flex-wrap gap-2xs">
+    <ul class="flex flex-wrap gap-md">
       <li>
-        <Button href="https://facebook.com/cccgainesville" size="icon" animation="raise-boop">
-          <Facebook aria-hidden="true" />
-          <span class="sr-only">Go to our Facebook page</span>
-        </Button>
+        <Button
+          icon="facebook"
+          href="https://facebook.com/cccgainesville"
+          animation="raise-boop"
+          alt="Go to our Facebook page"
+        />
       </li>
       <li>
-        <Button href="https://instagram.com/cccmainoffice" size="icon" animation="raise-boop">
-          <Instagram aria-hidden="true" />
-          <span class="sr-only">Go to our Instagram page</span>
-        </Button>
+        <Button
+          icon="instagram"
+          href="https://instagram.com/cccmainoffice"
+          animation="raise-boop"
+          alt="Go to our Instagram page"
+        />
       </li>
       <li>
-        <Button href="https://cccgainesville.org/ns" variant="secondary" animation="raise-boop">
-          <MailPlus aria-hidden="true" />
-          Newsletter Signup
+        <Button
+          label="Newsletter Signup"
+          iconBefore="tabler:mail-plus"
+          href="https://cccgainesville.org/ns"
+          variant="secondary"
+          animation="raise-boop"
+        />
         </Button>
       </li>
     </ul>

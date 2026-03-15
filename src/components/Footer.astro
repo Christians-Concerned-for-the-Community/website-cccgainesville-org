@@ -20,7 +20,7 @@ const navIcons = socials as NavIcon[];
     <p class="sm:text-center">
       &copy; {currentYear} ❤️ Christians Concerned for the Community
     </p>
-    <div class="hidden sm:flex items-center gap-[1.25ch]">
+    <div class="hidden sm:flex items-center gap-sm text-sm">
       {navIcons.map((item) => (
         <Button href={item.href} alt={item.alt} icon={item.icon}
                 animation="rotate" variant="ghost"/>

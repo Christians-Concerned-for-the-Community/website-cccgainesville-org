@@ -69,19 +69,23 @@ const {
 
 const content = label? "hasText" : "iconOnly";
 
-const iconClassName = twMerge("h-[1.5em] w-auto pointer-events-none", iconClass);
+const iconClassName = twMerge(
+  label? "h-[1.8em]" : "h-[2.2em]",
+  "w-auto pointer-events-none",
+  iconClass
+);
 
 export const button = tv({
   base: [
     "inline-flex items-center justify-center font-medium whitespace-nowrap",
-    "h-[2em] gap-[0.8ch] rounded-sm shadow-xs border-solid border-[0.15em]",
+    "h-[3em] gap-[1ch] rounded-sm shadow-xs border-solid border-[0.15em]",
     "transition-[color,background-color] duration-200"
   ],
   variants: {
     /* Don't try to set this yourself, this variable is hardcoded above. */
     content: {
-      hasText: "h-[3em] px-[1.5ch]",
-      iconOnly: "h-[2em] px-[0.25em]",
+      hasText: "px-[0.6em]",
+      iconOnly: "px-[0.4em]",
     },
     variant: {
       /* Default button: swap the site-default background/foreground */
