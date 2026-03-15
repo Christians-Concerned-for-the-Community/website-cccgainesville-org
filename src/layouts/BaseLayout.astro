@@ -36,11 +36,6 @@ interface Props extends HTMLAttributes<"main"> {
   alwaysHide?: boolean,
 
   /**
-   * If provided, preload this image. Useful for big header or hero images.
-   */
-  preloadImg?: string,
-
-  /**
    * Anchor to use for render blocking. Page transition will not commence
    * until the element with this ID has finished loading.
    */
@@ -52,7 +47,6 @@ const {
   description = 'CCC is a Christian charity based in Gainesville, FL that provides used furniture and builds wheelchair ramps for our neighbors in Alachua County.',
   author = 'Christians Concerned for the Community',
   alwaysHide = false,
-  preloadImg,
   renderBlock = "#main-navigation",
   class: className,
 } = Astro.props
@@ -71,10 +65,6 @@ const {
 
     <!-- preload our main font, so that it's not chained after the main CSS file -->
     <link rel="preload" as="font" type="font/woff2" href={fontPath} crossorigin="anonymous" />
-    {preloadImg && (
-      <link rel="preload" fetchpriority="high" as="image" href={preloadImg} type="image/webp">
-    )}
-
     <!-- favicon stuff -->
     <!-- https://dev.to/masakudamatsu/favicon-nightmare-how-to-maintain-sanity-3al7 -->
     <link rel="icon" href="/favicon.ico" sizes="48x48" >
