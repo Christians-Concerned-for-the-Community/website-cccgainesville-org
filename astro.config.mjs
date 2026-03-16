@@ -1,9 +1,8 @@
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "astro/config";
 import { fileURLToPath } from "url";
-import mdx from "@astrojs/mdx";
-import sitemap from "@astrojs/sitemap";
 
+import sitemap from "@astrojs/sitemap";
 import minify from 'astro-minify-html-swc'
 
 const abspath = (path) => {
@@ -51,7 +50,6 @@ export default defineConfig({
   compressHTML: true,
   site: 'https://staging.cccgainesville.org',
   integrations: [
-    mdx(),
     sitemap({
       namespaces: {
         news: false,
