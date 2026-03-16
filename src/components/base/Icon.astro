@@ -4,9 +4,11 @@
  * using a name string.
  */
 
-import ErrorIcon from "./assets/file-unknown.svg"
 import type { HTMLAttributes } from "astro/types";
-import { iconMap } from "@/icons.ts";
+
+import ErrorIcon from "./assets/file-unknown.svg"
+import { iconMap } from "./assets/icons.ts"; // manually run icons-generator.ts in root dir to generate this file
+
 
 interface Props extends Omit< HTMLAttributes<"svg">, "aria-hidden" > {
   /**
