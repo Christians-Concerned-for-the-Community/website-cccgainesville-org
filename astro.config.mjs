@@ -3,7 +3,6 @@ import { defineConfig } from "astro/config";
 import { fileURLToPath } from "url";
 
 import sitemap from "@astrojs/sitemap";
-import minify from 'astro-minify-html-swc'
 
 const abspath = (path) => {
   return fileURLToPath(new URL(path, import.meta.url))
@@ -45,7 +44,7 @@ export default defineConfig({
         "manifest-src 'self' cccgainesville.cloudflareaccess.com",
       ],
     },
-    */
+    //*/
   },
   compressHTML: true,
   site: 'https://staging.cccgainesville.org',
@@ -57,7 +56,6 @@ export default defineConfig({
         video: false,
       }
     }),
-    minify(),
   ],
   vite: viteConfig,
   image: {
