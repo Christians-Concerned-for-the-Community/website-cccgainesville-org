@@ -9,9 +9,10 @@
  * traverse the entire nav. Instead, you have to activate the trigger button with
  * enter/space to expand this disclosure, before you can tab down into it.
  * 
- * NOTE: this uses the CSS Anchor Positioning and Popover API's, which are fairly recent
- * additions:
+ * NOTE: this uses the CSS Anchor Positioning, Invoker Commands and Popover API's,
+ * which are fairly recent additions:
  *     Popover: baseline Jan 2025 (89.17% coverage as of Mar 2026)
+ *     Invoker Commands: baseline Dec 2025 (79.41% coverage as of Mar 2026)
  *     Anchor Positioning: baseline Jan 2026 (82.16% coverage as of Mar 2026)
  * 
  * To support users that don't have updated browsers, a fallback is implemented
@@ -19,8 +20,8 @@
  * position it, and force proper screen-reader behavior with aria-* attributes.
  * 
  * You should be able to remove the fallback script entirely once we can assume
- * broad support for anchor positioning - the general rule-of-thumb is 2 years from
- * baseline introduction. So, can remove it in Jan 2028.
+ * broad support for anchor positioning - the general rule-of-thumb is 2 years
+ * from baseline introduction. So, can remove it in Jan 2028.
  */
 
 import type { HTMLAttributes } from "astro/types";
@@ -101,7 +102,7 @@ const {
 
 <div class={twMerge("base-navdisclosure h-full group", containerClass)}>
 
-  <Button type="button" popovertarget={disclosureId}
+  <Button type="button" commandfor={disclosureId} command="toggle-popover"
     label={label}
     variant={variant}
     animation={animation}
@@ -111,7 +112,7 @@ const {
     class={twMerge(buttonClass)}
   />
 
-  <ul id={disclosureId} popover="auto"
+  <ul id={disclosureId} popover
     class={disclosure({ align, class: className })}
     {...rest}
   >
@@ -197,7 +198,8 @@ if (window.CSS && !CSS.supports('position-area', 'bottom')) {
       const disclosureBody = container.querySelector(':scope > ul'); // First <ul> in container
       
       // Remove popover-specific attributes and classes.
-      button?.removeAttribute("popovertarget");
+      button?.removeAttribute("commandfor");
+      button?.removeAttribute("command");
 
       disclosureBody?.removeAttribute("popover");
       disclosureBody?.classList.remove(
