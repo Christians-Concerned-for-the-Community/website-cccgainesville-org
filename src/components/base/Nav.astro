@@ -165,7 +165,6 @@ const mobileIconTray = darkModeToggle || icons?.length;
         <NavDisclosure align="end" variant="ghost" animation="boop"
           label={disclosureLabel}
           icon="tabler:chevrons-down"
-          containerClass="not-supports-position-anchor:hidden!"
           buttonClass="px-[1ch] gap-[0.8ch] shadow-none font-normal h-full activated:[&>svg]:-scale-y-100"
           iconClass="-ml-[0.5ch] transition-[scale] duration-350 h-[1.5em]"
         >
@@ -179,16 +178,6 @@ const mobileIconTray = darkModeToggle || icons?.length;
         </NavDisclosure>
       </li>
       )}
-      {/* Fallback: if anchor API not supported, just list all the links out. */}
-      { doDisclosure && fullLinks.slice(split).map((link) => (
-      <li class="supports-position-anchor:hidden!">
-        <Link href={link.href} variant="nav"
-          class="py-2xs px-[1ch] flex items-center"
-        >
-          {link.label}
-        </Link>
-      </li>
-      ))}
     </ul>
 
     {/* Menu button: visible when width < sm */}

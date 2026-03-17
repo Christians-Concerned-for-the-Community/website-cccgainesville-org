@@ -39,6 +39,19 @@
   &[aria-pressed="true"]
 );
 
+/* Used for javascript fallback for popovers (see base/NavDisclosure).
+ *
+ * Lets us specify open state as either dialog or popover open, or
+ * aria-expanded="true" on any element within the same group.
+ *
+ * TODO: remove this once we can assume support for CSS popovers and anchor
+ *       positioning (baseline Jan 2026 -> assume supported in Jan 2028).
+ */
+@custom-variant exopen (
+   &:is([open], :popover-open, :open),
+   &:is(:where(.group):has(*:is(&[aria-expanded="true"])) *)
+)
+
 /* Breakpoints for different heights on mobile.
  * Sometimes, mobile varies much more by height than width, so being able
  * to set a larger text or spacing size for taller screens can lead to a
