@@ -1,0 +1,224 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import { tv, type VariantProps } from "tailwind-variants";
+import { twMerge } from 'tailwind-merge'
+
+import { Button } from '@/components/base'
+
+// see middleware.ts for the "id" function.
+const modalId = Astro.locals.id("base-modal");
+
+type Props =
+ Omit<HTMLAttributes<"dialog">, "closedby"> &
+ Pick<VariantProps<typeof Button>,
+    "variant" | "animation" | "label" | "iconBefore" | "icon" | "iconClass"> &
+{
+  /**
+   * Where on the page does the modal open?
+   */
+  location?: "top" | "right" | "bottom" | "left" | "center";
+
+  /**
+   * Additional classes to apply to the container that holds the trigger
+   * button and the dialog.
+   */
+  containerClass?: string | string[];
+
+  /**
+   * Additional classes to apply to the trigger button.
+   */
+  buttonClass?: string | string[];
+
+  /**
+   * Additional classes to apply to the close button.
+   */
+  closeClass?: string | string[];
+
+  /**
+   * Icon to use for close button.
+   * 
+   * @default: tabler:x
+   */
+  closeIcon?: string;
+}
+
+const {
+  location,
+  containerClass,
+  buttonClass,
+  closeClass,
+  closeIcon = "tabler:x",
+  class: className,
+  variant = "default",
+  animation,
+  label,
+  iconBefore,
+  icon,
+  iconClass,
+  ...rest
+} = Astro.props;
+
+const dialogVariants = tv({
+  base: [
+    "overflow-y-auto [scrollbar-gutter:auto]",
+    "bg-background shadow-lg max-w-cw-md transition-discrete p-0 m-0",
+    "open:flex not-open:hidden",
+    "open:animate-in open:duration-500",
+    "not-open:animate-out not-open:duration-300 not-open:fill-mode-forwards",
+
+    "backdrop:bg-black/55 backdrop:backdrop-blur-sm backdrop:transition-discrete",
+    "open:backdrop:animate-in open:backdrop:duration-500",
+    "not-open:backdrop:animate-out not-open:backdrop:duration-300 not-open:backdrop:fill-mode-forwards",
+    "open:backdrop:fade-in not-open:backdrop:fade-out",
+  ],
+  variants: {
+    location: {
+      center: ["rounded-lg"],
+      right: ["rounded-l-lg",
+        "not-open:motion-safe:slide-out-to-right open:motion-safe:slide-in-from-right",
+        "inset-y-0 right-0 left-auto h-full max-h-[100dvh] w-3/4 sm:max-w-cw-sm",
+      ],
+      left: ["rounded-r-lg",
+        "not-open:motion-safe:slide-out-to-left open:motion-safe:slide-in-from-left",
+        "inset-y-0 right-auto left-0 h-full max-h-[100dvh] w-3/4 sm:max-w-cw-sm",
+      ],
+      top: ["rounded-b-lg",
+        "not-open:motion-safe:slide-out-to-top open:motion-safe:slide-in-from-top",
+        "inset-x-0 top-0 bottom-auto h-auto w-full max-w-screen",
+      ],
+      bottom: ["rounded-t-lg",
+        "not-open:motion-safe:slide-out-to-bottom open:motion-safe:slide-in-from-bottom",
+        "inset-x-0 top-auto bottom-0 h-auto w-full max-w-screen",
+      ],
+    }
+  },
+  defaultVariants: {
+    location: "center",
+  }
+});
+
+const closeDefault = "absolute top-xs right-sm text-sm";
+
+---
+<div class={twMerge("base-modal h-full", containerClass)}>
+  <Button type="button" commandfor={modalId} command="show-modal"
+    label={label}
+    variant={variant}
+    animation={animation}
+    icon={icon}
+    iconBefore={iconBefore}
+    iconClass={iconClass}
+    class={twMerge(buttonClass)}
+  />
+
+  <dialog id={modalId} closedby="any"
+    class={dialogVariants({ location, class: className })} {...rest}
+  >
+
+    <slot />
+
+    <Button type="button" commandfor={modalId} command="close"
+      alt="Close"
+      variant="ghost"
+      animation="rotate"
+      icon={closeIcon}
+      class={twMerge(closeDefault, closeClass)}
+    />
+  </dialog>
+
+</div>
+
+<script>
+{
+  // Fallback: Invoker Commands API is supported everywhere in baseline Dec 2025.
+  const supports_invoker = (Object.hasOwn(HTMLButtonElement.prototype, 'command'));
+
+  /* Fallback: closedBy isn't supported in Safari, and other browsers are baseline July 2025.
+
+    Safari added the attribute without implementing it (arggh), so in order to accurately
+    detect if it's unsupported, we have to make a dummy dialog and then check to see
+    if the attribute's default value got set properly.
+
+    See: https://github.com/tak-dcxi/dialog-closedby-polyfill/pull/19/commits/408b3fa6b918d0919b4765ce4fc692162fb3b7fc
+
+    (sigh, Safari is definitely the new IE)
+  */
+  const supports_closedby = (document.createElement("dialog") as any).closedBy === "none";
+
+  // If fallback needed:
+  if (!supports_invoker || !supports_closedby) {
+    const initModals = () => {
+      // Loop over each modal container on the page.
+      document.querySelectorAll(".base-modal").forEach((item) => {
+        const container = item as HTMLElement;
+        const trigger = container.querySelector(':scope > button');
+        const dialog = container.querySelector(':scope > dialog') as HTMLDialogElement;
+
+        if (!supports_closedby) {
+          // Support "light dismiss" of modal (clicking outside it), if closedby attribute isn't available.
+          dialog?.addEventListener('click', (e) => {
+            const edges = dialog.getBoundingClientRect();
+            const isInside =
+              e.clientX >= edges.left &&
+              e.clientX <= edges.right &&
+              e.clientY >= edges.top &&
+              e.clientY <= edges.bottom;
+            if (!isInside) {
+              e.stopPropagation(); //only close the innermost dialog on each click outside.
+              dialog.close();
+            }
+          });
+        }
+
+        if (!supports_invoker) {
+          const closer = dialog?.querySelector(':scope button:last-child');
+          for (const button of  [trigger, closer]) {
+            button?.removeAttribute('command');
+            button?.removeAttribute('commandfor');
+          }
+
+          trigger?.setAttribute("aria-haspopup", "dialog");
+
+          // Open button for dialog
+          trigger?.addEventListener("click", (e) => {
+            dialog?.showModal();
+
+            /* WebKit browsers (Safari, primarily) have a bug where they can trigger
+            * decorations guarded by focus-visible: when opening a dialog with
+            * a mouse click or touch. This is incorrect behavior - it should
+            * be setting the focus, but it shouldn't be displaying a focus ring
+            * unless the user triggered the dialog via keyboard.
+            * 
+            * See here for mention of bug (the pointer-events fix doesn't work for me):
+            * https://github.com/radix-ui/primitives/issues/2953
+            * https://bugs.webkit.org/show_bug.cgi?id=247416
+            * 
+            * See here for explanation of how keyboard vs mouse click detection works:
+            * https://css-tricks.com/when-a-click-is-not-just-a-click/#aa-another-take-to-determine-which-is-which
+            */
+            const fromKeyboard = ((e as UIEvent).detail === 0);
+            const active = document.activeElement as HTMLElement;
+            if (!fromKeyboard && active) {
+              /* If focus is active, but we didn't open the dialog with a keyboard action,
+              * clear the focus, then reapply it with focusVisible explicitly set to false.
+              * This will bypass the buggy autodetection in Webkit.
+              */
+              active.blur();
+              // @ts-expect-error (supported in Webkit, but missing in other browsers at time of writing)
+              active.focus({focusVisible: false});
+            }
+          });
+
+          // Close button for dialog.
+          closer?.addEventListener('click', () => {
+            dialog?.close()
+          });
+        }
+      });
+    }
+
+    initModals();
+    document.addEventListener("astro:after-swap", initModals);
+  } // END if fallback needed
+}
+</script>

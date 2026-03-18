@@ -213,11 +213,26 @@
   --breakpoint-xs:  31.25rem; /* 500 px */
 
   /* Set spacing values with a 'vw' prefix for all breakpoint sizes. */
-  --spacing-vw-2xs:  var(--breakpoint-2xs);
-  --spacing-vw-xs:   var(--breakpoint-xs);
-  --spacing-vw-sm:   var(--breakpoint-sm);
-  --spacing-vw-md:   var(--breakpoint-md);
-  --spacing-vw-lg:   var(--breakpoint-lg);
-  --spacing-vw-xl:   var(--breakpoint-xl);
-  --spacing-vw-2xl:  var(--breakpoint-2xl);
+  --spacing-vw-2xs: var(--breakpoint-2xs);
+  --spacing-vw-xs:  var(--breakpoint-xs);
+  --spacing-vw-sm:  var(--breakpoint-sm);
+  --spacing-vw-md:  var(--breakpoint-md);
+  --spacing-vw-lg:  var(--breakpoint-lg);
+  --spacing-vw-xl:  var(--breakpoint-xl);
+  --spacing-vw-2xl: var(--breakpoint-2xl);
+
+  /* Do the same for container breakpoint sizes. */
+  --spacing-cw-3xs: var(--container-3xs);
+  --spacing-cw-2xs: var(--container-2xs);
+  --spacing-cw-xs:  var(--container-xs);
+  --spacing-cw-sm:  var(--container-sm);
+  --spacing-cw-md:  var(--container-md);
+  --spacing-cw-lg:  var(--container-lg);
+  --spacing-cw-xl:  var(--container-xl);
+  --spacing-cw-2xl: var(--container-2xl);
+  --spacing-cw-3xl: var(--container-3xl);
+  --spacing-cw-4xl: var(--container-4xl);
+  --spacing-cw-5xl: var(--container-5xl);
+  --spacing-cw-6xl: var(--container-6xl);
+  --spacing-cw-7xl: var(--container-7xl);
 }

@@ -3,8 +3,14 @@ import { twMerge } from 'tailwind-merge';
 
 import type { HTMLAttributes } from 'astro/types';
 
-import { Link, NavDisclosure, NavDisclosureItem, DarkModeToggle, Button } from "@/components/base"
-import { Sheet, SheetContent, SheetTrigger, } from "@/components/starwind/sheet";
+import {
+  Link,
+  Modal,
+  NavDisclosure,
+  NavDisclosureItem,
+  DarkModeToggle,
+  Button
+} from "@/components/base";
 
 
 /**
@@ -180,21 +186,17 @@ const mobileIconTray = darkModeToggle || icons?.length;
       )}
     </ul>
 
-    {/* Menu button: visible when width < sm */}
+    {/* Menu button: visible when width < sm.
+        Mobile nav menu that opens when menu button is clicked.
+      */
+    }
     <div class="flex sm:hidden shrink items-center max-2xs:text-base">
-      <SheetTrigger asChild for="mobile-nav">
-        <Button animation="raise-boop" label="Menu" type="button" icon="tabler:menu-2"/>
-      </SheetTrigger>
-    </div>
-
-    {/* Mobile nav menu that opens when menu button is clicked. */}
-    <Sheet id="mobile-nav">
-      <SheetContent side="right">
-        <h2 class="text-2xl font-medium absolute top-xs left-sm">
+      <Modal location="right" label="Menu" animation="raise-boop" icon="tabler:menu-2">
+        <h2 class="text-2xl font-medium absolute top-sm left-sm">
           {mobileTitle}
         </h2>
         <ul class:list={[
-          "flex flex-col h-full",
+          "grow flex flex-col",
           "mx-sm mb-sm mt-[calc(var(--spacing-md)+var(--spacing-sm))]"
         ]}>
           {/* List of nav links. */}
@@ -205,7 +207,7 @@ const mobileIconTray = darkModeToggle || icons?.length;
           ]}>
             {mobileLinks.map((link) => (
             <li>
-              <Link href={link.href} variant="nav">
+              <Link href={link.href} variant="nav" class="pl-sm w-full">
                 {link.label}
               </Link>
             </li>
@@ -214,7 +216,7 @@ const mobileIconTray = darkModeToggle || icons?.length;
 
           {/* Icon tray */}
           {mobileIconTray && (
-          <div class="flex justify-around text-lg mt-xs pt-xs border-t-2 border-border [&>li]:flex [&>li]:place-items-center">
+          <div class="flex justify-around text-base mt-xs pt-xs border-t-2 border-border [&>li]:flex [&>li]:place-items-center">
             {/* Add social icons to the icon tray. */}
             {icons?.map((item) => (
             <li>
@@ -231,7 +233,6 @@ const mobileIconTray = darkModeToggle || icons?.length;
           </div>
           )}
         </ul>
-      </SheetContent>
-    </Sheet>
-  </div>
+      </Modal>
+    </div>
 </nav>
