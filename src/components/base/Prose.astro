@@ -1,0 +1,27 @@
+---
+/*
+ * Prose component.
+ * 
+ * We wrap the sw_prose CSS component inside an Astro component here to
+ * prevent all that CSS code from being included on pages that don't
+ * need it.
+ */
+
+import type { HTMLTag, Polymorphic } from "astro/types";
+import { twMerge } from 'tailwind-merge'
+
+import './assets/sw-prose.css'
+
+type Props<Tag extends HTMLTag> = Polymorphic<{ as: Tag }>;
+
+const { 
+  as: Tag = "div", // Other useful possibilities: "article", "section", etc.
+  class: className,
+  ...rest
+} = Astro.props;
+
+---
+
+<Tag class={twMerge("sw-prose", className)} {...rest}>
+  <slot />
+</Tag>

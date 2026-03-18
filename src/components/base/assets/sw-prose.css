@@ -1,19 +1,28 @@
----
-import type { HTMLAttributes } from "astro/types";
-import { tv } from "tailwind-variants";
+/*
+  This file defines a single CSS component class - sw-prose.
 
-export const prose = tv({
-  base: "sw-prose max-w-[65ch]",
-});
+  This component sets a whole bunch of styles that are appropriate for beautifully
+  rendering text that was produced in Markdown or a rich-text editor. Use it
+  like this:
 
-type Props = HTMLAttributes<"div">;
+    ---
+    import {Content} from '@/assets/sometext.md';
+    ---
+    <article class="sw-prose">
+      <Content />
+    </article>
 
-const { class: className, ...rest } = Astro.props;
----
+  Any Tailwind utility classes you pass in will override the settings in sw-prose,
+  because sw-prose is defined at a layer with lower specificity (compoments, instead
+  of utilities).
+  
+  These styles were originally taken from Starwind UI's Prose component v1.01,
+  and changed over time from there.
 
-<div class:list={[prose({ class: className })]} data-slot="prose" {...rest}><slot /></div>
+  https://starwind.dev/docs/components/prose/
+ */
 
-<style is:global>
+ @layer components {
   /* ==========================================================================
    * Starwind Prose - Typography styles for markdown content
    * Inspired by Tailwind Typography and Astro Starlight
@@ -27,12 +36,12 @@ const { class: className, ...rest } = Astro.props;
    * 
    * Override specific values using CSS variables (supports responsive):
    *   class="[--prose-spacing:1.5em] md:[--prose-spacing:1.25em]"
-   * 
-   * Or set on a parent element:
-   *   <div style="--prose-h1-size: 3em;"><Prose>...</Prose></div>
    * -------------------------------------------------------------------------- */
 
   .sw-prose {
+    
+    max-width: 65ch;
+    
     /* ===================
      * Typography & Spacing
      * =================== */
@@ -614,4 +623,4 @@ const { class: className, ...rest } = Astro.props;
   .sw-prose :is(sub, sup):not(:where(.not-sw-prose *)) {
     font-size: 0.75em;
   }
-</style>
+} /* END layer components */
