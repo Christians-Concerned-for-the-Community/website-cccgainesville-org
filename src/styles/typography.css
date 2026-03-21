@@ -146,28 +146,28 @@
    *     <h2 class="text-h3">A Header with Smaller Size</h2>
    *     <h2 class="text-h1">A Header with Bigger Size </h2>
    */
-  --text-h1:              var(--text-5xl);
-  --text-h1--line-height: var(--text-6xl);
+  --text-h1:              var(--text-4xl);
+  --text-h1--line-height: var(--text-5xl);
   --text-h1--font-weight: 600;
 
-  --text-h2:              var(--text-4xl);
-  --text-h2--line-height: var(--text-5xl);
+  --text-h2:              var(--text-3xl);
+  --text-h2--line-height: var(--text-4xl);
   --text-h2--font-weight: 600;
 
-  --text-h3:              var(--text-3xl);
-  --text-h3--line-height: var(--text-4xl);
+  --text-h3:              var(--text-2xl);
+  --text-h3--line-height: var(--text-3xl);
   --text-h3--font-weight: 500;
   
-  --text-h4:              var(--text-2xl);
-  --text-h4--line-height: var(--text-3xl);
+  --text-h4:              var(--text-xl);
+  --text-h4--line-height: var(--text-2xl);
   --text-h4--font-weight: 500;
 
-  --text-h5:              var(--text-xl);
-  --text-h5--line-height: var(--text-2xl);
+  --text-h5:              var(--text-lg);
+  --text-h5--line-height: var(--text-xl);
   --text-h5--font-weight: 500;
 
-  --text-h6:              var(--text-lg);
-  --text-h6--line-height: var(--text-xl);
+  --text-h6:              var(--text-md);
+  --text-h6--line-height: var(--text-lg);
   --text-h6--font-weight: 500;
 }
 
@@ -176,6 +176,27 @@
   /* Global font settings. */
   html {
     font-synthesis: none;
+  }
+
+  /* Settings to render unnumbered lists for prose (default styling removed by Preflight). */
+  ul.text {
+    list-style-type: disc;
+    /* Aligns bullet with text, prevents them from being cut off */
+    padding-inline-start: 1.5em; 
+    /* Maintains vertical rhythm with paragraphs */
+    margin-block-start: 0.5em;
+    margin-block-end: 1em;
+  }
+
+  ul.text > li {
+    /* Improves readability between items */
+    line-height: 1.5; 
+    /* Space between list items */
+    margin-block-end: 0.5em;
+    /* Remove spacing from last item */
+    &:last-child {
+      margin-block-end: 0em;
+    }
   }
 
   /* Default text wrap settings for headers and paragraphs. */
