@@ -15,7 +15,6 @@ const viteConfig = {
     alias: {
       '@':       abspath('./src'),
       '@public': abspath('./public'),
-      '@node_modules': abspath('./node_modules'),
     },
   },
 }
