@@ -1,0 +1,26 @@
+---
+/*
+  An inline SVG loading spinner, animated via CSS.
+
+  This was adapted from here:
+    https://github.com/n3r4zzurr0/svg-spinners/blob/main/svg-css/ring-resize.svg
+ */
+import { type HTMLAttributes } from 'astro/types'
+
+import './assets/base-spinner.css' //defines animations for the spinner, among other things
+
+
+export interface Props extends HTMLAttributes<"svg"> {
+
+};
+
+const {
+  ...rest
+} = Astro.props;
+
+---
+<svg stroke="currentcolor" viewBox="0 0 24 24" {...rest}>
+  <g class="base-spinner">
+    <circle cx="12" cy="12" r="9.5" fill="none" stroke-width="3"/>
+  </g>
+</svg>
