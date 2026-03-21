@@ -28,4 +28,4 @@
 #
   Cross-Origin-Opener-Policy: same-origin
   Cross-Origin-Resource-Policy: same-site
-  Cross-Origin-Embedder-Policy: require-corp
+#  Cross-Origin-Embedder-Policy: require-corp
