@@ -79,12 +79,12 @@ const {
 } = Astro.props
 ---
 
-<!--
+{/*
   background gradient -
     Uses one color for the top 2/3 of the heading, then another for the bottom.
     This lets us set the bottom 1/3 to the overall page background, which
     makes the feature image look like it extends below the edge of the header.
--->
+*/}
 <div class:list={["py-lg", featuredImage? "md:mb-lg-xl" : "",
   "bg-linear-to-b from-banner from-66% to-background to-66%",
   className

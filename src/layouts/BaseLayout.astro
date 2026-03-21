@@ -51,21 +51,21 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
 
-    <!-- for staging builds, or pages that pass alwaysHide=true, tell search engine bots not to index this page (even if crawled) -->
-    {(Astro.site?.hostname.startsWith("staging") || alwaysHide) &&
+    {/* for staging builds, or pages that pass alwaysHide=true, tell search engine bots not to index this page (even if crawled) */}
+    { (Astro.site?.hostname.startsWith("staging") || alwaysHide) && (
       <meta name="robots" content="noindex, nofollow">
-    }
+    )}
 
-    <!-- preload our main font, so that it's not chained after the main CSS file -->
+    {/* preload our main font, so that it's not chained after the main CSS file */}
     <link rel="preload" as="font" type="font/woff2" href={fontPath} crossorigin="anonymous" />
-    <!-- favicon stuff -->
-    <!-- https://dev.to/masakudamatsu/favicon-nightmare-how-to-maintain-sanity-3al7 -->
+    {/* favicon stuff - see:
+        https://dev.to/masakudamatsu/favicon-nightmare-how-to-maintain-sanity-3al7 */}
     <link rel="icon" href="/favicon.ico" sizes="48x48" >
     <link rel="icon" href="/favicon.svg" sizes="any" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
     <link rel="manifest" href="/site.webmanifest" crossorigin="use-credentials"/>
     
-    <!-- sitemap hint -->
+    {/* sitemap hint */}
     <link rel="sitemap" href="/sitemap-index.xml" />
 
     <SiteMeta
