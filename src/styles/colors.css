@@ -183,6 +183,8 @@
   --color-banner:
     var(--tw-light, var(--color-neutral-800))
     var(--tw-dark,  var(--color-neutral-850));
+  --color-banner-fg:
+                    var(--color-neutral-50);
   --color-link:
     var(--tw-light, var(--color-primary-500))
     var(--tw-dark,  var(--color-primary-100));
