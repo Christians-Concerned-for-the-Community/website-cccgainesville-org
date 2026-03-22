@@ -8,22 +8,39 @@ const abspath = (path) => {
   return fileURLToPath(new URL(path, import.meta.url))
 };
 
-// Base Vite config
-const viteConfig = {
-  plugins: [tailwindcss()],
-  resolve: {
-    alias: {
-      '@':       abspath('./src'),
-      '@public': abspath('./public'),
-    },
-  },
-}
-
 // https://astro.build/config
 //
 // Note: site can be overriden by using the "--site" flag when building.
 //       (we do this for staging builds)
 export default defineConfig({
+  compressHTML: true,
+  site: 'https://staging.cccgainesville.org',
+
+  integrations: [
+    sitemap({
+      namespaces: {
+        news: false,
+        xhtml: false,
+        video: false,
+      }
+    }),
+  ],
+
+  image: {
+    // Enable responsive images:
+    layout: 'constrained',
+  },
+
+  vite: {
+    plugins: [tailwindcss()],
+    resolve: {
+      alias: {
+        '@':       abspath('./src'),
+        '@public': abspath('./public'),
+      },
+    },
+  },
+
   security: {
     /*
     // This still doesn't work, as of Astro 6.0.0-beta-1 (1/18/2026). Keep trying, though. 
@@ -44,21 +61,5 @@ export default defineConfig({
       ],
     },
     //*/
-  },
-  compressHTML: true,
-  site: 'https://staging.cccgainesville.org',
-  integrations: [
-    sitemap({
-      namespaces: {
-        news: false,
-        xhtml: false,
-        video: false,
-      }
-    }),
-  ],
-  vite: viteConfig,
-  image: {
-    // Enable responsive images:
-    layout: 'constrained',
   },
 })
