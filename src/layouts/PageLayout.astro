@@ -1,7 +1,9 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro'
+import type { Props as BaseLayoutProps } from '@/layouts/BaseLayout.astro'
 import PageHeading from '@/components/PageHeading.astro'
 import type { ImageMetadata } from 'astro';
+import type { $brand } from 'astro:schema';
 
 /**
  * PageLayout Component
@@ -10,17 +12,7 @@ import type { ImageMetadata } from 'astro';
  *              nav bar, title/subtitle and featured image header, and wraps
  *              the main content in a styled container.
  */
-interface Props {
-  /**
-   * Additional classes to apply to the PageLayout holding the slot contents.
-   */
-  class?: string
-
-  /**
-   * The title of the page
-   */
-  title: string
-
+export interface Props extends BaseLayoutProps {
   /**
    * The subtitle of the page (optional)
    */
@@ -44,12 +36,6 @@ interface Props {
   width?: 'normal' | 'narrow' | 'stretch'
 
   /**
-   * Always hide this page from search engines, even on production builds.
-   * @default false
-   */
-  alwaysHide?: boolean
-
-  /**
    * Include a page header?
    * @default true
    */
@@ -67,10 +53,8 @@ const {
   subtitle,
   featuredImage,
   width = 'normal',
-  alwaysHide = false,
   showHeading = true,
-  renderBlock,
-  ...htmlAttrs
+  ...rest
 } = Astro.props
 
 let classWidth = "";
@@ -81,11 +65,11 @@ switch(width) {
 }
 ---
 
-<BaseLayout title={title} alwaysHide={alwaysHide}>
+<BaseLayout title={title} {...rest}>
   {showHeading && (
     <PageHeading id="page-heading" title={title} subtitle={subtitle} featuredImage={featuredImage} />
   )}
-  <div id="after-heading" class:list={["mx-auto px-sm-md my-xl-2xl", classWidth, className]} {...htmlAttrs}>
+  <div id="after-heading" class:list={["mx-auto px-sm-md my-xl-2xl", classWidth, className]}>
     <slot />
   </div>
 </BaseLayout>

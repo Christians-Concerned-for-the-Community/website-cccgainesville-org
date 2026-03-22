@@ -13,11 +13,11 @@ const fontPath = "/fonts/AtkinsonHyperlegibleNext-VariableFont_wght.woff2";
  *
  * @description contains common code for every page on the website
  */
-interface Props extends HTMLAttributes<"main"> {
+export interface Props extends HTMLAttributes<"main"> {
   /**
    * The title of the page
    */
-  title?: string,
+  title: string,
   
   /**
    * Site / page description (used in site metadata tags)
@@ -34,6 +34,14 @@ interface Props extends HTMLAttributes<"main"> {
    * @default false
    */
   alwaysHide?: boolean
+
+  /**
+   * Performance profile. Certain pages can benefit from additional optimizations,
+   * depending on what features they use.
+   *   'givelively' - add optimizations for an embedded Give Lively donation widget
+   *   'turnstile' - add optimizations for an embedded Cloudflare Turnstile widget
+   */
+  profile?: 'givelively' | 'turnstile'
 }
 
 const {
@@ -41,6 +49,7 @@ const {
   description = 'CCC is a Christian charity based in Gainesville, FL that provides used furniture and builds wheelchair ramps for our neighbors in Alachua County.',
   author = 'Christians Concerned for the Community',
   alwaysHide = false,
+  profile,
   class: className,
 } = Astro.props
 ---
@@ -58,6 +67,30 @@ const {
 
     {/* preload our main font, so that it's not chained after the main CSS file */}
     <link rel="preload" as="font" type="font/woff2" href={fontPath} crossorigin="anonymous" />
+
+    {/* profile-specific preloads */}
+    {(profile === 'givelively') && (
+      <link rel="preload" as="script" href="https://secure.givelively.org/widgets/simple_donation/christians-concerned-for-the-community-inc.js?show_suggested_amount_buttons=true&show_in_honor_of=false&address_required=false&has_required_custom_question=false&suggested_donation_amounts[]=25&suggested_donation_amounts[]=50&suggested_donation_amounts[]=100&suggested_donation_amounts[]=250"/>
+      <link rel="preload" as="font" type="font/woff2" crossorigin href="https://fonts.gstatic.com/s/nunito/v32/XRXV3I6Li01BKofINeaBTMnFcQ.woff2" />
+      <link rel="preload" as="font" type="font/woff2" crossorigin href="https://fonts.gstatic.com/s/nunito/v32/XRXV3I6Li01BKofINeaB.woff2" />
+      <link rel="preconnect" href="https://m.stripe.com">
+      <link rel="preconnect" href="https://js.stripe.com">
+      <link rel="preconnect" href="https://apis.google.com">
+      <link rel="preconnect" href="https://maps.googleapis.com">
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <link rel="preconnect" href="https://www.google-analytics.com">
+      <link rel="preconnect" href="https://www.googletagmanager.com">
+      <link rel="preconnect" href="https://use.typekit.net">
+      <link rel="preconnect" href="https://use.fontawesome.com">
+      <link rel="preconnect" href="https://o353201.ingest.us.sentry.io">
+      <link rel="preconnect" href="https://js.datadome.co">
+      <link rel="preconnect" href="https://api-js.datadome.co">
+      <link rel="preconnect" href="https://js.captcha-display.com">
+      <link rel="preconnect" href="https://static.hotjar.com">
+      <link rel="preconnect" href="https://script.hotjar.com">
+    )}
+
     {/* favicon stuff - see:
         https://dev.to/masakudamatsu/favicon-nightmare-how-to-maintain-sanity-3al7 */}
     <link rel="icon" href="/favicon.ico" sizes="48x48" >
