@@ -53,6 +53,7 @@ const icons = [
   ['tabler', 'moon'],
   ['tabler', 'menu-2'],
   ['tabler', 'external-link'],
+  ['tabler', 'alert-triangle'],
 ];
 
 

@@ -1,7 +1,7 @@
 ---
 import { twMerge } from 'tailwind-merge'
 import { type HTMLAttributes } from "astro/types";
-import { Button, Spinner } from '@/components/base';
+import { Button, Icon, Spinner } from '@/components/base';
 
 export interface Props extends HTMLAttributes<"div"> {
   labelId: string,
@@ -16,7 +16,7 @@ const {
 ---
 
 <div class={twMerge(
-  "w-86 h-94 flex items-top has-[.base-gl-active]:items-center justify-center",
+  "w-86 h-94 flex items-center justify-center",
   // Wait a little while before showing the element (prevents flashes as JS gets things set up)
   "transition-discrete transition-opacity delay-350 duration-150",
   "starting:invisible visible starting:opacity-0 opacity-100",
@@ -25,14 +25,20 @@ const {
   {...rest}
 >
   {/* Button visible by default, to handle case where JS is disabled entirely. */}
-  <Button class="base-gl-button text-xl"
-    icon="local:donate"
-    iconClass="w-full h-auto"
-    alt="Donate Online with Give Lively"
-    href="https://secure.givelively.org/donate/christians-concerned-for-the-community-inc"
-    variant="ghost"
-    animation="raise"
-  />
+  <div class="base-gl-button flex flex-col gap-md px-xs">
+    <div class="flex items-center justify-center gap-xs mx-xs">
+      <Icon name="tabler:alert-triangle" size="4em" class="text-warning"/>
+      <p class="text-justify">Could not load donation form. To donate, click the button below.</p>
+    </div>
+    <Button class="text-xl w-auto h-auto"
+      icon="local:donate"
+      iconClass="w-full h-auto"
+      alt="Donate to CCC at Give Lively"
+      href="https://secure.givelively.org/donate/christians-concerned-for-the-community-inc"
+      variant="ghost"
+      animation="raise"
+    />
+  </div>
   <Spinner class="base-gl-spinner size-2xl text-foreground"
     hidden
   />
@@ -64,11 +70,7 @@ const {
   gl.onload = () => {
     // Success: hide spinner, show donation widget, apply class to advertise that widget is active.
     toggleHidden(spinners, true);
-    // Apply a class to the widget that advertises the widget is active.
-    widgets.forEach((el) => {
-      el.toggleAttribute("hidden", false);
-      el.classList.toggle("base-gl-active", true);
-    });
+    toggleHidden(widgets, false);
   };
 
   gl.onerror = () => {

@@ -13,18 +13,16 @@ const labelId = Astro.locals.id("give-lively-label");
   class="flex flex-col gap-xl-2xl"
 >
   {/* Embedded donation form & instructions */}
-  <div class="group flex flex-wrap gap-x-md gap-y-lg has-[.base-gl-active]:items-center">
+  <div class="flex flex-wrap gap-x-md gap-y-lg items-center">
     <div class="flex flex-col items-center">
-      <h2 class="text-lg w-full text-left ps-2xs pbe-[0.5em] invisible group-has-[.base-gl-active]:visible" id={labelId}>Choose Gift Amount</h2>
+      <h2 class="text-lg w-full text-left ps-2xs pbe-[0.5em]" id={labelId}>Choose Gift Amount</h2>
       <GiveLively labelId={labelId}
-        class="rounded-sm group-has-[.base-gl-active]:shadow-lg border border-transparent group-has-[.base-gl-active]:border-border"
+        class="rounded-sm shadow-lg border border-border"
       />
     </div>
     <div class="max-w-[50ch] basis-[40ch] px-sm">
       <p>
-        Support CCC's service to our neighbors by
-          <span class="hidden group-has-[.base-gl-active]:inline">filling out this secure form.</span>
-          <span class="group-has-[.base-gl-active]:hidden">clicking this button.</span>
+        Support CCC's service to our neighbors by filling out this secure form.
         You'll be able to make an immediate gift from one of the following sources:
       </p>
       <ul class="text">
