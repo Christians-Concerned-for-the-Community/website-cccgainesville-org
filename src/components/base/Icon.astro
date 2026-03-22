@@ -5,9 +5,10 @@
  */
 
 import type { HTMLAttributes } from "astro/types";
+import { twMerge } from "tailwind-merge";
 
 import ErrorIcon from "./assets/file-unknown.svg"
-import { iconMap } from "./assets/icons.ts"; // manually run icons-generator.ts in root dir to generate this file
+import { iconMap } from "./assets/icons.ts"; // manually run icons-generator.ts in root dir to generate this file } from "tailwind-merge";
 
 
 interface Props extends Omit< HTMLAttributes<"svg">, "aria-hidden" > {
@@ -36,6 +37,7 @@ interface Props extends Omit< HTMLAttributes<"svg">, "aria-hidden" > {
 const {
   size,
   name,
+  class: className,
   ...rest
 } = Astro.props;
 
@@ -53,4 +55,6 @@ if (!icon) {
 }
 ---
 
-<IconComponent aria-hidden="true" {...sizeAttrs} {...rest} />
+<IconComponent class={twMerge("inline", className)}
+ aria-hidden="true" {...sizeAttrs} {...rest}
+/>
