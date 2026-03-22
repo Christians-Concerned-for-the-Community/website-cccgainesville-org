@@ -1,12 +1,29 @@
 ---
+import type { ComponentProps } from 'astro/types';
 import PageLayout from '@/layouts/PageLayout.astro'
 import { Prose } from "@/components/base";
 
-const { frontmatter } = Astro.props
+export interface Props
+  extends Omit<ComponentProps<typeof PageLayout>, "title" | "subtitle"> {
+
+  proseClass?: string;
+
+  frontmatter: {
+    title: string,
+    subtitle?: string,
+  };
+}
+
+const {
+  width="narrow",
+  proseClass,
+  frontmatter,
+  ...rest
+} = Astro.props
 ---
 
-<PageLayout width="narrow" title={frontmatter.title} subtitle={frontmatter.subtitle}>
-  <Prose>
+<PageLayout width={width} title={frontmatter.title} subtitle={frontmatter.subtitle} {...rest}>
+  <Prose class={proseClass}>
     <slot />
   </Prose>
 </PageLayout>
