@@ -185,7 +185,7 @@
     padding-inline-start: 1.5em; 
     /* Maintains vertical rhythm with paragraphs */
     margin-block-start: 0.5em;
-    margin-block-end: 1em;
+    margin-block-end: 0em;
   }
 
   ul.text > li {
@@ -197,6 +197,20 @@
     &:last-child {
       margin-block-end: 0em;
     }
+  }
+
+  /* Set margin between paragraphs. */
+  p + p, ul + p {
+    margin-block-start: 1.5em;
+  }
+
+  p.inset {
+    margin-block-start: 0.6em;
+    margin-inline-start: 0.6em;
+    padding-inline-start: 0.6em;
+    border-left-style: solid;
+    border-left-width: 0.25em;
+    border-left-color: var(--color-secondary);
   }
 
   /* Default text wrap settings for headers and paragraphs. */
