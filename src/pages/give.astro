@@ -8,8 +8,12 @@ import Feat from '@/assets/give-feat.jpg'
 const labelId = Astro.locals.id("give-lively-label");
 ---
 
-<PageLayout title="Give" subtitle="Help us serve our community." featuredImage={Feat}>
-  <div class="group flex flex-wrap gap-x-lg-xl gap-y-lg justify-center has-[.base-gl-active]:items-center">
+<PageLayout title="Give" subtitle="Help us serve our community." featuredImage={Feat}
+  
+  class="flex flex-col gap-xl-2xl"
+>
+  {/* Embedded donation form & instructions */}
+  <div class="group flex flex-wrap gap-x-md gap-y-lg has-[.base-gl-active]:items-center">
     <div class="flex flex-col items-center">
       <h2 class="text-lg w-full text-left ps-2xs pbe-[0.5em] invisible group-has-[.base-gl-active]:visible" id={labelId}>Choose Gift Amount</h2>
       <GiveLively labelId={labelId}
@@ -31,5 +35,20 @@ const labelId = Astro.locals.id("give-lively-label");
         <li>Donor-advised fund transfer</li>
       </ul>
     </div>
+  </div>
+
+  {/* Other ways to give */}
+  <div class="max-w-[65ch] ps-2xs">
+    <h2 class="text-lg">Other ways to give</h2>
+    <p>
+      We also accept physical checks. Make the check payable to
+      <u>Christians Concerned for the Community</u>, and send it
+      to the following address:
+    </p>
+    <p class="inset">
+      Christians Concerned for the Community<br>
+      P.O. Box 358173<br>
+      Gainesville, FL 32635
+    </p>
   </div>
 </PageLayout>

@@ -203,6 +203,9 @@
   p + p, ul + p {
     margin-block-start: 1.5em;
   }
+  h1 + p, h2 + p, h3 + p, h4 + p, h5 + p, h6 + p {
+    margin-block-start: 1.8em;
+  }
 
   p.inset {
     margin-block-start: 0.6em;
