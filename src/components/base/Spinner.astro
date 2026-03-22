@@ -10,9 +10,7 @@ import { type HTMLAttributes } from 'astro/types'
 import './assets/base-spinner.css' //defines animations for the spinner, among other things
 
 
-export interface Props extends HTMLAttributes<"svg"> {
-
-};
+type Props = HTMLAttributes<"svg"> | HTMLAttributes<"div">;
 
 const {
   ...rest
