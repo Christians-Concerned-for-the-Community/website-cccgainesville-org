@@ -4,6 +4,8 @@ import { fileURLToPath } from "url";
 
 import sitemap from "@astrojs/sitemap";
 
+import cloudflare from "@astrojs/cloudflare";
+
 const abspath = (path) => {
   return fileURLToPath(new URL(path, import.meta.url))
 };
@@ -15,6 +17,12 @@ const abspath = (path) => {
 export default defineConfig({
   compressHTML: true,
   site: 'https://staging.cccgainesville.org',
+
+  output: 'static',
+
+  adapter: cloudflare({
+    imageService: 'compile' //'cloudflare-binding' // haven't been able to get this to work for local previews
+  }),
 
   integrations: [
     sitemap({
@@ -43,7 +51,10 @@ export default defineConfig({
 
   security: {
     /*
-    // This still doesn't work, as of Astro 6.0.0-beta-1 (1/18/2026). Keep trying, though. 
+    // Works for most of the website, as of Astro v6.0.8 (3/22/2026).
+    //
+    // May be challenging to get it working with the embedded Give Lively donation
+    // widget, but I haven't tried yet.
     //
     // See:
     //   https://docs.astro.build/en/reference/configuration-reference/#securitycsp

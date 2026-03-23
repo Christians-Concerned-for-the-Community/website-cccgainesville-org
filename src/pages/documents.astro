@@ -1,5 +1,4 @@
 ---
-import { globSync } from 'node:fs'
 import path from 'node:path';
 
 import PageLayout from '@/layouts/PageLayout.astro'
@@ -8,14 +7,38 @@ import { Link } from '@/components/base'
 import feat from '@/assets/docs-feat.jpg'
 
 function getPdfPaths(dirname: string) {
-  return globSync('./public/docs/'+dirname+'/*.pdf')
+  //return globSync('./public/docs/'+dirname+'/*.pdf')
+
+  /*
+   globSync not yet supported on cf workerd, though it's very close.
+   In the meantime, use this goofy workaround with import.meta.glob. It's
+   painful because the path has to be a string literal.
+   */
+  
+  let imported: Record<string, ()=>Promise<any>> | undefined;
+  switch(dirname) {
+    case "reports": 
+      imported = import.meta.glob('/public/docs/reports/*.pdf');
+      break;
+    case "policies":
+      imported = import.meta.glob('/public/docs/policies/*.pdf');
+      break;
+    case "irs-returns":
+      imported = import.meta.glob('/public/docs/irs-returns/*.pdf');
+      break;
+  }
+  if (!imported) {
+    throw new Error(`Unrecognized docs import directory: '${dirname}'`);
+  }
+
+  return Object.keys(imported)
     // Sort paths in ascending alphabetical order.
     .sort()
     // Convert path to href for link in deployed site ('/docs/...')
     // and the link text (filename, without extension).
     .map(str => {
       return {
-        href:  str.replace('public',''),
+        href:  str.replace('/public',''),
         title: path.basename(str, '.pdf')
       };
     })
@@ -39,16 +62,17 @@ const lists = [
 ---
 
 <PageLayout title="Documents" subtitle="Take a look through the archives." featuredImage={feat}
-  class={"grid" +
-   + " grid-cols-1 gap-3xl items-start"
-   + " md:grid-cols-3 md:gap-lg md:justify-items-center"}
+  class:list={[
+    "flex flex-col md:flex-row gap-2xl md:gap-3xl",
+    "md:justify-center"
+  ]}
 >
   {/* Loop over each list of files: */}
   {lists.map((dir) => (
     
-    <section class="grid grid-cols-1 gap-xs items-left file-list">
+    <section class="flex flex-col gap-xs items-start">
       {/* Write out title of list. */}
-      <h2 class="text-h3 mb-sm">{dir.title}</h2>
+      <h2 class="text-h3">{dir.title}</h2>
 
       {/* Loop over paths in list, write out link for each one. */}
       {dir.paths.map((doc) => (
