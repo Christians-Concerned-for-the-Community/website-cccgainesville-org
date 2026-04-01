@@ -3,6 +3,7 @@ allowBuilds:
   sharp: true
   workerd: true
 
-packages:
+minimumReleaseAge: 2880 # 2 days in minutes
 
+packages:
   - .
