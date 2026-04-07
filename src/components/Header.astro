@@ -7,7 +7,7 @@ import socials from '@/assets/socials.json'
 
 ---
 <header class:list={[
-  "text-md py-md bg-background/80 backdrop-blur-lg",
+  "text-md py-md bg-background/80 max-sm:backdrop-blur-lg",
   /* Make the header sticky on mobile: */
   "max-sm:sticky max-sm:shadow-md max-sm:top-0 max-sm:z-50"
 ]}>
@@ -22,13 +22,14 @@ import socials from '@/assets/socials.json'
   </a>
 
   {/* Navigation bar on wide screens, disappearing side nav panel on narrow screens. */}
-  <Nav links={nav} icons={socials} maxVisibleLinks={5}>
+  <Nav links={nav} icons={socials} maxVisibleLinks={5}
+    class="max-w-(--content-max) px-3xs">
     {/* Logo / Home Link */}
-      <a href="/" class:list={["p-1 hocus:bg-muted active:bg-muted-dark",
+      <a href="/" class:list={["hocus:bg-muted active:bg-muted-dark",
         "duration-200 transition-[background-color]"
       ]}>
       <Icon name="ccc-logo-wide" width="100%" height="100%"
-        class="block aspect-488/120 text-foreground"
+        class="block aspect-4/1 text-foreground"
       />
       <span class="sr-only">Home - CCC Logo</span>
     </a>
