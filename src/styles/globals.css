@@ -14,6 +14,16 @@
  */
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* Variant that we can use to turn stuff on/off if javascript is available.
+ *
+ * Example usage: hide element if javascript is enabled.
+ *   js:hidden
+ *
+ * Example usage: hide element if javascript is disabled.
+ *   not-js:hidden
+ */
+@custom-variant js (&:where(.js, .js *));
+
 /* We often want to apply the same animations or color changes on either
  * mouse hover or keyboard focus. This custom variant lets us specify
  * the changes once, so we don't have to repeat ourselves.

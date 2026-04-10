@@ -111,12 +111,18 @@ const {
     {/*
       Script that applies the dark mode settings on page load.
 
-      See: src/components/starwind/theme-toggle/ThemeToggle.astro
+      Also sets the 'js' class so that we can detect Javascript with CSS.
+
+      See: src/components/base/DarkModeToggle.astro
     */}
     <script>
       const initTheme = () => {
+        const cl = document.documentElement.classList;
+
+        cl.add("js");
+
         const colorTheme = localStorage.getItem("colorTheme");
-        document.documentElement.classList.toggle("dark",
+        cl.toggle("dark",
           colorTheme?
             colorTheme==="dark"
             :
