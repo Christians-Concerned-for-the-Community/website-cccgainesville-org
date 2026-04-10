@@ -206,9 +206,12 @@
    * 
    * These can be used as modifiers just like the built-in breakpoints:
    *
+   * Note: smallest width we need to support is 320px.
+   *
    * Example:
    *   max-w-50 xs:max-w-60 md:max-w-100
    */
+  --breakpoint-3xs: 21rem; /* 21rem = 336 px */ 
   --breakpoint-2xs: 25rem; /* 25rem = 400 px */
   --breakpoint-xs:  31.25rem; /* 31.25rem = 500 px */
 
