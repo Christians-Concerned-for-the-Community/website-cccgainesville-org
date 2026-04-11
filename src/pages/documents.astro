@@ -1,4 +1,5 @@
 ---
+//import { globSync } from 'node:fs';
 import path from 'node:path';
 
 import PageLayout from '@/layouts/PageLayout.astro'
@@ -7,7 +8,19 @@ import { Link } from '@/components/base'
 import feat from '@/assets/docs-feat.jpg'
 
 function getPdfPaths(dirname: string) {
-  //return globSync('./public/docs/'+dirname+'/*.pdf')
+  /*
+  return globSync('./public/docs/'+dirname+'/*.pdf')
+    // Sort paths in ascending alphabetical order.
+    .sort()
+    // Convert path to href for link in deployed site ('/docs/...')
+    // and the link text (filename, without extension).
+    .map(str => {
+      return {
+        href:  str.replace('public',''),
+        title: path.basename(str, '.pdf')
+      };
+    });
+  */
 
   /*
    globSync not yet supported on cf workerd, though it's very close.
