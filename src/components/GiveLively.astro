@@ -15,17 +15,20 @@ const {
 
 ---
 
-<div class={twMerge(
-  "w-86 h-94 flex items-center justify-center",
-  // Wait a little while before showing the element (prevents flashes as JS gets things set up)
-  "transition-opacity delay-1000 duration-300",
-  "starting:opacity-0 opacity-100",
+<div data-state="initial" class={twMerge("base-gl-container group",
+  "flex grow items-center justify-center",
+  "min-w-76 w-full max-w-86 h-94 p-1 3xs:p-2xs 2xs:p-sm",
   className
   )}
   {...rest}
 >
-  {/* Button visible by default, to handle case where JS is disabled entirely. */}
-  <div class="base-gl-button flex flex-col gap-md px-xs">
+  {/* Only show button and error message on error, or if javascript is disabled. */}
+  <div class:list={[
+    "hidden not-js:flex group-data-[state=error]:flex flex-col gap-md px-xs",
+    // Wait a little while before showing the element (prevents flashes as JS gets things set up)
+    "transition-opacity delay-200 duration-0",
+    "starting:opacity-0 opacity-100",
+  ]}>
     <div class="flex items-center justify-center gap-xs mx-xs">
       <Icon name="tabler:alert-triangle" size="4em" class="text-warning"/>
       <p class="text-justify">Could not load donation form. To donate, click the button below.</p>
@@ -39,11 +42,12 @@ const {
       animation="raise"
     />
   </div>
-  <Spinner class="base-gl-spinner size-2xl text-foreground"
+  <Spinner
+    class="hidden js:group-data-[state=initial]:block size-2xl text-foreground"
     hidden
   />
-  <div id="give-lively-widget" class="gl-simple-donation-widget"
-    hidden role="form" aria-labelledby={labelId}
+  <div id="give-lively-widget" role="form" aria-labelledby={labelId}
+    class="gl-simple-donation-widget hidden js:group-data-[state=ok]:block"
   />
 </div>
 
@@ -52,32 +56,21 @@ const {
 */}
 <script>
 {
-  const buttons = document.querySelectorAll(".base-gl-button");
-  const spinners = document.querySelectorAll(".base-gl-spinner");
-  const widgets = document.querySelectorAll(".gl-simple-donation-widget");
-
-  const toggleHidden = (list: NodeListOf<Element>, force: boolean) => {
-    list.forEach((el) => {el.toggleAttribute("hidden", force)});
+  const containers = document.querySelectorAll<HTMLElement>(".base-gl-container");
+  const setState = (state: 'error' | 'ok') => {
+    containers.forEach((el) => {el.dataset.state = state});
   };
-
-  // Hide donate button, show spinner.
-  toggleHidden(buttons, true);
-  toggleHidden(spinners, false);
 
   const gl=document.createElement('script');
   gl.src='https://secure.givelively.org/widgets/simple_donation/christians-concerned-for-the-community-inc.js?show_suggested_amount_buttons=true&show_in_honor_of=false&address_required=false&has_required_custom_question=false&suggested_donation_amounts[]=25&suggested_donation_amounts[]=50&suggested_donation_amounts[]=100&suggested_donation_amounts[]=250';
 
-  gl.onload = () => {
-    // Success: hide spinner, show donation widget, apply class to advertise that widget is active.
-    toggleHidden(spinners, true);
-    toggleHidden(widgets, false);
-  };
+  // Initial state: show spinner (if javascript enabled).
 
-  gl.onerror = () => {
-    // Failure: hide spinner, show donate button.
-    toggleHidden(spinners, true);
-    toggleHidden(buttons, false);
-  };
+  // Success: show donation widget.
+  gl.onload = () => { setState('ok') };
+
+  // Failure: show donate button.
+  gl.onerror = () => { setState('error'); };
 
   document.head.appendChild(gl);
 }

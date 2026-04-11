@@ -10,17 +10,17 @@ const labelId = Astro.locals.id("give-lively-label");
 
 <PageLayout title="Give" subtitle="Help us serve our community."featuredImage={Feat}
   profile="givelively"
-  class="flex flex-col gap-xl-2xl"
+  class="flex flex-col gap-xl-2xl items-center"
 >
   {/* Embedded donation form & instructions */}
-  <div class="flex flex-wrap gap-x-md gap-y-lg items-center">
-    <div class="flex flex-col items-center">
-      <h2 class="text-lg w-full text-left ps-2xs pbe-[0.5em]" id={labelId}>Choose Gift Amount</h2>
+  <div class="flex flex-col md:flex-row gap-lg md:gap-md w-full items-center justify-center">
+    <div class="w-full flex flex-col items-center">
+      <h2 class="text-lg text-center pbe-[0.5em]" id={labelId}>Choose Gift Amount</h2>
       <GiveLively labelId={labelId}
         class="rounded-sm shadow-lg border border-border"
       />
     </div>
-    <div class="max-w-[50ch] basis-[40ch] px-sm">
+    <div class="max-w-[60ch]">
       <p>
         Support CCC's service to our neighbors by filling out this secure form.
         You'll be able to make an immediate gift from one of the following sources:
@@ -36,12 +36,13 @@ const labelId = Astro.locals.id("give-lively-label");
   </div>
 
   {/* Other ways to give */}
-  <div class="max-w-[65ch] ps-2xs">
+  <div class="flex flex-col md:flex-row gap-lg md:gap-md w-full items-center justify-center">
+    
+  </div>
+  <div class="max-w-[60ch]">
     <h2 class="text-lg">Other ways to give</h2>
     <p>
-      We also accept physical checks. Make the check payable to
-      <u>Christians Concerned for the Community</u>, and send it
-      to the following address:
+      Physical checks may be sent to our mailing address:
     </p>
     <p class="inset">
       Christians Concerned for the Community<br>

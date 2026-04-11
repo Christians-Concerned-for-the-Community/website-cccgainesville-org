@@ -140,7 +140,7 @@ const mobileIconTray = darkModeToggle || icons?.length;
 
 <nav id="main-navigation"
   class={twMerge([
-    "max-w-(--content-max) mx-auto px-2xs pt-2xs",
+    "mx-auto pt-2xs",
     "flex sm:flex-wrap gap-y-sm items-center w-full",
     className
   ])} {...rest}>
@@ -152,13 +152,16 @@ const mobileIconTray = darkModeToggle || icons?.length;
   
   <div class="ml-auto my-auto">
     {/* Full menu: visible when width >= sm */}
-    <ul class="hidden sm:flex sm:flex-wrap text-md [&>li]:flex [&>li]:place-items-center">
+    <ul class:list={[
+      "hidden sm:flex sm:flex-wrap text-md [&>li]:flex [&>li]:place-items-center",
+      "last:first:pr-0"
+    ]}>
     
       {/* Main text links along the top. */}
       {fullLinks.slice(0,split).map((link) => (
-      <li>
+      <li class="group">
         <Link href={link.href} variant="nav"
-          class="py-2xs px-[1ch] flex items-center"
+          class="py-2xs px-[1ch] group-last:pr-0 flex items-center"
         >
           {link.label}
         </Link>
@@ -171,7 +174,7 @@ const mobileIconTray = darkModeToggle || icons?.length;
         <NavDisclosure align="end" variant="ghost" animation="none"
           label={disclosureLabel}
           icon="tabler:chevrons-down"
-          buttonClass="px-[1ch] gap-[0.8ch] shadow-none font-normal h-full activated:[&>svg]:-scale-y-100"
+          buttonClass="pl-[1ch] pr-0 gap-[0.8ch] shadow-none font-normal h-full activated:[&>svg]:-scale-y-100"
           iconClass="-ml-[0.5ch] transition-[scale] delay-100 duration-250 h-[1.5em]"
         >
           {fullLinks.slice(split).map((link) => (
