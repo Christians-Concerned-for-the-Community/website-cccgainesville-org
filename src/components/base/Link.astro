@@ -76,7 +76,7 @@ const url = new URL(href, Astro.url);
 const isExternal = url.host !== Astro.url.host;
 const isCurrentPage = variant==="nav" && url.href === Astro.url.href;
 
-let autoAttrs: Record<string,string> = {};
+let autoAttrs: HTMLAttributes<"a"> = {};
 if (openAsNew) {
   autoAttrs.target = '_blank';
 }
