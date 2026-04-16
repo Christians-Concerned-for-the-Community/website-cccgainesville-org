@@ -22,7 +22,7 @@
 #
 # TODO: get rid of 'data:' as well, once we can use Astro's CSP support (see above).
 #
-  Content-Security-Policy: default-src 'self' data: 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://secure.givelively.org https://fonts.googleapis.com; script-src 'self' 'unsafe-inline' https://secure.givelively.org; frame-src https://secure.givelively.org; object-src 'none'; base-uri 'none'; manifest-src 'self' cccgainesville.cloudflareaccess.com; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'self' data: 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://secure.givelively.org https://fonts.googleapis.com; script-src 'self' 'unsafe-inline' https://secure.givelively.org https://challenges.cloudflare.com; frame-src https://secure.givelively.org; object-src 'none'; base-uri 'none'; manifest-src 'self' cccgainesville.cloudflareaccess.com; upgrade-insecure-requests
 #
 #
 #
