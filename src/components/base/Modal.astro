@@ -110,6 +110,19 @@ const closeDefault = "absolute top-xs right-sm text-sm";
     iconClass={iconClass}
     class={twMerge("[&_svg]:pointer-events-none",buttonClass)}
   />
+  {/* Explanation for why we're setting pointer-events-none on any svg's inside
+    * the trigger button (see above).
+    *
+    * WebKit browsers (Safari, primarily) have a bug where they can trigger
+    * decorations guarded by focus-visible: when opening a dialog with
+    * a mouse click or touch. This is incorrect behavior - it should
+    * be setting the focus, but it shouldn't be displaying a focus ring
+    * unless the user triggered the dialog via keyboard.
+    * 
+    * See here for mention of bug:
+    * https://github.com/radix-ui/primitives/issues/2953
+    * https://bugs.webkit.org/show_bug.cgi?id=247416
+    */}
 
   <dialog id={modalId} closedby="any"
     class={dialogVariants({ location, class: className })} {...rest}
@@ -135,13 +148,9 @@ const closeDefault = "absolute top-xs right-sm text-sm";
 
   /* Fallback: closedBy isn't supported in Safari, and other browsers are baseline July 2025.
 
-    Safari added the attribute without implementing it (arggh), so in order to accurately
-    detect if it's unsupported, we have to make a dummy dialog and then check to see
-    if the attribute's default value got set properly.
-
-    See: https://github.com/tak-dcxi/dialog-closedby-polyfill/pull/19/commits/408b3fa6b918d0919b4765ce4fc692162fb3b7fc
-
-    (sigh, Safari is definitely the new IE)
+    At one point, Safari added the attribute without implementing it (arggh), so in order
+    to accurately detect if it's unsupported, we have to make a dummy dialog and then check
+    to see if the attribute's default value got set properly.
   */
   const supports_closedby = (document.createElement("dialog") as any).closedBy === "none";
 
@@ -180,32 +189,8 @@ const closeDefault = "absolute top-xs right-sm text-sm";
           trigger?.setAttribute("aria-haspopup", "dialog");
 
           // Open button for dialog
-          trigger?.addEventListener("click", (e) => {
+          trigger?.addEventListener("click", () => {
             dialog?.showModal();
-
-            /* WebKit browsers (Safari, primarily) have a bug where they can trigger
-            * decorations guarded by focus-visible: when opening a dialog with
-            * a mouse click or touch. This is incorrect behavior - it should
-            * be setting the focus, but it shouldn't be displaying a focus ring
-            * unless the user triggered the dialog via keyboard.
-            * 
-            * See here for mention of bug (the pointer-events fix doesn't work for me):
-            * https://github.com/radix-ui/primitives/issues/2953
-            * https://bugs.webkit.org/show_bug.cgi?id=247416
-            * 
-            * See here for explanation of how keyboard vs mouse click detection works:
-            * https://css-tricks.com/when-a-click-is-not-just-a-click/#aa-another-take-to-determine-which-is-which
-            */
-            const fromKeyboard = ((e as UIEvent).detail === 0);
-            const active = document.activeElement as HTMLElement;
-            if (!fromKeyboard && active) {
-              /* If focus is active, but we didn't open the dialog with a keyboard action,
-              * clear the focus, then reapply it with focusVisible explicitly set to false.
-              * This will bypass the buggy autodetection in Webkit.
-              */
-              active.blur();
-              active.focus({focusVisible: false});
-            }
           });
 
           // Close button for dialog.
