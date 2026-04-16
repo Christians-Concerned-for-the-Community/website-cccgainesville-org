@@ -54,8 +54,8 @@
  * Lets us specify open state as either dialog or popover open, or
  * aria-expanded="true" on any element within the same group.
  *
- * TODO: remove this once we can assume support for CSS popovers and anchor
- *       positioning (baseline Jan 2026 -> assume supported in Jan 2028).
+ * TODO: remove these once we can assume support for CSS popovers and anchor
+ *       positioning (baseline Jan 2026 -> should be "baseline widely available" by Jun 2028).
  */
 @custom-variant exopen (
    &:is([open], :popover-open, :open),
@@ -68,6 +68,7 @@
  * cleaner look.
  *
  * For example:
+ *   iPhone 5/SE: 320w x 568h
  *   iPhone SE: 375w x 667h
  *   iPhone 14 Pro Max: 430w x 932h
  *   Samsung Galaxy S8+: 360w x 740h

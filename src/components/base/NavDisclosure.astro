@@ -20,8 +20,9 @@
  * position it, and force proper screen-reader behavior with aria-* attributes.
  * 
  * You should be able to remove the fallback script entirely once we can assume
- * broad support for anchor positioning - the general rule-of-thumb is 2 years
- * from baseline introduction. So, can remove it in Jan 2028.
+ * broad support for anchor positioning - the general rule-of-thumb is to wait
+ * for "baseline widely available" status, which is currently 30 months. So,
+ * we should be able to remove it by Jun 2028.
  */
 
 import type { HTMLAttributes } from "astro/types";
@@ -58,7 +59,7 @@ type Props =
   javascript code for the fallback, since all we really have to change on a click
   is the value of aria-expanded on the button.
 
-  Once you don't need the fallback anymore (Jan 2028), you can change all the
+  Once you don't need the fallback anymore (Jun 2028), you can change all the
   "exopen:"/"not-exopen:" below back to "open:"/"not-open:".
  */
 export const disclosure = tv({
@@ -124,6 +125,8 @@ const {
 /* Fallback: if anchor positioning API isn't available, use Javascript to mimic
  *           popover behavior with an absolute-positioned body and manually
  *           manipulating aria-* attributes on button click.
+ * 
+ * TODO: remove this once anchor positioning hits "baseline widely available", in Jun 2028.
  * 
  * Implementation Notes:
  * 
