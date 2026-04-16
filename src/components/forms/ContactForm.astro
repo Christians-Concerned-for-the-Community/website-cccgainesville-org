@@ -7,7 +7,7 @@ export const handleForm = defineAction({
   accept: 'form',
   input: z.object({
     name: z
-      .string("Enter your full name.")
+      .string("Enter your full name (John Smith).")
       .max(255, "Enter a shorter name (255 letters max)."),
 
     email: z
@@ -16,7 +16,7 @@ export const handleForm = defineAction({
 
     phone: z
       .string("Enter a valid phone number (555-555-5555)")
-      .regex(/^[\(]*[0-9]{3}[ .\-\)]*[0-9]{3}[ .\-]*[0-9]{4}$/,
+      .regex(/^(tel:\+1)*[\(]*[0-9]{3}[ .\-\)]*[0-9]{3}[ .\-]*[0-9]{4}$/,
         "Enter a valid phone number (555-555-5555)"),
 
     message: z
@@ -25,7 +25,7 @@ export const handleForm = defineAction({
   }),
   handler: async ({ email, phone, name, message}) => {
     // Remove all chars from phone number that aren't digits, then redo the formatting.
-    const digits = phone.replace(/\D/g, "");
+    const digits = phone.replace("tel:+1","").replace(/\D/g, "");
     const cleanPhone = `${digits.slice(0,3)}-${digits.slice(3,6)}-${digits.slice(6,10)}`;
 
     /* TODO: implement this method */
@@ -38,7 +38,11 @@ export const handleForm = defineAction({
 
 ---
 
-<Form turnstileKey="" handlerAction="handleContactForm" class="text-lg">
+<Form turnstileKey="" handlerAction="handleContactForm"
+  submitButton={{
+    label:"Send Message"
+  }}
+>
   <FormField type="full-name" name="name"    required label="Name" />
   <FormField type="email"     name="email"   required label="Email" />
   <FormField type="tel"       name="phone"   required label="Phone" />

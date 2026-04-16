@@ -52,7 +52,7 @@ const {
 if(!submitButton.label && !submitButton.icon && !submitButton.iconBefore) {
   submitButton.label = "Submit";
 }
-submitButton.class = twMerge("base-form-submit", submitButton.class);
+submitButton.class = twMerge("base-form-submit text-md min-w-[50%]", submitButton.class);
 ---
 
 {/*
@@ -69,11 +69,11 @@ submitButton.class = twMerge("base-form-submit", submitButton.class);
     "hidden group-data-[state=error]/form:block",
     "w-full p-[1em] rounded-sm border-2 border-error"
   ]}>
-    <ErrHeadTag class="text-[1em] font-medium mbe-[0.8em]">
-      <Icon name="tabler:alert-triangle" size="1em" class="text-error mbe-[0.12em] me-[0.25em]"/>
+    <ErrHeadTag class="text-md font-medium mbe-[0.8em]">
+      <Icon name="tabler:alert-triangle" size="1em" class="text-error-accent mbe-[0.12em] me-[0.25em]"/>
       {errorHeadingText}
     </ErrHeadTag>
-    <ul class="text text-[0.8em]"></ul>
+    <ul class="text text-base"></ul>
   </section>
 
   <slot />
