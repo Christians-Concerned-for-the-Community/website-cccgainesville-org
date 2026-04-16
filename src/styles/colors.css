@@ -108,7 +108,7 @@
   --color-warning-foreground:
                var(--color-amber-950);
   --color-error:
-    light-dark(var(--color-red-700), var(--color-red-800));
+    light-dark(var(--color-red-700), #D88393);
   --color-error-foreground:
                var(--color-neutral-50);
   --color-border:
