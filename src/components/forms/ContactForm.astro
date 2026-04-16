@@ -6,21 +6,21 @@ import { z } from 'astro/zod';
 export const handleForm = defineAction({
   accept: 'form',
   input: z.object({
-    name: z.string().trim()
-      .min(1,"Enter your full name.")
-      .max(255, "Enter a shortened name (can't be longer than 255 characters)."),
+    name: z
+      .string("Enter your full name.")
+      .max(255, "Enter a shorter name (255 letters max)."),
 
-    email: z.string().trim().pipe(z
-      .email("Enter a valid email address (example: thatsme@gmail.com)")
-      .max(80, "Enter a shorter email (can't be longer than 80 characters).")),
+    email: z
+      .email("Enter a valid email (jsmith@gmail.com)")
+      .max(80, "Enter a shorter email (80 letters max)."),
 
-    phone: z.string().trim()
+    phone: z
+      .string("Enter a valid phone number (555-555-5555)")
       .regex(/^[\(]*[0-9]{3}[ .\-\)]*[0-9]{3}[ .\-]*[0-9]{4}$/,
-        "Enter a valid US phone number (example: 555-555-5555)")
-      .max(40, "Phone number is too long, max is 40 characters."),
+        "Enter a valid phone number (555-555-5555)"),
 
-    message: z.string().trim()
-      .min(1, "Type in your message to us.")
+    message: z
+      .string("Type in your message to us.")
       .max(1500, "Message is too long, max is 1500 characters.")
   }),
   handler: async ({ email, phone, name, message}) => {
@@ -39,8 +39,8 @@ export const handleForm = defineAction({
 ---
 
 <Form turnstileKey="" handlerAction="handleContactForm" class="text-lg">
-  <FormField type="full-name" name="name"    label="Name" />
-  <FormField type="email"     name="email"   label="Email" />
-  <FormField type="tel"       name="phone"   label="Phone" />
-  <FormField type="textarea"  name="message" label="Message" />
+  <FormField type="full-name" name="name"    required label="Name" />
+  <FormField type="email"     name="email"   required label="Email" />
+  <FormField type="tel"       name="phone"   required label="Phone" />
+  <FormField type="textarea"  name="message" required label="Message" />
 </Form>
