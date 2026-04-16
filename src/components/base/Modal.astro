@@ -108,7 +108,7 @@ const closeDefault = "absolute top-xs right-sm text-sm";
     icon={icon}
     iconBefore={iconBefore}
     iconClass={iconClass}
-    class={twMerge(buttonClass)}
+    class={twMerge("[&_svg]:pointer-events-none",buttonClass)}
   />
 
   <dialog id={modalId} closedby="any"
