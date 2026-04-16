@@ -1,5 +1,6 @@
+/* Custom animations and page transition settings. */
 
-/* Page transition animations. */
+/* Page transition */
 @view-transition {
     navigation: auto;
 }
@@ -9,7 +10,7 @@
   }
 }
 
-
+/* Custom animations */
 @theme inline {
   --ease-fast: cubic-bezier(0.165, 0.84, 0.44, 1);
 
@@ -53,27 +54,6 @@
     }
     100% {
       transform: rotate(0deg);
-    }
-  }
-
-  --animate-accordion-down: accordion-down 200ms ease-out;
-  --animate-accordion-up: accordion-up 200ms ease-out;
-
-  @keyframes accordion-down {
-    from {
-      height: 0;
-    }
-    to {
-      height: var(--starwind-accordion-content-height);
-    }
-  }
-
-  @keyframes accordion-up {
-    from {
-      height: var(--starwind-accordion-content-height);
-    }
-    to {
-      height: 0;
     }
   }
 }

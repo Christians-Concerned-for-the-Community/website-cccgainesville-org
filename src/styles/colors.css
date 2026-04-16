@@ -73,10 +73,6 @@
     light-dark(var(--color-neutral-50),    var(--color-neutral-900));
   --color-foreground:
     light-dark(var(--color-neutral-800),   var(--color-gray-200));
-  --color-card: /* background */
-    light-dark(var(--color-white),         var(--color-neutral-900));
-  --color-card-foreground:
-    light-dark(var(--color-neutral-950),   var(--color-neutral-50));
   --color-popover: /* background */
     light-dark(var(--color-white),         var(--color-neutral-800));
   --color-popover-foreground:
@@ -99,10 +95,6 @@
     light-dark(var(--color-neutral-400),   var(--color-neutral-850));
   --color-muted-foreground:
     light-dark(var(--color-neutral-600),   var(--color-neutral-400));
-  --color-accent:
-    light-dark(var(--color-neutral-100),   var(--color-neutral-700));
-  --color-accent-foreground:
-    light-dark(var(--color-neutral-900),   var(--color-neutral-100));
   --color-info:
                var(--color-sky-300);
   --color-info-foreground:
@@ -125,23 +117,6 @@
     light-dark(var(--color-neutral-200), --alpha(var(--color-neutral-50) / 25%));
   --color-outline:
     light-dark(var(--color-neutral-400), var(--color-neutral-500));
-
-  --color-sidebar:
-    light-dark(var(--color-neutral-50),  var(--color-neutral-900));
-  --color-sidebar-foreground:
-    light-dark(var(--color-neutral-950), var(--color-neutral-50));
-  --color-sidebar-primary: /* background */
-               var(--color-blue-700);
-  --color-sidebar-primary-foreground:
-               var(--color-neutral-50);
-  --color-sidebar-accent: /* background */
-    light-dark(var(--color-neutral-100), var(--color-neutral-800));
-  --color-sidebar-accent-foreground:
-    light-dark(var(--color-neutral-900), var(--color-neutral-100));
-  --color-sidebar-border:
-    light-dark(var(--color-neutral-200), var(--color-neutral-800));
-  --color-sidebar-outline:
-    light-dark(var(--color-neutral-400), var(--color-neutral-600));
 
 
   /* Color settings for our own components. */
