@@ -141,9 +141,6 @@
     outline: var(--outline-width-default) dashed var(--color-bw);
     outline-offset: var(--outline-offset-default);
     box-shadow: none;
-    &:invalid {
-      outline-color: var(--color-error);
-    }
     border-radius: var(--radius-lg);
   }
 
@@ -156,12 +153,10 @@
   }
 
   /*
-    Default styling for invalid elements (when not keyboard focused).
+    Default styling for invalid elements (when not focused).
    */
-  *:invalid:not(:focus-visible) {
-    outline: var(--outline-width-default) dotted var(--color-error);
-    outline-offset: var(--outline-offset-default);
-    box-shadow: none;
+  [aria-invalid="true"]:not(:focus) {
+    border-color: var(--color-error);
   }
 
   /*
