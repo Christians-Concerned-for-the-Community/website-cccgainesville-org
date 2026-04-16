@@ -204,7 +204,6 @@ const closeDefault = "absolute top-xs right-sm text-sm";
               * This will bypass the buggy autodetection in Webkit.
               */
               active.blur();
-              // @ts-expect-error (supported in Webkit, but missing in other browsers at time of writing)
               active.focus({focusVisible: false});
             }
           });
