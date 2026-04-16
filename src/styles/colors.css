@@ -1,12 +1,5 @@
-/* 
-   We use a custom pair of vars (--tw-light, --tw-dark) instead of the lightdark()
-   function for browser compatibility - Tailwind CSS only supports lightdark() on
-   browsers from 2024 or newer.
+/* Color vars, default colors, and box shadows. */
 
-   See: https://stackoverflow.com/a/79739830
- */
-
-/* Global CSS variables - these won't be accessible via Tailwind CSS classes. */
 :root {
   /* CCC's brand colors - our palette will be produced from these. */
   --brand-primary:   #D4AF36;
@@ -22,10 +15,9 @@
     background-color: var(--color-background);
   }
 
-  /* default border and outline colors */
+  /* default border color on all elements */
   * {
     border-color: var(--color-border);
-    outline-color: --alpha(var(--color-outline) / 50%);
   }
 
   /* custom box shadows
@@ -76,140 +68,104 @@
   --color-neutral-900: oklch(from var(--brand-neutral) 15% c h);
   --color-neutral-950: oklch(from var(--brand-neutral) 10% c h);
 
-  /* Starwind UI color settings (for both light and dark modes). */
+  /* UI color settings (for both light and dark modes). */
   --color-background:
-    var(--tw-light, var(--color-neutral-50))
-    var(--tw-dark,  var(--color-neutral-900));
+    light-dark(var(--color-neutral-50),    var(--color-neutral-900));
   --color-foreground:
-    var(--tw-light, var(--color-neutral-800))
-    var(--tw-dark,  var(--color-neutral-50));
+    light-dark(var(--color-neutral-800),   var(--color-gray-200));
   --color-card: /* background */
-    var(--tw-light, var(--color-white))
-    var(--tw-dark,  var(--color-neutral-900));
+    light-dark(var(--color-white),         var(--color-neutral-900));
   --color-card-foreground:
-    var(--tw-light, var(--color-neutral-950))
-    var(--tw-dark,  var(--color-neutral-50));
+    light-dark(var(--color-neutral-950),   var(--color-neutral-50));
   --color-popover: /* background */
-    var(--tw-light, var(--color-white))
-    var(--tw-dark,  var(--color-neutral-800));
-  --color-popover-foreground: 
-    var(--tw-light, var(--color-neutral-950))
-    var(--tw-dark,  var(--color-neutral-50));
-  --color-primary: /* background*/
-    var(--tw-light, var(--color-primary-100))
-    var(--tw-dark,  var(--color-primary-500));
+    light-dark(var(--color-white),         var(--color-neutral-800));
+  --color-popover-foreground:
+    light-dark(var(--color-neutral-950),   var(--color-neutral-50));
+  --color-primary: /* background */
+    light-dark(var(--color-primary-100),   var(--color-primary-500));
   --color-primary-foreground:
-    var(--tw-light, var(--color-neutral-800))
-    var(--tw-dark,  var(--color-neutral-50));
+    light-dark(var(--color-neutral-800),   var(--color-neutral-50));
   --color-primary-accent:
-    var(--tw-light, var(--color-primary-500))
-    var(--tw-dark,  var(--color-primary-100));
-  --color-secondary: /* background*/
-    var(--tw-light, var(--color-secondary-100))
-    var(--tw-dark,  var(--color-secondary-500));
+    light-dark(var(--color-primary-500),   var(--color-primary-100));
+  --color-secondary: /* background */
+    light-dark(var(--color-secondary-100), var(--color-secondary-500));
   --color-secondary-foreground:
-    var(--tw-light, var(--color-neutral-800))
-    var(--tw-dark,  var(--color-neutral-50));
+    light-dark(var(--color-neutral-800),   var(--color-neutral-50));
   --color-secondary-accent:
-    var(--tw-light, var(--color-secondary-500))
-    var(--tw-dark,  var(--color-secondary-100));
+    light-dark(var(--color-secondary-500), var(--color-secondary-100));
   --color-muted:
-    var(--tw-light, var(--color-neutral-300))
-    var(--tw-dark,  var(--color-neutral-800));
+    light-dark(var(--color-neutral-300),   var(--color-neutral-800));
   --color-muted-dark:
-    var(--tw-light, var(--color-neutral-400))
-    var(--tw-dark,  var(--color-neutral-850));
-  --color-muted-foreground: 
-    var(--tw-light, var(--color-neutral-600))
-    var(--tw-dark,  var(--color-neutral-400));
+    light-dark(var(--color-neutral-400),   var(--color-neutral-850));
+  --color-muted-foreground:
+    light-dark(var(--color-neutral-600),   var(--color-neutral-400));
   --color-accent:
-    var(--tw-light, var(--color-neutral-100))
-    var(--tw-dark,  var(--color-neutral-700));
+    light-dark(var(--color-neutral-100),   var(--color-neutral-700));
   --color-accent-foreground:
-    var(--tw-light, var(--color-neutral-900))
-    var(--tw-dark,  var(--color-neutral-100));
+    light-dark(var(--color-neutral-900),   var(--color-neutral-100));
   --color-info:
-                    var(--color-sky-300);
+               var(--color-sky-300);
   --color-info-foreground:
-                    var(--color-sky-950);
+               var(--color-sky-950);
   --color-success:
-                    var(--color-green-300);
+               var(--color-green-300);
   --color-success-foreground:
-                    var(--color-green-950);
+               var(--color-green-950);
   --color-warning:
-                    var(--color-amber-300);
+               var(--color-amber-300);
   --color-warning-foreground:
-                    var(--color-amber-950);
+               var(--color-amber-950);
   --color-error:
-    var(--tw-light, var(--color-red-700))
-    var(--tw-dark,  var(--color-red-800));
+    light-dark(var(--color-red-700), var(--color-red-800));
   --color-error-foreground:
-                    var(--color-neutral-50);
+               var(--color-neutral-50);
   --color-border:
-    var(--tw-light, var(--color-neutral-600))
-    var(--tw-dark,  --alpha(var(--color-neutral-50) / 20%));
+    light-dark(var(--color-neutral-600), --alpha(var(--color-neutral-50) / 20%));
   --color-input:
-    var(--tw-light, var(--color-neutral-200))
-    var(--tw-dark,  --alpha(var(--color-neutral-50) / 25%));
+    light-dark(var(--color-neutral-200), --alpha(var(--color-neutral-50) / 25%));
   --color-outline:
-    var(--tw-light, var(--color-neutral-400))
-    var(--tw-dark,  var(--color-neutral-500));
+    light-dark(var(--color-neutral-400), var(--color-neutral-500));
 
   --color-sidebar:
-    var(--tw-light, var(--color-neutral-50))
-    var(--tw-dark,  var(--color-neutral-900));
+    light-dark(var(--color-neutral-50),  var(--color-neutral-900));
   --color-sidebar-foreground:
-    var(--tw-light, var(--color-neutral-950))
-    var(--tw-dark,  var(--color-neutral-50));
-  --color-sidebar-primary:
-                    var(--color-blue-700);
+    light-dark(var(--color-neutral-950), var(--color-neutral-50));
+  --color-sidebar-primary: /* background */
+               var(--color-blue-700);
   --color-sidebar-primary-foreground:
-                    var(--color-neutral-50);
-  --color-sidebar-accent:
-    var(--tw-light, var(--color-neutral-100))
-    var(--tw-dark,  var(--color-neutral-800));
+               var(--color-neutral-50);
+  --color-sidebar-accent: /* background */
+    light-dark(var(--color-neutral-100), var(--color-neutral-800));
   --color-sidebar-accent-foreground:
-    var(--tw-light, var(--color-neutral-900))
-    var(--tw-dark,  var(--color-neutral-100));
+    light-dark(var(--color-neutral-900), var(--color-neutral-100));
   --color-sidebar-border:
-    var(--tw-light, var(--color-neutral-200))
-    var(--tw-dark,  var(--color-neutral-800));
+    light-dark(var(--color-neutral-200), var(--color-neutral-800));
   --color-sidebar-outline:
-    var(--tw-light, var(--color-neutral-400))
-    var(--tw-dark,  var(--color-neutral-600));
+    light-dark(var(--color-neutral-400), var(--color-neutral-600));
 
 
   /* Color settings for our own components. */
-  --color-banner:
-    var(--tw-light, var(--color-neutral-800))
-    var(--tw-dark,  var(--color-neutral-850));
+  --color-banner: /* background */
+    light-dark(var(--color-neutral-800), var(--color-neutral-850));
   --color-banner-fg:
-                    var(--color-neutral-50);
+               var(--color-neutral-50);
   --color-link:
-    var(--tw-light, var(--color-primary-500))
-    var(--tw-dark,  var(--color-primary-100));
+    light-dark(var(--color-primary-500), var(--color-primary-100));
   --color-link-hover:
-    var(--tw-light, var(--color-primary-400))
-    var(--tw-dark,  var(--color-primary-200));
+    light-dark(var(--color-primary-400), var(--color-primary-200));
 
 
   --color-theme-grad1:
-    var(--tw-light, var(--color-neutral-700))
-    var(--tw-dark,  var(--color-secondary-100));
+    light-dark(var(--color-neutral-700),   var(--color-secondary-100));
   --color-theme-grad2:
-    var(--tw-light, var(--color-primary-300))
-    var(--tw-dark,  var(--color-primary-200));
+    light-dark(var(--color-primary-300),   var(--color-primary-200));
   --color-theme-grad3:
-    var(--tw-light, var(--color-primary-100))
-    var(--tw-dark,  var(--color-secondary-100));
+    light-dark(var(--color-primary-100),   var(--color-secondary-100));
   --color-theme-grad4:
-    var(--tw-light, var(--color-secondary-100))
-    var(--tw-dark,  var(--color-primary-200));
+    light-dark(var(--color-secondary-100), var(--color-primary-200));
   
   --color-bw:
-    var(--tw-light, var(--color-black))
-    var(--tw-dark,  var(--color-white));
+    light-dark(var(--color-black), var(--color-white));
   --color-wb:
-    var(--tw-light, var(--color-white))
-    var(--tw-dark,  var(--color-black));
+    light-dark(var(--color-white), var(--color-black));
 }

@@ -81,16 +81,10 @@
   /*
     This is what changes the color scheme from light to dark when the ".dark"
     class gets added to the root HTML element of the page.
-
-    See: https://stackoverflow.com/a/79739830
   */
   color-scheme: light;
-  --tw-light: initial;
-  --tw-dark: ;
   @variant dark {
     color-scheme: dark;
-    --tw-light: ;
-    --tw-dark: initial;
   }
 }
 
