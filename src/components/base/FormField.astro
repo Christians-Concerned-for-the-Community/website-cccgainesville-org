@@ -115,7 +115,9 @@ switch (type) {
   </label>
 
   <Tag id={inputId} name={name} data-name={name} aria-describedby={errId} data-err={errId} required={required}
-    class={twMerge("base-form-field w-full resize-none", fieldClass)}
+    class={twMerge(
+      "base-form-field w-full resize-none border rounded-md",
+      fieldClass)}
     {...rest}
     {...autoAttrs /* keep this second - allows passed in attrs to override auto ones */}
   />

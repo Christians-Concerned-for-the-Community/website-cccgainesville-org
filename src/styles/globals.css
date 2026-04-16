@@ -1,6 +1,5 @@
 @import "tailwindcss" source("../");
 @import "tw-animate-css";
-@plugin "@tailwindcss/forms";
 
 @import "./colors.css";
 @import "./typography.css";
