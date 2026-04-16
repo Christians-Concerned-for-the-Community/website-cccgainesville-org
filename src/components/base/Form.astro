@@ -1,0 +1,155 @@
+---
+import type { HTMLAttributes, ComponentProps } from "astro/types";
+import { twMerge } from 'tailwind-merge'
+
+import { Button, Icon } from '@/components/base'
+
+type Props = HTMLAttributes<"form"> & {
+  /**
+   * Properties to style the submit button.
+   * 
+   * @default {label: "submit"}
+   */
+  submitButton?: Omit<ComponentProps<typeof Button>, "type">;
+
+  /**
+   * Site key to use for Cloudflare Turnstile.
+   * 
+   * (This isn't private, you don't need to treat it as a secret)
+   */
+  turnstileKey: string,
+
+  /**
+   * Name of action to send form results to for validation.
+   */
+  handlerAction: string,
+
+  /**
+   * Tag to use for the heading of the error summary box.
+   * 
+   * @default "h3"
+   */
+  errorHeadingTag?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "div",
+
+  /**
+   * Heading text for the error summary box.
+   * 
+   * @default "Oops, let's fix these errors first:"
+   */
+  errorHeadingText?: string,
+};
+
+const {
+  submitButton = {},
+  turnstileKey,
+  handlerAction,
+  errorHeadingTag : ErrHeadTag = "h3",
+  errorHeadingText = "Oops, let's fix these errors first:",
+  class: className,
+  ...rest
+} = Astro.props;
+
+if(!submitButton.label && !submitButton.icon && !submitButton.iconBefore) {
+  submitButton.label = "Submit";
+}
+submitButton.class = twMerge("base-form-submit", submitButton.class);
+---
+
+{/*
+  States: initial, processing, success, error
+*/}
+<form novalidate data-action={handlerAction} data-state="initial"
+  class={twMerge(
+    "base-form group/form flex flex-col items-center max-w-[60ch] gap-[1em]",
+    className
+  )}
+  {...rest}
+>
+  <section tabindex="-1" class:list={[
+    "hidden group-data-[state=error]/form:block",
+    "w-full p-[1em] rounded-sm border-2 border-error"
+  ]}>
+    <ErrHeadTag class="text-[1em] font-medium mbe-[0.8em]">
+      <Icon name="tabler:alert-triangle" size="1em" class="text-error me-[1.5em]"/>
+      {errorHeadingText}
+    </ErrHeadTag>
+    <ul class="text text-[0.8em]"></ul>
+  </section>
+
+  <slot />
+
+  <div class="cf-turnstile" data-sitekey={turnstileKey}/>
+
+  <Button type="submit" {...submitButton}/>
+</form>
+
+<script is:inline async defer
+  src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+/>
+
+<script>
+  import {actions, isInputError} from "astro:actions";
+  {
+    const makeMsg = (text: string, id?: string ) => {
+      const li = document.createElement('li');
+      if (id) {
+        const a = document.createElement('a');
+        a.href = '#' + id;
+        a.textContent = text;
+        li.appendChild(a);
+      } else {
+        li.textContent = text;
+      }
+      return li;
+    };
+
+    const initForms = () => {
+      document.querySelectorAll<HTMLFormElement>(".base-form").forEach((form) => {
+        form.addEventListener('submit', async (ev) => {
+          ev.preventDefault();
+
+          const errContainer = form.querySelector<HTMLElement>('section');
+          const errContent = errContainer?.querySelector<HTMLUListElement>('ul');
+
+          if(form.dataset.action && form.dataset.action in actions) {
+            // Send form data to handler, then wait for results.
+            form.dataset.state = "processing";
+            const formData = new FormData(form);
+            const {error} = await actions[form.dataset.action](formData);
+
+            const msgs: HTMLLIElement[] = [];
+            const errsByField = (error && isInputError(error))? error.fields : undefined;
+            if (error && !errsByField) {
+              msgs.push(makeMsg(error.code + ": " + error.message));
+            }
+
+            form.querySelectorAll<HTMLElement>('.base-form-field').forEach((el) => {
+              const errDest = el.dataset.err? document.getElementById(el.dataset.err) : undefined;
+              const errText = el.dataset.name? (errsByField?.[el.dataset.name]?.join(", ")) : undefined;
+              if (errText) {
+                el.ariaInvalid = "true";
+                msgs.push(makeMsg(errText, el.id));
+                errDest?.replaceChildren(errText);
+              } else {
+                el.ariaInvalid = "false";
+                errDest?.replaceChildren();
+              }
+            });
+
+            if (msgs.length) {
+              errContent?.replaceChildren(...msgs);
+              form.dataset.state = "error";
+              errContainer?.focus();
+            } else {
+              errContent?.replaceChildren();
+              form.dataset.state = "success";
+            }
+          }
+        });
+      });
+    };
+
+    initForms();
+    document.addEventListener("astro:after-swap", initForms);
+  }
+</script>
