@@ -7,7 +7,9 @@
   ],
   "exclude": [
     "dist",
-    ".git"
+    ".git",
+    ".vscode",
+    ".wrangler",
   ],
   "compilerOptions": {
     "esModuleInterop": true,
