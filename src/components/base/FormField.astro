@@ -75,12 +75,14 @@ const {
 const Tag = (type === "textarea")? "textarea" : "input";
 
 let autoAttrs: HTMLAttributes<"input"> | HTMLAttributes<"textarea"> = {};
+let autoClass: string | null = null;
 switch (type) {
   case "text":
     autoAttrs = { maxlength: "255" };
     break;
   case "textarea":
     autoAttrs = { maxlength: "1500", autocapitalize: "sentences", autocorrect: "on" };
+    autoClass = "resize-none h-[8.5em]"
     break;
   case "full-name":
     autoAttrs = { type: "text", autocomplete: "name", maxlength: "255",
@@ -106,7 +108,7 @@ switch (type) {
 }
 ---
 
-<div class={twMerge("group/field", className)}>
+<div class={twMerge("group/field w-full", className)}>
   <label for={inputId} class={twMerge("w-full", labelClass)}>
     {label}
     {required && (
@@ -114,20 +116,23 @@ switch (type) {
     )}
   </label>
 
-  <Tag id={inputId} name={name} data-name={name} aria-describedby={errId} data-err={errId} required={required}
-    class={twMerge(
-      "base-form-field w-full resize-none border rounded-md",
-      fieldClass)}
-    {...rest}
-    {...autoAttrs /* keep this second - allows passed in attrs to override auto ones */}
-  />
-
   <div class={twMerge(
     "hidden group-has-aria-invalid/field:block",
-    "w-full text-[90%] text-error ms-[2em]",
+    "w-full text-[80%] text-error ms-[0.5em]",
     errorClass
   )}>
-    <Icon name="tabler:alert-triangle" size="1em" class="text-error me-[1.5em]"/>
+    <Icon name="tabler:alert-triangle" size="1em" class="text-error mbe-[0.12em] me-[0.25em]"/>
     <span id={errId}></span>
   </div>
+
+  <Tag id={inputId} name={name} data-name={name} aria-describedby={errId} data-err={errId} required={required}
+    class={twMerge(
+      "base-form-field w-full px-[1em] py-[0.35em] rounded-md",
+      "border aria-invalid:border-2",
+      "text-current/90 text-[85%]",
+      autoClass, fieldClass)}
+    {...rest}
+    {...autoAttrs /* keep this second - allows passed in attrs to override auto ones */}
+  >
+  </Tag>
 </div>
