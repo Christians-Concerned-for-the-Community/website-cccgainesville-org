@@ -45,9 +45,10 @@ type Props = Omit<
   required?: boolean,
 
   /**
-   * Additional classes to apply to the form field label.
+   * Additional classes to apply to the field label, which also acts
+   * as a layout container for the error message and the field itself.
    */
-  labelClass?: string | string[],
+  class?: string | string[],
 
   /**
    * Additional classes to apply to the form field itself.
@@ -66,7 +67,6 @@ const {
   type = "text",
   required = false,
   class: className,
-  labelClass,
   fieldClass,
   errorClass,
   ...rest
@@ -108,15 +108,38 @@ switch (type) {
 }
 ---
 
-<div class={twMerge("group/field w-full", className)}>
-  <label for={inputId} class={twMerge("w-full text-md", labelClass)}>
-    {label}
-    {required && (
-      <span aria-hidden="true" class="font-light text-current/90 text-[90%]"> (required)</span>
-    )}
-  </label>
+{/*
+  We nest the error message and input field inside the label for a couple of reasons:
+    
+  * Nesting causes the error message to be included in the label's clickable area.
+  This is helpful because we're showing the error messages above the field, right
+  below the label text, so that they don't get blocked by autocomplete boxes, and
+  it's awkward to have a gap in clickable area between the two.
 
-  <div class={twMerge(
+  * Nesting the field as well makes it easier to avoid accidentally introducing
+  clickable area gaps through margins and such.
+  
+  * Finally, if we nest everything, we can use the label element as the overall
+  layout container for the field, too. This avoids having to add a wrapper div.
+
+  Because screen readers don't always interpret nesting properly, we still link
+  the label to the input field using "for", and we link the error message to it
+  using aria-describedby. The error message itself is marked with aria-hidden="true"
+  to prevent it from being read in any other context than through aria-describedby.
+*/}
+
+<label for={inputId} class={twMerge(
+  "group/field w-full text-md has-enabled:cursor-pointer",
+  className)}
+>
+  {/* Label text. */}
+  {label}
+  {required && (
+    <span aria-hidden="true" class="font-light text-current/90 text-[90%]"> (required)</span>
+  )}
+
+  {/* Error message. Always hide with aria-hidden, so that it's only read via aria-describedby. */}
+  <div aria-hidden="true" class={twMerge(
     "hidden group-has-aria-invalid/field:block",
     "w-full text-sm text-error ms-[0.5em]",
     errorClass
@@ -125,6 +148,7 @@ switch (type) {
     <span id={errId}></span>
   </div>
 
+  {/* Input field. */}
   <Tag id={inputId} name={name} data-name={name} aria-describedby={errId} data-err={errId} required={required}
     class={twMerge(
       "base-form-field w-full px-[1em] py-[0.35em] rounded-md",
@@ -135,4 +159,4 @@ switch (type) {
     {...autoAttrs /* keep this second - allows passed in attrs to override auto ones */}
   >
   </Tag>
-</div>
+</label>
