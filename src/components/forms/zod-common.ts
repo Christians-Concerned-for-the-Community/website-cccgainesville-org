@@ -24,18 +24,24 @@
  */
 import { z } from 'astro/zod';
 
+export const zclimits = {
+  full_name: 255, // Salesforce length limit
+  email: 80, // Salesforce length limit
+  us_phone: 40, // for security, to prevent malicious actors from hammering the regex
+}
+
 export const zc = {
   full_name: z
     .string("Enter your full name (John Smith).")
-    .max(255, "Enter a shorter name (255 letters max)."), // Salesforce length limit
+    .max(zclimits.full_name, `Enter a shorter name (${zclimits.full_name} letters max).`),
 
   email: z
     .email("Enter a valid email (jsmith@example.com)")
-    .max(80, "Enter a shorter email (80 letters max)."), // Salesforce length limit
+    .max(zclimits.email, `Enter a shorter email (${zclimits.email} letters max).`),
 
   us_phone: z
     .string("Enter a valid phone number (352-555-0132)")
-    .max(40) //for security - prevent malicious senders from hammering regex with very large strings
+    .max(zclimits.us_phone)
     .regex(/^(tel:\+1)?[\(]*[0-9]{3}[ .\-\)]*[0-9]{3}[ .\-]*[0-9]{4}$/,
       "Enter a valid phone number (352-555-0132)")
     .transform((phone)=> {

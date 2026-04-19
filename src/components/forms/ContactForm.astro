@@ -1,8 +1,10 @@
 ---
-import {Form, FormField} from '@/components/base';
+import { Form, FormField } from '@/components/base';
 import { defineAction } from 'astro:actions';
 import { z } from 'astro/zod';
-import { zc } from "./zod-common.ts"
+import { zc, zclimits } from "./zod-common.ts"
+
+export const MAX_MESSAGE = 1500;
 
 export const handleForm = defineAction({
   accept: 'form',
@@ -12,7 +14,7 @@ export const handleForm = defineAction({
     phone: zc.us_phone,
     message: z
       .string("Type in your message to us.")
-      .max(1500, "Message is too long, max is 1500 characters.")
+      .max(MAX_MESSAGE, "Message is too long, max is 1500 characters.")
   }),
   handler: async ({ name, email, phone, message}) => {
     /* TODO: implement this method */
@@ -30,8 +32,8 @@ export const handleForm = defineAction({
     label:"Send Message"
   }}
 >
-  <FormField type="full-name" name="name"    required label="Name" />
-  <FormField type="email"     name="email"   required label="Email" />
-  <FormField type="tel"       name="phone"   required label="Phone" />
-  <FormField type="textarea"  name="message" required label="Message" />
+  <FormField name="name"    label="Name"    type="full-name" required maxlength={zclimits.full_name} />
+  <FormField name="email"   label="Email"   type="email"     required maxlength={zclimits.email} />
+  <FormField name="phone"   label="Phone"   type="tel"       required maxlength={zclimits.us_phone} />
+  <FormField name="message" label="Message" type="textarea"  required maxlength={MAX_MESSAGE} />
 </Form>

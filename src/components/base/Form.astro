@@ -60,7 +60,8 @@ submitButton.class = twMerge("base-form-submit text-md min-w-[50%]", submitButto
 */}
 <form novalidate data-action={handlerAction} data-state="initial"
   class={twMerge(
-    "base-form group/form flex flex-col items-center max-w-[60ch] gap-[1em] shadow-sm p-[1em]",
+    "base-form group/form flex flex-col items-center max-w-[60ch]",
+    "gap-[1em] p-[1em] border-t-foreground border-t-2 rounded-sm shadow-md dark:border-muted dark:border-2",
     className
   )}
   {...rest}

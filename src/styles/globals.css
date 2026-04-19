@@ -147,13 +147,6 @@
   }
 
   /*
-    Default styling for invalid elements (when not focused).
-   */
-  [aria-invalid="true"]:not(:focus) {
-    border-color: var(--color-error);
-  }
-
-  /*
     Default to the "pointer finger on hand" cursor for buttons.
 
     Technically, the pointer cursor is only supposed to be used for links.
