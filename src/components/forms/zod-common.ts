@@ -59,5 +59,6 @@ export const zc = {
     Example usage: zc.optional(zc.us_phone)
   */
   optional: (schema: z.ZodType) => (
-    z.preprocess((v) => (v === "" ? undefined : v), schema.optional())),
+    z.preprocess((v) => (v === "" ? undefined : v), schema.optional())
+  ),
 }

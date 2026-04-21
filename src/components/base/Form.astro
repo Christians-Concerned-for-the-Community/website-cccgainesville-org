@@ -2,7 +2,7 @@
 import type { HTMLAttributes, ComponentProps } from "astro/types";
 import { twMerge } from 'tailwind-merge'
 
-import { Button, Icon } from '@/components/base'
+import { Button, Icon, formUtil } from '@/components/base'
 
 type Props = HTMLAttributes<"form"> & {
   /**
@@ -11,13 +11,6 @@ type Props = HTMLAttributes<"form"> & {
    * @default {label: "submit"}
    */
   submitButton?: Omit<ComponentProps<typeof Button>, "type">;
-
-  /**
-   * Site key to use for Cloudflare Turnstile.
-   * 
-   * (This isn't private, you don't need to treat it as a secret)
-   */
-  turnstileKey: string,
 
   /**
    * Name of action to send form results to for validation.
@@ -41,7 +34,6 @@ type Props = HTMLAttributes<"form"> & {
 
 const {
   submitButton = {},
-  turnstileKey,
   handlerAction,
   errorHeadingTag : ErrHeadTag = "h3",
   errorHeadingText = "Oops, let's fix these errors first:",
@@ -79,7 +71,10 @@ submitButton.class = twMerge("base-form-submit text-md min-w-[50%]", submitButto
 
   <slot />
 
-  <div class="cf-turnstile" data-sitekey={turnstileKey}/>
+  <div class="cf-turnstile"
+    data-sitekey={formUtil.turnstile.key}
+    data-response-field-name={formUtil.turnstile.fieldname}
+  />
 
   <Button type="submit" {...submitButton}/>
 </form>

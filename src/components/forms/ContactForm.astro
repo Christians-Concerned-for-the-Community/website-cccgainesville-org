@@ -1,5 +1,5 @@
 ---
-import { Form, FormField } from '@/components/base';
+import { Form, FormField, formUtil } from '@/components/base';
 import { defineAction } from 'astro:actions';
 import { z } from 'astro/zod';
 import { zc, zclimits } from "./zod-common.ts"
@@ -8,26 +8,29 @@ export const MAX_MESSAGE = 1500;
 
 export const handleForm = defineAction({
   accept: 'form',
-  input: z.object({
+  input: z.looseObject({
     name: zc.full_name,
     email: zc.email,
     phone: zc.us_phone,
     message: z
       .string("Type in your message to us.")
-      .max(MAX_MESSAGE, "Message is too long, max is 1500 characters.")
+      .max(MAX_MESSAGE, "Message is too long, max is 1500 characters."),
   }),
-  handler: async ({ name, email, phone, message}) => {
+  handler: async (input, context) => {
+    // Needs to be in every form handler
+    await formUtil.turnstile.validate(input, context);
+
     /* TODO: implement this method */
-    console.log(`Name: ${name}`);
-    console.log(`Email: ${email}`);
-    console.log(`Phone: ${phone}`);
-    console.log(`Message:\n----\n${message}\n----`);
+    console.log(`Name: ${input.name}`);
+    console.log(`Email: ${input.email}`);
+    console.log(`Phone: ${input.phone}`);
+    console.log(`Message:\n----\n${input.message}\n----`);
   },
 });
 
 ---
 
-<Form turnstileKey="" handlerAction="handleContactForm"
+<Form handlerAction="handleContactForm"
   submitButton={{
     label:"Send Message"
   }}
