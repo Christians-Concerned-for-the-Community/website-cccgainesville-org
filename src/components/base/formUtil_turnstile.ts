@@ -1,5 +1,4 @@
 import { ActionError, type ActionAPIContext } from "astro:actions";
-import { z } from "astro/zod";
 import type { Captcha } from "./formUtil_types";
 
 import crypto from 'node:crypto';

@@ -1,4 +1,3 @@
-import type { z } from "astro/zod";
 import type { ActionAPIContext } from "astro:actions";
 
 export type Captcha = {
