@@ -10,7 +10,7 @@
 	"main": "@astrojs/cloudflare/entrypoints/server",
 
 	"vars": {
-		"TURNSTILE_KEY": "",
+		"TURNSTILE_KEY": "0x4AAAAAAAc02UX-EFdbhc0N",
 	},
 
 	"observability": {
