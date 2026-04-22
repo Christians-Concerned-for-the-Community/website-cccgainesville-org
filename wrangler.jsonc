@@ -9,6 +9,10 @@
 	"name": "website-cccgainesville-org-staging",
 	"main": "@astrojs/cloudflare/entrypoints/server",
 
+	"vars": {
+		"TURNSTILE_KEY": "",
+	},
+
 	"observability": {
 		"enabled": true,
 		"head_sampling_rate": 1,
