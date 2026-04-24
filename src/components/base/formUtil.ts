@@ -8,5 +8,3 @@ interface FormUtil {
 export const formUtil: FormUtil = {
   turnstile: turnstile,
 };
-
-
