@@ -1,5 +1,5 @@
 import tailwindcss from "@tailwindcss/vite";
-import { defineConfig, envField } from "astro/config";
+import { defineConfig } from "astro/config";
 import { fileURLToPath } from "url";
 
 import sitemap from "@astrojs/sitemap";
@@ -17,18 +17,6 @@ const abspath = (path) => {
 export default defineConfig({
   compressHTML: true,
   site: 'https://staging.cccgainesville.org',
-
-  env: {
-    schema: {
-      /* Cloudflare turnstile widget keys. The default ones shown here are test
-         keys that always succeed, do not use these in production. Define the keys
-         as variables in the worker up on the Cloudflare dashboard instead. */
-      TURNSTILE_KEY: envField.string({context: "client", access: "public",
-        default:"1x00000000000000000000AA"}), //visible client - always succeeds
-      TURNSTILE_SECRET: envField.string({context: "server", access: "secret",
-        default:"1x0000000000000000000000000000000AA"}), //server - always succeeds
-    },
-  },
 
   output: 'static',
 

@@ -4,14 +4,17 @@
  */
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
-	"compatibility_date": "2026-03-17",
+	"compatibility_date": "2026-04-24",
 	"compatibility_flags": ["nodejs_compat"],
 	"name": "website-cccgainesville-org-staging",
 	"main": "@astrojs/cloudflare/entrypoints/server",
 
 	"vars": {
-		"TURNSTILE_KEY": "0x4AAAAAAAc02UX-EFdbhc0N",
+		"PUBLIC_TURNSTILE": "0x4AAAAAAAc02UX-EFdbhc0N",
 	},
+	"secrets": { "required": [
+		"SECRET_TURNSTILE",
+	]},
 
 	"observability": {
 		"enabled": true,
@@ -35,8 +38,21 @@
 		"zone_name": "cccgainesville.org"
 	},
 
-	// If we're running a production build, host it at the real URL.
 	"env": {
+		// If we're running a local dev build, use turnstile test keys.
+		"development": {
+			"name": "website-cccgainesville-org-dev",
+			"vars": {
+				// dummy keys from here: https://developers.cloudflare.com/turnstile/troubleshooting/testing/
+				"PUBLIC_TURNSTILE": "1x00000000000000000000AA", //always succeeds
+				//"PUBLIC_TURNSTILE": "2x00000000000000000000AB", //always fails
+				//"PUBLIC_TURNSTILE": "3x00000000000000000000FF", //forces interactive challenge
+			},
+			"secrets": { "required": [
+				"SECRET_TURNSTILE",
+			]},
+		},
+		// If we're running a production build, host it at the real URL.
 		"production": {
 			"name": "website-cccgainesville-org-prod",
 			"route": {
@@ -44,6 +60,12 @@
 				"custom_domain": true,
 				"zone_name": "cccgainesville.org"
 			},
+			"vars": {
+				"PUBLIC_TURNSTILE": "0x4AAAAAAAc02UX-EFdbhc0N",
+			},
+			"secrets": { "required": [
+				"SECRET_TURNSTILE",
+			]},
 		}
 	}
 }

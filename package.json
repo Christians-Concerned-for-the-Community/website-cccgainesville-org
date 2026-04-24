@@ -4,9 +4,9 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "astro dev",
+    "dev": "CLOUDFLARE_ENV=development astro dev",
     "build": "wrangler types && astro check && astro build",
-    "preview": "wrangler types && astro check && astro build && astro preview",
+    "preview": "CLOUDFLARE_ENV=development sh -c 'wrangler types && astro check && astro build && astro preview'",
     "astro": "astro",
     "deploy": "wrangler deploy --env=''",
     "deploy-production": "wrangler deploy --env='production'",
