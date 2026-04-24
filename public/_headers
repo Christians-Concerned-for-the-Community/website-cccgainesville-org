@@ -15,7 +15,7 @@
   X-Frame-Options: SAMEORIGIN
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
-  Permissions-Policy: camera=(), microphone=(), display-capture=(), geolocation=(), magnetometer=(), gyroscope=(), accelerometer=(), xr-spatial-tracking=(self "https://challenges.cloudflare.com")
+  Permissions-Policy: camera=(), microphone=(), display-capture=(), geolocation=(), magnetometer=(), gyroscope=(), accelerometer=()
 #
 # TODO: get rid of 'unsafe-inline', once Astro supports it. Can't currently, because
 #       Astro's experimental CSP support doesn't currently play nice with the Accessible Starter theme.
