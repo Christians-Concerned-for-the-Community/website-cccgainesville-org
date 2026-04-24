@@ -165,6 +165,7 @@ submitButton.class = twMerge("base-form-submit text-md min-w-[50%]", submitButto
               errContent?.replaceChildren();
               form.dataset.state = "success";
             }
+            window.turnstile.reset();
           }
         });
       });
