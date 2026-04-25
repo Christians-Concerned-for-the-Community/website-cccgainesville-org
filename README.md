@@ -45,22 +45,34 @@ whenever something changes, and the only thing uploaded to the public server are
 (HTML, CSS, JS, copies of images) produced by the build. There's no public admin console to hack
 into, no plugins, nothing but the site itself.
 
-## Which theme is this based on, and why?
+## What is this based on?
 
-The website uses the [Accessible Astro Starter](https://github.com/incluud/accessible-astro-starter)
-theme, version 4.3.1. You can find the documentation for the theme and components
-[here](https://accessible-astro.incluud.dev/getting-started/introduction/).
+We ended up rolling our own [base components](src/components/base) after trying a few different libraries, because we
+wanted to:
+  * carefully evaluate and tune every accessibility feature
+  * minimize the amount of javascript
+  * prefer semantic HTML and modern CSS features, if included in [Baseline Widely Available](https://web.dev/how-to-use-baseline)
+  * limit our npm dependencies
+  * not add any code without knowing precisely *why* it's needed.
 
-Accessible Astro was built to help comply with web accessibility rules, such as
-[WCAG 2.2 AA](https://www.levelaccess.com/blog/wcag-2-2-aa-summary-and-checklist-for-website-owners/),
-the [European Accessibility Act](https://www.levelaccess.com/compliance-overview/european-accessibility-act-eaa/),
-and modern web standards in general. This makes it easier for neighbors to use screen readers and
-keyboard shortcuts when viewing our website, and the theme includes tools to make sure the color contrasts
-used meet WCAG readability standards.
+We took inspiration for accessibility behavior and component design from the following projects, any of which
+we'd happily recommend others to use:
+  * [Accessible Astro Starter](https://github.com/incluud/accessible-astro-starter)
+  * [Starwind UI](https://starwind.dev/)
+  * [Flowbite](https://flowbite.com/docs/getting-started/introduction/)
+
+The following blogs were very helpful for accessibility tuning:
+  * [Adrian Roselli](https://adrianroselli.com/posts)
+  * [Scott O'Hara](https://www.scottohara.me/)
+  * [Susanna Celso](https://plousia.com/blog)
+  * [Pope Tech](https://www.pope.tech/) - especially posts on [form validation](https://blog.pope.tech/2025/09/30/accessible-form-validation-with-examples-and-code/) and [main nav](https://blog.pope.tech/2024/01/30/how-to-create-accessible-navigations-and-sub-menus/)
+  * [UK Design System](https://design-system.service.gov.uk/patterns/validation/)
 
 A series of [legal cases](https://www.mainstreetdailynews.com/news/local/gainesville-businesses-ada-lawsuits)
 in Gainesville where local businesses were being sued for errors in their websites' accessibility
-implementations also prompted this change.
+implementations brought the need for a more accessible website to our attention. It's especially important
+for our organization because many of the neighbors we serve are elderly and/or have serious health issues,
+and we want to do a better job of serving them.
 
 ## Okay, so how does this stuff here in GitHub wind up on cccgainesville.org?
 
@@ -79,13 +91,14 @@ the "production" branch on the main branch to update the main website at "cccgai
 ## Setup - Local Development
 
 Follow these instructions if you're a developer and need to make a lot of changes. They're written
-for the development setup I use (Visual Studio Code and Ubuntu via WSL on Windows), but you can use
-whatever setup you want - you just have to modify Step 1 for your OS.
+for the development setup I (Stephen) use (Visual Studio Code and Ubuntu via WSL on Windows), but you
+can use whatever setup you want - you just have to modify Step 1 for your OS.
 
 1. Set up the development environment.
 ```console
-sudo apt update && sudo apt install nvm gh git
-nvm install node && nvm alias default node
+sudo apt update && sudo apt install gh git
+curl -fsSL https://get.pnpm.io/install.sh | sh -
+pnpm env use --global lts
 gh auth login
 git config --global user.email "your.email@cccgainesville.org"
 git config --global user.name "Your Name"
@@ -95,13 +108,13 @@ git config --global user.name "Your Name"
 ```console
 git clone https://github.com/Christians-Concerned-for-the-Community/website-cccgainesville.org.git
 cd website-cccgainesville.org
-npm install
+pnpm install
 code .
 ```
 
-3. Build the website and deploy it on localhost, so you can test it locally.
+3. Build the website and deploy it on localhost, so you can test it locally (follow prompts in console).
 ```console
-npm run preview
+pnpm dev
 ```
 
 4. Commit changes to the main branch (automatically deploys to https://staging.cccgainesville.org).
