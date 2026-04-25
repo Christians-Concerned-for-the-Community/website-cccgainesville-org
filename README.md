@@ -5,7 +5,7 @@
 [![Cloudflare](https://img.shields.io/badge/Cloudflare-F38020?style=for-the-badge&logo=Cloudflare&logoColor=white)](https://developers.cloudflare.com/workers/framework-guides/web-apps/astro/)
 
 * ### https://staging.cccgainesville.org ← edits to [main branch](../../tree/main) show up here
-* ### https://cccgainesville.org ← edits to [production branch](../../tree/production) show up here
+* ### https://new.cccgainesville.org ← edits to [production branch](../../tree/production) show up here
 
 &nbsp;
 
