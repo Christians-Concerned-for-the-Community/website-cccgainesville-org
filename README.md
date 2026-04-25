@@ -46,13 +46,13 @@ whenever something changes, and the only thing uploaded to the public server are
 (HTML, CSS, JS, copies of images) produced by the build. There's no public admin console to hack
 into, no plugins, nothing but the site itself.
 
-## What is this based on?
+## What components did we use to build the site?
 
 We ended up rolling our own [base components](src/components/base) after trying a few different libraries, because we
 wanted to:
   * carefully evaluate and tune every accessibility feature
   * minimize the amount of javascript
-  * prefer semantic HTML and modern CSS features, if included in [Baseline Widely Available](https://web.dev/how-to-use-baseline)
+  * use semantic HTML and modern CSS features, if accessible and included in [Baseline Widely Available](https://web.dev/how-to-use-baseline)
   * limit our npm dependencies
   * not add any code without knowing precisely *why* it's needed.
 
