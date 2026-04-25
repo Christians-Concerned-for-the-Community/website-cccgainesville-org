@@ -67,7 +67,11 @@ const {
     {/* preload our main font, so that it's not chained after the main CSS file */}
     <link rel="preload" as="font" type="font/woff2" href={fontPath} crossorigin="anonymous" />
 
-    {/* profile-specific preloads */}
+    {/* profile-specific preloads 
+
+        TODO: this is way too many preload/preconnect instructions.
+              Go through them and test to see which ones actually help.
+      */}
     {(profile === 'givelively') && (
       <link rel="preload" as="script" href="https://secure.givelively.org/widgets/simple_donation/christians-concerned-for-the-community-inc.js?show_suggested_amount_buttons=true&show_in_honor_of=false&address_required=false&has_required_custom_question=false&suggested_donation_amounts[]=25&suggested_donation_amounts[]=50&suggested_donation_amounts[]=100&suggested_donation_amounts[]=250"/>
       <link rel="preload" as="font" type="font/woff2" crossorigin href="https://fonts.gstatic.com/s/nunito/v32/XRXV3I6Li01BKofINeaBTMnFcQ.woff2" />
@@ -87,7 +91,6 @@ const {
       <link rel="preconnect" href="https://api-js.datadome.co">
       <link rel="preconnect" href="https://js.captcha-display.com">
       <link rel="preconnect" href="https://static.hotjar.com">
-      <link rel="preconnect" href="https://script.hotjar.com">
     )}
     {(profile === 'turnstile') && (
       <link rel="preconnect" href="https://challenges.cloudflare.com">
@@ -112,10 +115,10 @@ const {
 
     {/*
       Script that applies the dark mode settings on page load.
+      See: src/components/base/DarkModeToggle.astro
 
       Also sets the 'js' class so that we can detect Javascript with CSS.
-
-      See: src/components/base/DarkModeToggle.astro
+      See: src/styles/globals.css (js custom variant)
     */}
     <script>
       const initTheme = () => {
