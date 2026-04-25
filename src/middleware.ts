@@ -17,7 +17,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
     return (prefix: string) => {
       const count = (map.get(prefix) ?? 0) + 1
       map.set(prefix, count)
-      return `${prefix}-${count}`
+      return (count === 1)? `${prefix}` : `${prefix}-${count}`;
     }
   })()
 
