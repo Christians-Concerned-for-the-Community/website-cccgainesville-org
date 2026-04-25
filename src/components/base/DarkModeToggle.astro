@@ -97,39 +97,39 @@ const {
 
 <script>
 {
-  const cl = document.documentElement.classList;
-  const handleClick = (e: Event) => {
-    const toggle = e.target as HTMLElement;
-    const enableDark = toggle.getAttribute("aria-pressed") !== "true";
-
-    /*
-      Toggle darkmode on/off throughout the site, by adding/removing a CSS class.
-      (see the "dark" custom variant near the top of styles/globals.css).
-
-      If browser supports view transitions, use it to smoothly fade to/from
-      dark mode.
-    */
-    const doToggle = () => (cl.toggle('dark', enableDark));
-    (document.startViewTransition)? document.startViewTransition(doToggle) : doToggle();
-
-    // Persist this state in local storage for future navigation.
-    localStorage.setItem("colorTheme", enableDark? "dark" : "light");
-
-    // Update the "pressed" status of all the darkmode toggles on the page to match
-    // the new state. These updates will not trigger more click events.
-    const enableDarkStr = enableDark.toString();
-    document.querySelectorAll(".base-darkmodetoggle").forEach((item) => {
-        item.setAttribute("aria-pressed", enableDarkStr);
-    });
-  }
-
   const initDarkModeToggles = () => {
-    const enableDarkStr = cl.contains("dark").toString();
-    document.querySelectorAll(".base-darkmodetoggle").forEach((toggle) => {
+    const cl = document.documentElement.classList;
+    const init = cl.contains("dark").toString();
+    const allToggles = document.querySelectorAll(".base-darkmodetoggle");
+
+    allToggles.forEach((toggle) => {
       // Initialize checked state to match current darkmode setting.
-      toggle.setAttribute("aria-pressed", enableDarkStr);
+      toggle.ariaPressed = init;
+
       // Add handler for when the user toggles the darkmode switch.
-      toggle.addEventListener("click", handleClick);
+      toggle.addEventListener("click", () => {
+        const enableDark = toggle.ariaPressed !== "true";
+        
+        /*
+          Toggle darkmode on/off throughout the site, by adding/removing a CSS class.
+          (see the "dark" custom variant near the top of styles/globals.css).
+
+          If browser supports view transitions, use it to smoothly fade to/from
+          dark mode.
+        */
+        const doToggle = () => (cl.toggle('dark', enableDark));
+        (document.startViewTransition)? document.startViewTransition(doToggle) : doToggle();
+
+        // Persist this state in local storage for future navigation.
+        localStorage.setItem("colorTheme", enableDark? "dark" : "light");
+
+        // Update the "pressed" status of all the darkmode toggles on the page to match
+        // the new state. These updates will not trigger more click events.
+        const enableDarkStr = enableDark.toString();
+        allToggles.forEach((otherToggle) => {
+          otherToggle.ariaPressed = enableDarkStr;
+        });
+      });
     });
   }
 
