@@ -156,8 +156,7 @@ if (window.CSS && !CSS.supports('position-area', 'bottom')) {
   
   const initNavDisclosures = () => {
     // Loop over each navdisclosure container on the page.
-    document.querySelectorAll(".base-navdisclosure").forEach((item) => {
-      const container = item as HTMLElement;
+    document.querySelectorAll<HTMLElement>(".base-navdisclosure").forEach((container) => {
       const button = container.querySelector('button');
       const disclosureBody = container.querySelector('ul');
       
