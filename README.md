@@ -23,9 +23,10 @@
  * [Redirects](public/_redirects)
  * [HTTP Headers](public/_headers)
  * [robots.txt](src/pages/robots.txt.ts)
- * [Default page layout](src/layouts/DefaultLayout.astro)
- * [Navigation bar/menu](src/components/Header.astro)
- * [Color palette definition](src/assets/scss/base/_root.scss)
+ * [Base page layout](src/layouts/BaseLayout.astro)
+ * [Nav menu settings](src/assets/nav.json)
+ * [Color settings](src/styles/colors.css)
+ * [Tabler icon import](icons-generator.ts#L41)
 
 ## Admin Links
  * [Cloudflare Deployments - Staging](https://dash.cloudflare.com/bd31516cf452a595955169731b95d1bf/workers/services/view/website-cccgainesville-org-staging/production/deployments)
