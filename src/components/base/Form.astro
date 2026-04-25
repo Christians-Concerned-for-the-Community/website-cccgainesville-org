@@ -1,5 +1,6 @@
 ---
 import type { HTMLAttributes, ComponentProps } from "astro/types";
+import {actions, getActionPath} from "astro:actions";
 import { twMerge } from 'tailwind-merge'
 
 import { Button, Icon, formUtil } from '@/components/base'
@@ -45,12 +46,14 @@ if(!submitButton.label && !submitButton.icon && !submitButton.iconBefore) {
   submitButton.label = "Submit";
 }
 submitButton.class = twMerge("base-form-submit text-md min-w-[50%]", submitButton.class);
+
+const actionUrl = getActionPath(actions[handlerAction]);
 ---
 
 {/*
   States: initial, processing, success, error
 */}
-<form novalidate data-action={handlerAction} data-state="initial"
+<form novalidate data-action={actionUrl} data-state="initial"
   class={twMerge(
     "base-form group/form flex flex-col items-center max-w-[60ch]",
     "gap-[1em] p-[1em] border-t-foreground border-t-2 rounded-sm shadow-md dark:border-muted dark:border-2",
@@ -84,94 +87,99 @@ submitButton.class = twMerge("base-form-submit text-md min-w-[50%]", submitButto
 />
 
 <script>
-  import {actions, isInputError} from "astro:actions";
-  {
-    const makeMsg = (text: string, id?: string ) => {
-      const li = document.createElement('li');
-      if (id) {
-        const a = document.createElement('a');
-        a.href = '#' + id;
-        a.textContent = text;
-        li.appendChild(a);
-      } else {
-        li.textContent = text;
-      }
-      return li;
-    };
+{
+  const makeMsg = (text: string, id?: string ) => {
+    const li = document.createElement('li');
+    if (id) {
+      const a = document.createElement('a');
+      a.href = '#' + id;
+      a.textContent = text;
+      li.appendChild(a);
+    } else {
+      li.textContent = text;
+    }
+    return li;
+  };
 
-    const initForms = () => {
-      document.querySelectorAll<HTMLFormElement>(".base-form").forEach((form) => {
-        const fields = form.querySelectorAll<HTMLElement>('.base-form-field');
-        
-        // Pre-fill any values passed via URL query params.
-        const params = new URLSearchParams(window.location.search);
-        for (const el of fields) {
-          if (el instanceof HTMLInputElement &&
-              !["checkbox","hidden","radio"].includes(el.type)) {
-            el.value = params.get(el.name) || el.value;
-          } else if (el instanceof HTMLTextAreaElement) {
-            const val = params.get(el.name);
-            if (val) {
-              el.replaceChildren(val);
-            }
+  const initForms = () => {
+    document.querySelectorAll<HTMLFormElement>(".base-form").forEach((form) => {
+      const fields = form.querySelectorAll<HTMLElement>('.base-form-field');
+      
+      // Pre-fill any values passed via URL query params.
+      const params = new URLSearchParams(window.location.search);
+      for (const el of fields) {
+        if (el instanceof HTMLInputElement &&
+            !["checkbox","hidden","radio"].includes(el.type)) {
+          el.value = params.get(el.name) || el.value;
+        } else if (el instanceof HTMLTextAreaElement) {
+          const val = params.get(el.name);
+          if (val) {
+            el.replaceChildren(val);
           }
         }
+      }
 
-        // Process form on submission.
-        form.addEventListener('submit', async (ev) => {
-          ev.preventDefault();
+      // Process form on submission.
+      form.addEventListener('submit', async (ev) => {
+        ev.preventDefault();
 
-          const errContainer = form.querySelector<HTMLElement>('section');
-          const errContent = errContainer?.querySelector<HTMLUListElement>('ul');
+        const errContainer = form.querySelector<HTMLElement>('section');
+        const errContent = errContainer?.querySelector<HTMLUListElement>('ul');
 
-          if(form.dataset.action) {
-            form.dataset.state = "processing";
-            const formData = new FormData(form);
+        if(form.dataset.action) {
+          form.dataset.state = "processing";
+          const formData = new FormData(form);
 
-            // Trim whitespace from all form values before submitting for validaiton.
-            for (const [key, value] of formData.entries()) {
-              if (typeof value === 'string') {
-                formData.set(key, value.trim());
-              }
+          // Trim whitespace from all form values before submitting for validaiton.
+          for (const [key, value] of formData.entries()) {
+            if (typeof value === 'string') {
+              formData.set(key, value.trim());
             }
-
-            // Send form data to handler, then wait for results.
-            const {error} = await actions[form.dataset.action](formData);
-
-            const msgs: HTMLLIElement[] = [];
-            const errsByField = (error && isInputError(error))? error.fields : undefined;
-            if (error && !errsByField) {
-              msgs.push(makeMsg(error.code + ": " + error.message));
-            }
-
-            for (const el of fields) {
-              const errDest = el.dataset.err? document.getElementById(el.dataset.err) : undefined;
-              const errText = el.dataset.name? (errsByField?.[el.dataset.name]?.join(", ")) : undefined;
-              if (errText) {
-                el.ariaInvalid = "true";
-                msgs.push(makeMsg(errText, el.id));
-                errDest?.replaceChildren(errText);
-              } else {
-                el.ariaInvalid = "false";
-                errDest?.replaceChildren();
-              }
-            };
-
-            if (msgs.length) {
-              errContent?.replaceChildren(...msgs);
-              form.dataset.state = "error";
-              errContainer?.focus();
-            } else {
-              errContent?.replaceChildren();
-              form.dataset.state = "success";
-            }
-            window.turnstile.reset();
           }
-        });
-      });
-    };
 
-    initForms();
-    document.addEventListener("astro:after-swap", initForms);
-  }
+          // Send form data to handler, then wait for results.
+          const response = await fetch(form.dataset.action, {
+            method: 'POST',
+            body: formData,
+          });
+          const text = await response.text();
+          const result = text? JSON.parse(text) : {};
+          
+          const msgs: HTMLLIElement[] = [];
+          for (const el of fields) {
+            const errDest = el.dataset.err? document.getElementById(el.dataset.err) : undefined;
+            const errText = el.dataset.name? (result.fields?.[el.dataset.name]?.join(", ")) : undefined;
+            if (errText) {
+              el.ariaInvalid = "true";
+              msgs.push(makeMsg(errText, el.id));
+              errDest?.replaceChildren(errText);
+            } else {
+              el.ariaInvalid = "false";
+              errDest?.replaceChildren();
+            }
+          };
+
+          if (!response.ok && !msgs.length) {
+            msgs.push(makeMsg(result.message? result.message : "Network error, please try again later"));
+          }
+
+          if (msgs.length) {
+            errContent?.replaceChildren(...msgs);
+            form.dataset.state = "error";
+            errContainer?.focus();
+          } else {
+            errContent?.replaceChildren();
+            form.dataset.state = "success";
+          }
+          // Reset the turnstile widget, to ensure that any additional
+          // submissions won't try to reuse the same token.
+          window.turnstile.reset();
+        }
+      });
+    });
+  };
+
+  initForms();
+  document.addEventListener("astro:after-swap", initForms);
+}
 </script>
