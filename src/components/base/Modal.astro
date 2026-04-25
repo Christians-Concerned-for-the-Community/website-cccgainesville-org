@@ -97,7 +97,7 @@ const dialogVariants = tv({
   }
 });
 
-const closeDefault = "absolute top-xs right-sm text-sm";
+const closeDefault = "base-modal-close absolute top-xs right-sm text-sm";
 
 ---
 <div class={twMerge("base-modal h-full", containerClass)}>
@@ -158,21 +158,16 @@ const closeDefault = "absolute top-xs right-sm text-sm";
   if (!supports_invoker || !supports_closedby) {
     const initModals = () => {
       // Loop over each modal container on the page.
-      document.querySelectorAll(".base-modal").forEach((item) => {
-        const container = item as HTMLElement;
-        const trigger = container.querySelector(':scope > button');
-        const dialog = container.querySelector(':scope > dialog') as HTMLDialogElement;
+      document.querySelectorAll<HTMLElement>(".base-modal").forEach((container) => {
+        const trigger = container.querySelector('button');
+        const dialog = container.querySelector('dialog');
 
         if (!supports_closedby) {
           // Support "light dismiss" of modal (clicking outside it), if closedby attribute isn't available.
           dialog?.addEventListener('click', (e) => {
             const edges = dialog.getBoundingClientRect();
-            const isInside =
-              e.clientX >= edges.left &&
-              e.clientX <= edges.right &&
-              e.clientY >= edges.top &&
-              e.clientY <= edges.bottom;
-            if (!isInside) {
+            if (e.clientX < edges.left || e.clientX > edges.right ||
+                e.clientY < edges.top  || e.clientY > edges.bottom) {
               e.stopPropagation(); //only close the innermost dialog on each click outside.
               dialog.close();
             }
@@ -180,7 +175,7 @@ const closeDefault = "absolute top-xs right-sm text-sm";
         }
 
         if (!supports_invoker) {
-          const closer = dialog?.querySelector(':scope button:last-child');
+          const closer = dialog?.querySelector<HTMLButtonElement>('.base-modal-close');
           for (const button of  [trigger, closer]) {
             button?.removeAttribute('command');
             button?.removeAttribute('commandfor');
