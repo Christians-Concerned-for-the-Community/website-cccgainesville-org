@@ -36,8 +36,8 @@
  * For example, if I have a color variable named "--color-special-100",
  * I can use the color name (everything after --color-) in tailwind's
  * built-in utilities that take a color:
- *    bg-special
- *    text-special
+ *    bg-special-100
+ *    text-special-100
  *    ... etc.
  */
 @theme inline {
