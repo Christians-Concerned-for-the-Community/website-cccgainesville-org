@@ -40,14 +40,14 @@ export const zc = {
     .max(zclimits.email, `Enter a shorter email (${zclimits.email} letters max).`),
 
   us_phone: z
-    .string("Enter a valid phone number (352-555-0132)")
+    .string("Enter a valid phone number (352-555-0132).")
     .max(zclimits.us_phone)
-    .regex(/^(tel:\+1)?[\(]*[0-9]{3}[ .\-\)]*[0-9]{3}[ .\-]*[0-9]{4}$/,
-      "Enter a valid phone number (352-555-0132)")
+    .regex(/^(tel:)?(\+1)?[\(]*[0-9]{3}[ .\-\)]*[0-9]{3}[ .\-]*[0-9]{4}$/,
+      "Enter a valid phone number (352-555-0132).")
     .transform((phone)=> {
       // Remove all chars from phone number that aren't digits, then add dashes
       // at the right spots: xxx-xxx-xxxx
-      const digits = phone.replace("tel:+1","").replace(/\D/g, "");
+      const digits = phone.replace("tel:","").replace("+1","").replace(/\D/g, "");
       return `${digits.slice(0,3)}-${digits.slice(3,6)}-${digits.slice(6,10)}`;
     }),
 
