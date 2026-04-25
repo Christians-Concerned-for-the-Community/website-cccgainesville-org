@@ -159,61 +159,61 @@ if (window.CSS && !CSS.supports('position-area', 'bottom')) {
     document.querySelectorAll<HTMLElement>(".base-navdisclosure").forEach((container) => {
       const button = container.querySelector('button');
       const disclosureBody = container.querySelector('ul');
-      
-      // Remove popover-specific attributes and classes.
-      button?.removeAttribute("commandfor");
-      button?.removeAttribute("command");
 
-      disclosureBody?.removeAttribute("popover");
-      disclosureBody?.classList.remove(
-        "top-[anchor(bottom)]",
-        "left-[anchor(left)]",
-        "right-[anchor(right)]",
-        "[position-area:bottom_center]"
-      );
+      if (button && disclosureBody) {
+        // Remove popover-specific attributes and classes.
+        button.removeAttribute("commandfor");
+        button.removeAttribute("command");
 
-      // Add attributes, classes and listeners needed for the fallback.
-      container.classList.add("relative");
+        disclosureBody.removeAttribute("popover");
+        disclosureBody.classList.remove(
+          "top-[anchor(bottom)]",
+          "left-[anchor(left)]",
+          "right-[anchor(right)]",
+          "[position-area:bottom_center]"
+        );
 
-      button?.setAttribute("aria-expanded", "false");
+        // Add attributes, classes and listeners needed for the fallback.
+        container.classList.add("relative");
+        button.ariaExpanded = "false";
+        disclosureBody.classList.add(
+          "absolute",
+          "z-50",
+          "min-w-0",
+          "right-0" //For fallback, just default to 'end' alignment, that's good enough
+        );
 
-      disclosureBody?.classList.add(
-        "absolute",
-        "z-50",
-        "min-w-0",
-        "right-0" //For fallback, just default to 'end' alignment, that's good enough
-      );
+        // Open when trigger button activated.
+        // Catches mouse, touch, and keyboard activations.
+        button.addEventListener("click", () => {
+          button.ariaExpanded = (button.ariaExpanded === 'true')? 'false' : 'true';
+        });
 
-      // Open when trigger button activated.
-      // Catches mouse, touch, and keyboard activations.
-      button?.addEventListener("click", () => {
-        button.ariaExpanded = (button.ariaExpanded === 'true')? 'false' : 'true';
-      });
-
-      // Close when escape key pressed, and focus is within the container (trigger and contents).
-      container.addEventListener('keydown', (e: KeyboardEvent) => {
-        if(e.key === 'Escape' && button?.ariaExpanded === 'true') {
-          button.ariaExpanded = 'false'; // Close the disclosure.
-          // Make sure focus winds up back on the trigger button.
-          if (button != e.target) {
-            // @ts-expect-error (focusVisible is experimental, but harmless if unsupported
-            button.focus({ focusVisible: true});
+        // Close when escape key pressed, and focus is within the container (trigger and contents).
+        container.addEventListener('keydown', (e: KeyboardEvent) => {
+          if(e.key === 'Escape' && button.ariaExpanded === 'true') {
+            button.ariaExpanded = 'false'; // Close the disclosure.
+            // Make sure focus winds up back on the trigger button.
+            if (button != e.target) {
+              // @ts-expect-error (focusVisible is experimental, but harmless if unsupported
+              button.focus({ focusVisible: true});
+            }
+            // Prevent browser itself from reacting to the escape key.
+            e.preventDefault();
+            // If we have nested disclosures, only close the level we're currently in,
+            // not all levels.
+            e.stopPropagation();
           }
-          // Prevent browser itself from reacting to the escape key.
-          e.preventDefault();
-          // If we have nested disclosures, only close the level we're currently in,
-          // not all levels.
-          e.stopPropagation();
-        }
-      });
+        });
 
-      // Close when focus leaves the container (trigger and contents).
-      // Catches tabbing out with the keyboard and clicking outside the disclosure.
-      container.addEventListener('focusout', (e: FocusEvent) => {
-        if (!container.contains(e.relatedTarget as Node) && button?.ariaExpanded === 'true') {
-          button.ariaExpanded = 'false'; // Close the disclosure.
-        }
-      });
+        // Close when focus leaves the container (trigger and contents).
+        // Catches tabbing out with the keyboard and clicking outside the disclosure.
+        container.addEventListener('focusout', (e: FocusEvent) => {
+          if (!container.contains(e.relatedTarget as Node) && button.ariaExpanded === 'true') {
+            button.ariaExpanded = 'false'; // Close the disclosure.
+          }
+        });
+      }
     });
   }
 
