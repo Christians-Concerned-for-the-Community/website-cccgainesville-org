@@ -121,21 +121,18 @@ const {
       See: src/styles/globals.css (js custom variant)
     */}
     <script>
-      const initTheme = () => {
-        const cl = document.documentElement.classList;
+    {
+      const cl = document.documentElement.classList;
+      const colorTheme = localStorage.getItem("colorTheme");
+      cl.toggle("dark",
+        colorTheme?
+          colorTheme==="dark"
+          :
+          window.matchMedia("(prefers-color-scheme: dark)").matches
+      );
 
-        cl.add("js");
-
-        const colorTheme = localStorage.getItem("colorTheme");
-        cl.toggle("dark",
-          colorTheme?
-            colorTheme==="dark"
-            :
-            window.matchMedia("(prefers-color-scheme: dark)").matches
-        );
-      }
-      initTheme();
-      document.addEventListener("astro:after-swap", initTheme);
+      cl.add("js");
+    }
     </script>
 
   </head>

@@ -156,48 +156,35 @@ const closeDefault = "base-modal-close absolute top-xs right-sm text-sm";
 
   // If fallback needed:
   if (!supports_invoker || !supports_closedby) {
-    const initModals = () => {
-      // Loop over each modal container on the page.
-      document.querySelectorAll<HTMLElement>(".base-modal").forEach((container) => {
-        const trigger = container.querySelector('button');
-        const dialog = container.querySelector('dialog');
+    // Loop over each modal container on the page.
+    document.querySelectorAll<HTMLElement>(".base-modal").forEach((container) => {
+      const trigger = container.querySelector('button');
+      const dialog = container.querySelector('dialog');
 
-        if (!supports_closedby && dialog) {
-          // Support "light dismiss" of modal (clicking outside it), if closedby attribute isn't available.
-          dialog.addEventListener('click', (e) => {
-            const edges = dialog.getBoundingClientRect();
-            if (e.clientX < edges.left || e.clientX > edges.right ||
-                e.clientY < edges.top  || e.clientY > edges.bottom) {
-              e.stopPropagation(); //only close the innermost dialog on each click outside.
-              dialog.close();
-            }
-          });
-        }
-
-        if (!supports_invoker && trigger && dialog) {
-          const closer = dialog.querySelector<HTMLButtonElement>('.base-modal-close');
-          for (const button of  [trigger, closer]) {
-            button?.removeAttribute('command');
-            button?.removeAttribute('commandfor');
+      if (!supports_closedby && dialog) {
+        // Support "light dismiss" of modal (clicking outside it), if closedby attribute isn't available.
+        dialog.addEventListener('click', (e) => {
+          const edges = dialog.getBoundingClientRect();
+          if (e.clientX < edges.left || e.clientX > edges.right ||
+              e.clientY < edges.top  || e.clientY > edges.bottom) {
+            e.stopPropagation(); //only close the innermost dialog on each click outside.
+            dialog.close();
           }
+        });
+      }
 
-          trigger.ariaHasPopup = "dialog";
-
-          // Open button for dialog
-          trigger.addEventListener("click", () => {
-            dialog.showModal();
-          });
-
-          // Close button for dialog.
-          closer?.addEventListener('click', () => {
-            dialog.close()
-          });
+      if (!supports_invoker && trigger && dialog) {
+        const closer = dialog.querySelector<HTMLButtonElement>('.base-modal-close');
+        for (const button of  [trigger, closer]) {
+          button?.removeAttribute('command');
+          button?.removeAttribute('commandfor');
         }
-      });
-    }
 
-    initModals();
-    document.addEventListener("astro:after-swap", initModals);
+        trigger.ariaHasPopup = "dialog";
+        trigger.addEventListener("click", () => { dialog.showModal(); });
+        closer?.addEventListener('click', () => { dialog.close() });
+      }
+    });
   } // END if fallback needed
 }
 </script>
