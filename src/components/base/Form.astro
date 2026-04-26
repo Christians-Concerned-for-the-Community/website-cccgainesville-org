@@ -9,6 +9,14 @@ type Props = HTMLAttributes<"form"> & {
   /**
    * Properties to style the submit button.
    * 
+   * Be cautious about changing the button label to something other than
+   * "submit". Non-sighted users may be confused by non-standard submit
+   * button labels, because they don't perceive the visual cues (color and
+   * placement within the form) that help sighted users understand what the
+   * button really does.
+   * 
+   * See: https://plousia.com/blog/accessible-wording-form-submit-buttons
+   * 
    * @default {label: "submit"}
    */
   submitButton?: Omit<ComponentProps<typeof Button>, "type">;

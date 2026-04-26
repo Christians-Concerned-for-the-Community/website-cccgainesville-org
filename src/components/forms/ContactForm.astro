@@ -30,11 +30,7 @@ export const handleForm = defineAction({
 
 ---
 
-<Form handlerAction="handleContactForm"
-  submitButton={{
-    label:"Send Message"
-  }}
->
+<Form handlerAction="handleContactForm">
   <FormField name="name"    label="Name"    type="full-name" required maxlength={zclimits.full_name} />
   <FormField name="email"   label="Email"   type="email"     required maxlength={zclimits.email} />
   <FormField name="phone"   label="Phone"   type="tel"       required maxlength={zclimits.us_phone} />
