@@ -150,7 +150,7 @@ const actionUrl = getActionPath(actions[handlerAction]);
         el.replaceChildren(val);
       } else if (el instanceof HTMLInputElement) {
         if (el.type === "checkbox") {
-          el.checked = Boolean(val) && val!=="false" && val!=="off" && val!=="0";
+          el.checked = !["","false","off","0","null"].includes(val);
         } else {
           el.value = val;
         }
