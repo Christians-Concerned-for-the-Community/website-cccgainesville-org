@@ -109,85 +109,81 @@ const actionUrl = getActionPath(actions[handlerAction]);
     return li;
   };
 
-  const initForms = () => {
-    document.querySelectorAll<HTMLFormElement>(".base-form").forEach((form) => {
-      const fields = form.querySelectorAll<HTMLElement>('.base-form-field');
-      
-      // Pre-fill any values passed via URL query params.
-      const params = new URLSearchParams(window.location.search);
-      for (const el of fields) {
-        if (el instanceof HTMLInputElement &&
-            !["checkbox","hidden","radio"].includes(el.type)) {
-          el.value = params.get(el.name) || el.value;
-        } else if (el instanceof HTMLTextAreaElement) {
-          const val = params.get(el.name);
-          if (val) {
-            el.replaceChildren(val);
-          }
+  
+  document.querySelectorAll<HTMLFormElement>(".base-form").forEach((form) => {
+    const msgContainer = form.querySelector<HTMLElement>('section');
+    const msgContent = msgContainer?.querySelector<HTMLUListElement>('ul');
+    const fields = form.querySelectorAll<HTMLElement>('.base-form-field');
+    
+    // Pre-fill any values passed via URL query params.
+    const params = new URLSearchParams(window.location.search);
+    for (const el of fields) {
+      if (el instanceof HTMLInputElement &&
+          !["checkbox","hidden","radio"].includes(el.type)) {
+        el.value = params.get(el.name) || el.value;
+      } else if (el instanceof HTMLTextAreaElement) {
+        const val = params.get(el.name);
+        if (val) {
+          el.replaceChildren(val);
+        }
+      }
+    }
+
+    // Process form on submission.
+    form.addEventListener('submit', async (ev) => {
+      ev.preventDefault();
+      if (!form.dataset.action) {
+        return;
+      }
+
+      form.dataset.state = "processing";
+
+      // Trim whitespace from all form values before submitting for validaiton.
+      const formData = new FormData(form);
+      for (const [key, value] of formData.entries()) {
+        if (typeof value === 'string') {
+          formData.set(key, value.trim());
         }
       }
 
-      // Process form on submission.
-      form.addEventListener('submit', async (ev) => {
-        ev.preventDefault();
-
-        const errContainer = form.querySelector<HTMLElement>('section');
-        const errContent = errContainer?.querySelector<HTMLUListElement>('ul');
-
-        if(form.dataset.action) {
-          form.dataset.state = "processing";
-          const formData = new FormData(form);
-
-          // Trim whitespace from all form values before submitting for validaiton.
-          for (const [key, value] of formData.entries()) {
-            if (typeof value === 'string') {
-              formData.set(key, value.trim());
-            }
-          }
-
-          // Send form data to handler, then wait for results.
-          const response = await fetch(form.dataset.action, {
-            method: 'POST',
-            body: formData,
-          });
-          const text = await response.text();
-          const result = text? JSON.parse(text) : {};
-          
-          const msgs: HTMLLIElement[] = [];
-          for (const el of fields) {
-            const errDest = el.dataset.err? document.getElementById(el.dataset.err) : undefined;
-            const errText = el.dataset.name? (result.fields?.[el.dataset.name]?.join(", ")) : undefined;
-            if (errText) {
-              el.ariaInvalid = "true";
-              msgs.push(makeMsg(errText, el.id));
-              errDest?.replaceChildren(errText);
-            } else {
-              el.ariaInvalid = "false";
-              errDest?.replaceChildren();
-            }
-          };
-
-          if (!response.ok && !msgs.length) {
-            msgs.push(makeMsg(result.message? result.message : "Network error, please try again later"));
-          }
-
-          if (msgs.length) {
-            errContent?.replaceChildren(...msgs);
-            form.dataset.state = "error";
-            errContainer?.focus();
-          } else {
-            errContent?.replaceChildren();
-            form.dataset.state = "success";
-          }
-          // Reset the turnstile widget, to ensure that any additional
-          // submissions won't try to reuse the same token.
-          window.turnstile.reset();
-        }
+      // Send form data to handler, then wait for results.
+      const response = await fetch(form.dataset.action, {
+        method: 'POST',
+        body: formData,
       });
-    });
-  };
+      // don't call response.json() directly, will throw error if body is empty
+      const text = await response.text();
+      const result = text? JSON.parse(text) : {};
+      
+      const msgs: HTMLLIElement[] = [];
+      for (const el of fields) {
+        const errDest = el.dataset.err? document.getElementById(el.dataset.err) : undefined;
+        const errText = el.dataset.name? (result.fields?.[el.dataset.name]?.join(", ")) : undefined;
+        if (errText) {
+          el.ariaInvalid = "true";
+          msgs.push(makeMsg(errText, el.id));
+        } else {
+          el.ariaInvalid = "false";
+        }
+        errDest?.replaceChildren(errText);
+      };
 
-  initForms();
-  document.addEventListener("astro:after-swap", initForms);
+      if (!response.ok && !msgs.length) {
+        msgs.push(makeMsg(result.message? result.message : "Network error, please try again later"));
+      }
+
+      if (msgs.length) {
+        msgContent?.replaceChildren(...msgs);
+        form.dataset.state = "error";
+        msgContainer?.focus();
+      } else {
+        msgContent?.replaceChildren();
+        form.dataset.state = "success";
+      }
+      // Reset the turnstile widget, to ensure that any additional
+      // submissions won't try to reuse the same token.
+      window.turnstile.reset();
+    }); // END submit listener
+  }); // END loop over forms
 }
 </script>
