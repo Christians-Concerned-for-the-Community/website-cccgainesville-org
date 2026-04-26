@@ -135,7 +135,7 @@ const Tag = (type === "textarea")? "textarea" : "input";
 
 <label for={inputId} class={twMerge(
   "group/field w-full px-xs text-md has-enabled:cursor-pointer",
-  "has-aria-invalid:border-l-error-accent has-aria-invalid:border-l-4",
+  "has-aria-invalid:border-l-error-accent has-aria-invalid:border-l-3",
   className)}
 >
   {/* Label text. */}
@@ -150,7 +150,7 @@ const Tag = (type === "textarea")? "textarea" : "input";
     "w-full text-sm text-error ms-[0.5em]",
     errorClass
   )}>
-    <Icon name="tabler:alert-triangle" size="1em" class="text-error-accent mbe-[0.12em] me-[0.25em]"/>
+    <Icon name="tabler:alert-triangle" size="1lh" class="text-error me-[0.25em]"/>
     <span id={errId}></span>
   </div>
 

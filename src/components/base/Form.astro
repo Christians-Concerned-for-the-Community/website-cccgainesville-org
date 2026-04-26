@@ -86,7 +86,7 @@ const actionUrl = getActionPath(actions[handlerAction]);
     {/* Error message display. */}
     <div class="hidden group-data-[state=error]/form:block text text-base">
       <HeadTag class="text-md font-medium mbe-[0.8em]">
-        <Icon name="tabler:alert-triangle" size="1em" class="text-error mbe-[0.12em] me-[0.25em]"/>
+        <Icon name="tabler:alert-triangle" size="1lh" class="text-error me-[0.25em]"/>
         {errorHeadingText}
       </HeadTag>
       <ul></ul>
@@ -95,7 +95,7 @@ const actionUrl = getActionPath(actions[handlerAction]);
     {/* Success message display. */}
     <div class="hidden group-data-[state=success]/form:block text text-base">
       <HeadTag class="text-md font-medium mbe-[0.8em]">
-        <Icon name="tabler:circle-check" size="1em" class="text-success mbe-[0.12em] me-[0.25em]"/>
+        <Icon name="tabler:circle-check" size="1lh" class="text-success me-[0.25em]"/>
         {successHeadingText}
       </HeadTag>
       <slot name="success"/>
