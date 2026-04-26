@@ -193,7 +193,6 @@ if (window.CSS && !CSS.supports('position-area', 'bottom')) {
           button.ariaExpanded = 'false'; // Close the disclosure.
           // Make sure focus winds up back on the trigger button.
           if (button != e.target) {
-            // @ts-expect-error (focusVisible is experimental, but harmless if unsupported
             button.focus({ focusVisible: true});
           }
           // Prevent browser itself from reacting to the escape key.
