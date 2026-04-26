@@ -3,10 +3,6 @@ import type { HTMLAttributes } from "astro/types";
 import { Icon } from "@/components/base";
 import { twMerge } from "tailwind-merge";
 
-// see middleware.ts for the "id" function.
-const inputId = Astro.locals.id("form-field");
-const errId = Astro.locals.id("form-field-err");
-
 type Props = Omit<
   HTMLAttributes<"input"|"textarea">,
   "id" | "type" | "autocomplete" | "aria-describedby"
@@ -74,6 +70,13 @@ const {
   errorClass,
   ...rest
 } = Astro.props;
+
+// Generate unique-per-page, sequentially-numbered id's for each form field,
+// using the given prefix.
+//
+// see middleware.ts for the "id" function.
+const inputId = Astro.locals.id(`form-${name}`);
+const errId = Astro.locals.id(`form-${name}-err`);
 
 let autoAttrs: HTMLAttributes<"input"> | HTMLAttributes<"textarea"> = {};
 let autoClass: string | null = null;
