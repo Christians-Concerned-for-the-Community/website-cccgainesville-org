@@ -28,10 +28,12 @@ interface Props extends
   label?: string,
 
   /**
-   * Text description for screen-readers.
+   * Text description of the button for screen-readers. Not shown visibly.
    * 
-   * Only use this if the button doesn't already contain visible descriptive
-   * text, or if the visible descriptive text is something useless like "Read more!".
+   * If both a visible label and an alt are provided, only the alt will be read
+   * by screen readers - the visible label will be silent. Try not to do this,
+   * though - having different text for sighted and non-sighted users is not
+   * ideal for accessibility.
    */
   alt?: string,
 
@@ -139,7 +141,11 @@ const Tag = Astro.props.href ? "a" : "button";
     <Icon name={iconBefore} class={iconClassName}/>
   )}
 
-  {label}
+  {(label && alt)?
+    (<span aria-hidden="true">{label}</span>)
+    :
+    label && (<Fragment>{label}</Fragment>)
+  }
   
   {icon && (
     <Icon name={icon} class={iconClassName}/>
