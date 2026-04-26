@@ -139,16 +139,20 @@ const actionUrl = getActionPath(actions[handlerAction]);
     const errList = msgContainer?.querySelector<HTMLUListElement>('ul');
     const fields = form.querySelectorAll<HTMLElement>('.base-form-field');
     
-    // Pre-fill any values passed via URL query params.
+    // Pre-fill any single field values passed via URL query params.
+    // TODO: add support for single-select FormPickField, once we write that component.
     const params = new URLSearchParams(window.location.search);
     for (const el of fields) {
-      if (el instanceof HTMLInputElement &&
-          !["checkbox","hidden","radio"].includes(el.type)) {
-        el.value = params.get(el.name) || el.value;
-      } else if (el instanceof HTMLTextAreaElement) {
-        const val = params.get(el.name);
-        if (val) {
-          el.replaceChildren(val);
+      const val = el.dataset.name? params.get(el.dataset.name) : null;
+      if (val == null) continue; // skip if null or undefined, keep going if empty string.
+
+      if (el instanceof HTMLTextAreaElement) {
+        el.replaceChildren(val);
+      } else if (el instanceof HTMLInputElement) {
+        if (el.type === "checkbox") {
+          el.checked = Boolean(val) && val!=="false" && val!=="off" && val!=="0";
+        } else {
+          el.value = val;
         }
       }
     }
