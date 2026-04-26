@@ -35,4 +35,8 @@ export const handleForm = defineAction({
   <FormField name="email"   label="Email"   type="email"     required maxlength={zclimits.email} />
   <FormField name="phone"   label="Phone"   type="tel"       required maxlength={zclimits.us_phone} />
   <FormField name="message" label="Message" type="textarea"  required maxlength={MAX_MESSAGE} />
+
+  <div slot="success">
+    Thanks for reaching out! We'll get back to you shortly.
+  </div>
 </Form>

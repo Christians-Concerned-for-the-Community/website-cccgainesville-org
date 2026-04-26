@@ -54,6 +54,7 @@ const icons = [
   ['tabler', 'menu-2'],
   ['tabler', 'external-link'],
   ['tabler', 'alert-triangle'],
+  ['tabler', 'circle-check'],
 ];
 
 

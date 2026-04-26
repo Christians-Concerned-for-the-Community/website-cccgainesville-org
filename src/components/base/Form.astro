@@ -27,25 +27,33 @@ type Props = HTMLAttributes<"form"> & {
   handlerAction: string,
 
   /**
-   * Tag to use for the heading of the error summary box.
+   * Tag to use for the heading in the message box at the top of the form.
    * 
    * @default "h3"
    */
-  errorHeadingTag?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "div",
+  messageHeadingTag?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "div",
 
   /**
-   * Heading text for the error summary box.
+   * Heading text for the error summary.
    * 
    * @default "Oops, let's fix these errors first:"
    */
   errorHeadingText?: string,
+
+  /**
+   * Heading text for the success message.
+   * 
+   * @default "Successfully submitted!"
+   */
+  successHeadingText?: string,
 };
 
 const {
   submitButton = {},
   handlerAction,
-  errorHeadingTag : ErrHeadTag = "h3",
+  messageHeadingTag : HeadTag = "h3",
   errorHeadingText = "Oops, let's fix these errors first:",
+  successHeadingText = "Successfully submitted!",
   class: className,
   ...rest
 } = Astro.props;
@@ -70,14 +78,28 @@ const actionUrl = getActionPath(actions[handlerAction]);
   {...rest}
 >
   <section tabindex="-1" class:list={[
-    "hidden group-data-[state=error]/form:block",
-    "w-full p-[1em] rounded-sm border-2 border-error"
+    "hidden not-group-data-[state=initial]/form:block",
+    "w-full p-[1em] rounded-sm border-3",
+    "group-data-[state=error]/form:border-error-accent",
+    "group-data-[state=success]/form:border-success-accent",
   ]}>
-    <ErrHeadTag class="text-md font-medium mbe-[0.8em]">
-      <Icon name="tabler:alert-triangle" size="1em" class="text-error-accent mbe-[0.12em] me-[0.25em]"/>
-      {errorHeadingText}
-    </ErrHeadTag>
-    <ul class="text text-base"></ul>
+    {/* Error message display. */}
+    <div class="hidden group-data-[state=error]/form:block text text-base">
+      <HeadTag class="text-md font-medium mbe-[0.8em]">
+        <Icon name="tabler:alert-triangle" size="1em" class="text-error mbe-[0.12em] me-[0.25em]"/>
+        {errorHeadingText}
+      </HeadTag>
+      <ul></ul>
+    </div>
+
+    {/* Success message display. */}
+    <div class="hidden group-data-[state=success]/form:block text text-base">
+      <HeadTag class="text-md font-medium mbe-[0.8em]">
+        <Icon name="tabler:circle-check" size="1em" class="text-success mbe-[0.12em] me-[0.25em]"/>
+        {successHeadingText}
+      </HeadTag>
+      <slot name="success"/>
+    </div>
   </section>
 
   <slot />
@@ -96,23 +118,25 @@ const actionUrl = getActionPath(actions[handlerAction]);
 
 <script>
 {
-  const makeMsg = (text: string, id?: string ) => {
-    const li = document.createElement('li');
-    if (id) {
-      const a = document.createElement('a');
-      a.href = '#' + id;
-      a.textContent = text;
-      li.appendChild(a);
-    } else {
-      li.textContent = text;
+  const addErr = (errs: HTMLLIElement[], text?: string, id?: string ) => {
+    if (text) {
+      const li = document.createElement('li');
+      if (id) {
+        const a = document.createElement('a');
+        a.href = '#' + id;
+        a.textContent = text;
+        li.appendChild(a);
+      } else {
+        li.textContent = text;
+      }
+      errs.push(li);
     }
-    return li;
   };
 
   
   document.querySelectorAll<HTMLFormElement>(".base-form").forEach((form) => {
     const msgContainer = form.querySelector<HTMLElement>('section');
-    const msgContent = msgContainer?.querySelector<HTMLUListElement>('ul');
+    const errList = msgContainer?.querySelector<HTMLUListElement>('ul');
     const fields = form.querySelectorAll<HTMLElement>('.base-form-field');
     
     // Pre-fill any values passed via URL query params.
@@ -155,31 +179,32 @@ const actionUrl = getActionPath(actions[handlerAction]);
       const text = await response.text();
       const result = text? JSON.parse(text) : {};
       
-      const msgs: HTMLLIElement[] = [];
+      const errs: HTMLLIElement[] = [];
       for (const el of fields) {
         const errDest = el.dataset.err? document.getElementById(el.dataset.err) : undefined;
         const errText = el.dataset.name? (result.fields?.[el.dataset.name]?.join(", ")) : undefined;
-        if (errText) {
-          el.ariaInvalid = "true";
-          msgs.push(makeMsg(errText, el.id));
-        } else {
-          el.ariaInvalid = "false";
-        }
+        addErr(errs, errText);
+        el.ariaInvalid = errText? "true" : "false";
         errDest?.replaceChildren(errText);
       };
 
-      if (!response.ok && !msgs.length) {
-        msgs.push(makeMsg(result.message? result.message : "Network error, please try again later"));
+      if (!response.ok && errs.length == 0) {
+        addErr(errs, result.message?
+          result.message 
+          :
+          "Network error, please try again later"
+        );
       }
 
-      if (msgs.length) {
-        msgContent?.replaceChildren(...msgs);
-        form.dataset.state = "error";
-        msgContainer?.focus();
-      } else {
-        msgContent?.replaceChildren();
+      if (errs.length == 0) {
+        form.reset();
         form.dataset.state = "success";
+      } else {
+        errList?.replaceChildren(...errs);
+        form.dataset.state = "error";
       }
+      msgContainer?.focus();
+
       // Reset the turnstile widget, to ensure that any additional
       // submissions won't try to reuse the same token.
       window.turnstile.reset();

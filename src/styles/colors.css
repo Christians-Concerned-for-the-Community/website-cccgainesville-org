@@ -98,9 +98,13 @@
   --color-warning:
                var(--color-amber-300);
   --color-error:
-    light-dark(var(--color-red-800), var(--color-red-400));
+    light-dark(var(--color-red-800),   var(--color-red-400));
   --color-error-accent:
-    light-dark(var(--color-red-700), var(--color-red-500));
+    light-dark(var(--color-red-700),   var(--color-red-800));
+  --color-success:
+    light-dark(var(--color-green-800), var(--color-green-400));
+  --color-success-accent:
+    light-dark(var(--color-green-700), var(--color-green-800));
   --color-border:
     light-dark(var(--color-neutral-600), --alpha(var(--color-neutral-50) / 20%));
   --color-input:
