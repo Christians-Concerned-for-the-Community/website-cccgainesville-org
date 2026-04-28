@@ -87,9 +87,9 @@ export default defineConfig({
         // needed for cloudflare turnstile preclearance, and for Give Lively's
         // embedded donation widget
         "connect-src 'self' https://secure.givelively.org",
+        "frame-src 'self' https://secure.givelively.org https://challenges.cloudflare.com",
         // needed for Give Lively's embedded donation widget
         "font-src 'self' https://fonts.gstatic.com",
-        "frame-src 'self' https://secure.givelively.org",
       ],
     },
     //*/
