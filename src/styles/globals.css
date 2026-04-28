@@ -32,7 +32,7 @@
  * becomes:
  *    hocus:text-foreground
  */
-@custom-variant hocus (&:hover, &:focus-visible);
+@custom-variant hocus (&:hover:not([aria-disabled='true']), &:focus-visible:not([aria-disabled='true']));
 
 /* Makes specifying the active state of buttons a lot easier, since different
  * kinds of buttons might have different ways of indicating whether or not they
@@ -142,8 +142,11 @@
     Default styling for disabled elements.
    */
   *:disabled {
-    pointer-events: none;
+    cursor: not-allowed;
     opacity: 50%;
+  }
+  [aria-disabled='true'] {
+    cursor: not-allowed;
   }
 
   /*
@@ -156,7 +159,7 @@
     you use the default cursor. Especially in modern design where buttons are
     flat.
    */
-  button:not(:disabled),
+  button:not(:disabled):not([aria-disabled='true']),
   [role="button"]:not(:disabled) {
     cursor: pointer;
   }
