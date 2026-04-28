@@ -137,21 +137,26 @@ const Tag = Astro.props.href ? "a" : "button";
 ---
 
 <Tag class={button({ content, variant, animation, class: className })} {...rest}>
-  {iconBefore && (
-    <Icon name={iconBefore} class={iconClassName}/>
-  )}
+  <span class="label-primary">
+    {iconBefore && (
+      <Icon name={iconBefore} class={iconClassName}/>
+    )}
 
-  {(label && alt)?
-    (<span aria-hidden="true">{label}</span>)
-    :
-    label && (<Fragment>{label}</Fragment>)
-  }
-  
-  {icon && (
-    <Icon name={icon} class={iconClassName}/>
-  )}
+    {(label && alt)?
+      (<span aria-hidden="true">{label}</span>)
+      :
+      label && (<Fragment>{label}</Fragment>)
+    }
 
-  {alt && (
-    <span class="sr-only">{alt}</span>
-  )}
+    {alt && (
+      <span class="sr-only">{alt}</span>
+    )}
+
+    {icon && (
+      <Icon name={icon} class={iconClassName}/>
+    )}
+  </span>
+  <span class="label-secondary hidden">
+    <slot name="label-secondary"/>
+  </span>
 </Tag>
