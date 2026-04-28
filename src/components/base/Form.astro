@@ -132,9 +132,20 @@ const actionUrl = getActionPath(actions[handlerAction]);
   </Button>
 </form>
 
-<script is:inline async defer
-  src="https://challenges.cloudflare.com/turnstile/v0/api.js"
-/>
+<script>
+  /* Load cloudflare turnstile script through a parent script, so that it works using
+   * strict CSP settings with strict-dynamic.
+   */
+  if (!document.getElementById('cf-turnstile-script')) {  
+    const script = document.createElement('script');
+    script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+    script.id = 'cf-turnstile-script';
+    script.async = true;
+    script.defer = true;
+    
+    document.head.appendChild(script);
+  }
+</script>
 
 <script>
 {

@@ -28,5 +28,39 @@ export const onRequest = defineMiddleware(async (context, next) => {
     }
   })();
 
+
+  /** Put in special CSP headers for the giving page, since Give Lively currently
+    * includes inline styles in their embedded donation widget. We need to allow
+    * inline styles for this page specifically instead.
+    * 
+    * Note that this doesn't enable unsafe inline scripts, just CSS styles, so it's
+    * a bit safer at least.
+    * 
+    * TODO: get Give Lively to remove inline styles from their donation widget, so we
+    *       can get rid of this hack.
+    */
+  if (context.url.pathname === "/give/") {
+    const response = await next();
+    const html = await response.text();
+
+    // Replace contents of style-src, to allow inline styles without hashes.
+    const newStyleSrc = [
+      "'self'",
+      "'unsafe-inline'",
+      "https://secure.givelively.org",
+      "https://fonts.googleapis.com"
+    ].join(' ');
+
+    const updatedHtml = html.replace(
+      /(<meta\s+[^>]+"content-security-policy"[^>]+style-src )([^;]*)/i,
+      `$1${newStyleSrc}`);
+
+    return new Response(updatedHtml, {
+      status: 200,
+      headers: response.headers,
+    });
+  }
+
+
   return await next();
 })

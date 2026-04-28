@@ -50,25 +50,46 @@ export default defineConfig({
   },
 
   security: {
-    /*
-    // Works for most of the website, as of Astro v6.0.8 (3/22/2026).
-    //
-    // May be challenging to get it working with the embedded Give Lively donation
-    // widget, but I haven't tried yet.
-    //
-    // See:
-    //   https://docs.astro.build/en/reference/configuration-reference/#securitycsp
-    //   https://web.dev/articles/strict-csp
-    //
     csp: {
       scriptDirective: {
-        strictDynamic: true, // trust any scripts that were loaded by trusted scripts, without requiring them to be hashed
+        /*
+          Trust any scripts that were loaded by trusted scripts, without
+          requiring them to be hashed.
+
+          This is required by all third-party embeds, like Cloudflare Turnstile
+          and Give Lively's donation widget.
+         */
+        strictDynamic: true,
       },
+      /*
+        TODO: we're currently overwriting style-src manually in middleware for
+        the give/ endpoint alone, because Give Lively includes inline styles in
+        their embedded widget. If we ever get them to fix that, uncomment the
+        following chunk of code after you remove the middleware.
+       */
+      /*
+      styleDirective: {
+        resources: [
+          "'self'",
+          // These are needed for Give Lively's embedded donation widget.
+          "https://secure.givelively.org",
+          "https://fonts.googleapis.com",
+        ],
+      },
+      //*/
       directives: [
-        "object-src 'none'", // disable insecure legacy embeds like Flash and Java
-        "base-uri 'none'", // prevents injection attacks that reset the base URL of relative links
-        "upgrade-insecure-requests", // upgrade http resource requests to https automatically
-        "manifest-src 'self' cccgainesville.cloudflareaccess.com",
+        // disable insecure legacy embeds like Flash and Java
+        "object-src 'none'",
+        // prevents injection attacks that reset the base URL of relative links
+        "base-uri 'none'",
+        // upgrade http resource requests to https automatically
+        "upgrade-insecure-requests",
+        // needed for cloudflare turnstile preclearance, and for Give Lively's
+        // embedded donation widget
+        "connect-src 'self' https://secure.givelively.org",
+        // needed for Give Lively's embedded donation widget
+        "font-src 'self' https://fonts.gstatic.com",
+        "frame-src 'self' https://secure.givelively.org",
       ],
     },
     //*/
