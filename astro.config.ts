@@ -5,7 +5,7 @@ import { fileURLToPath } from "url";
 import sitemap from "@astrojs/sitemap";
 import cloudflare from "@astrojs/cloudflare";
 
-const abspath = (path) => {
+const abspath = (path: string) => {
   return fileURLToPath(new URL(path, import.meta.url))
 };
 
