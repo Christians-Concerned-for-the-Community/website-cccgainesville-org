@@ -1,0 +1,54 @@
+---
+/**
+ * Turnstile integration requires defining three environment variables in your
+ * wrangler.jsonc. The secret one also needs to be defined in a .env for local dev,
+ * and up on the Cloudflare dashboard for deployment.
+ * 
+ *   PUBLIC_CAPTCHA_NAME: turnstile
+ *   PUBLIC_CAPTCHA_KEY: [your turnstile widget's site key]
+ *   SECRET_CAPTCHA_KEY: [your turnstile widget's secret]
+ * 
+ * The required edits to wrangler.jsonc will look like this:
+ *   "vars": {
+ *     "PUBLIC_CAPTCHA_NAME": "Turnstile",
+ *     "PUBLIC_CAPTCHA_KEY": "...",
+ *   },
+ *   "secrets": { "required": [
+ *     "SECRET_CAPTCHA_KEY",
+ *   ]},
+ * 
+ * For testing different scenarios, you can sub in the dummy test keys listed
+ * here: https://developers.cloudflare.com/turnstile/troubleshooting/testing/
+ */
+
+import type { HTMLAttributes } from "astro/types";
+
+interface Props extends HTMLAttributes<"div"> {
+  class?: string,
+};
+
+const {
+  class: className,
+  ...rest
+} = Astro.props;
+---
+
+<div class:list={["cf-turnstile", className]}
+  data-sitekey={process.env.PUBLIC_CAPTCHA_KEY || ""}
+  {...rest}
+/>
+
+<script>
+{
+  const scriptId = "base-captcha-turnstile";
+  if (!document.getElementById(scriptId)) {
+    const script = document.createElement('script');
+    script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js";
+    script.id = scriptId;
+    script.async = true;
+    script.defer = true;
+    document.head.appendChild(script);
+  }
+  window.captchaReset = () => {window.turnstile.reset()};
+}
+</script>

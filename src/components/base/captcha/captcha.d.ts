@@ -1,6 +1,6 @@
 /**
- * Global type definitions for turnstile functions on the window object.
- * Taken from:
+ * Global type definitions for captcha-related functions on the window object.
+ * Signature for turnstile reset taken from here:
  *  https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/cloudflare-turnstile/index.d.ts
  */
 export {}; //needed so that this is treated as a module
@@ -10,5 +10,7 @@ declare global {
     turnstile: {
       reset: (container?: string | HTMLElement) => void;
     };
+
+    captchaReset: () => void;
   }
 }

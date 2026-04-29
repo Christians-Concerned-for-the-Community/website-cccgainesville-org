@@ -1,5 +1,5 @@
 ---
-import { Form, FormField, formUtil } from '@/components/base';
+import { Form, FormField, validateCaptcha } from '@/components/base';
 import { defineAction } from 'astro:actions';
 import { z } from 'astro/zod';
 import { zc, zclimits } from "./zod-common.ts"
@@ -18,7 +18,7 @@ export const handleForm = defineAction({
   }),
   handler: async (input, context) => {
     // Needs to be in every form handler
-    await formUtil.turnstile.validate(input, context);
+    await validateCaptcha(input, context);
 
     /* TODO: implement this method */
     console.log(`Name: ${input.name}`);

@@ -8,8 +8,8 @@ import Feat from '@/assets/give-feat.jpg'
 const labelId = Astro.locals.id("give-lively-label");
 ---
 
-<PageLayout title="Give" subtitle="Help us serve our community."featuredImage={Feat}
-  profile="givelively"
+<PageLayout title="Give" subtitle="Help us serve our community." featuredImage={Feat}
+  profile={["givelively"]}
   class="flex flex-col gap-xl-2xl items-center"
 >
   {/* Embedded donation form & instructions */}

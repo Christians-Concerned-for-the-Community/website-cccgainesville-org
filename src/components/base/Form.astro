@@ -1,9 +1,10 @@
 ---
 import type { HTMLAttributes, ComponentProps } from "astro/types";
 import {actions, getActionPath} from "astro:actions";
-import { twMerge } from 'tailwind-merge'
+import { twMerge } from 'tailwind-merge';
 
-import { Button, Icon, Spinner, formUtil } from '@/components/base'
+import { Button, Icon, Spinner } from '.';
+import { captchaComponent as Captcha } from './captcha.ts';
 
 type Props = HTMLAttributes<"form"> & {
   /**
@@ -119,10 +120,7 @@ const actionUrl = getActionPath(actions[handlerAction]);
 
   <slot />
 
-  <div class="cf-turnstile"
-    data-sitekey={formUtil.turnstile.key}
-    data-response-field-name={formUtil.turnstile.fieldname}
-  />
+  <Captcha />
 
   <Button type="submit" {...submitButton}>
     <Fragment slot="label-secondary">
@@ -133,22 +131,7 @@ const actionUrl = getActionPath(actions[handlerAction]);
 </form>
 
 <script>
-  /* Load cloudflare turnstile script through a parent script, so that it works using
-   * strict CSP settings with strict-dynamic.
-   */
-  if (!document.getElementById('cf-turnstile-script')) {  
-    const script = document.createElement('script');
-    script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
-    script.id = 'cf-turnstile-script';
-    script.async = true;
-    script.defer = true;
-    
-    document.head.appendChild(script);
-  }
-</script>
-
-<script>
-{
+{ 
   const addErr = (errs: HTMLLIElement[], text?: string, id?: string ) => {
     if (text) {
       const li = document.createElement('li');
@@ -164,13 +147,12 @@ const actionUrl = getActionPath(actions[handlerAction]);
     }
   };
 
-  
   document.querySelectorAll<HTMLFormElement>(".base-form").forEach((form) => {
     const msgContainer = form.querySelector<HTMLElement>('section');
     const errList = msgContainer?.querySelector<HTMLUListElement>('ul');
     const fields = form.querySelectorAll<HTMLElement>('.base-form-field');
     const submitButton = form.querySelector<HTMLButtonElement>('.base-form-submit');
-    
+
     // Pre-fill any single field values passed via URL query params.
     // TODO: add support for single-select FormPickField, once we write that component.
     const params = new URLSearchParams(window.location.search);
@@ -247,9 +229,9 @@ const actionUrl = getActionPath(actions[handlerAction]);
       //to ensure we don't announce the change in button text.
       submitButton.ariaDisabled = "false";
 
-      // Reset the turnstile widget, to ensure that any additional
+      // Reset the captcha (if needed), to ensure that any additional
       // submissions won't try to reuse the same token.
-      window.turnstile.reset();
+      window.captchaReset?.();
     }); // END submit listener
   }); // END loop over forms
 }

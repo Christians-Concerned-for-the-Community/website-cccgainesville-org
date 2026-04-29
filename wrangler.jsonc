@@ -10,10 +10,11 @@
 	"main": "@astrojs/cloudflare/entrypoints/server",
 
 	"vars": {
-		"PUBLIC_TURNSTILE": "0x4AAAAAAAc02UX-EFdbhc0N",
+		"PUBLIC_CAPTCHA_NAME": "Turnstile",
+		"PUBLIC_CAPTCHA_KEY": "0x4AAAAAAAc02UX-EFdbhc0N",
 	},
 	"secrets": { "required": [
-		"SECRET_TURNSTILE",
+		"SECRET_CAPTCHA_KEY",
 	]},
 
 	"observability": {
@@ -32,12 +33,13 @@
 			"name": "website-cccgainesville-org-dev",
 			"vars": {
 				// dummy keys from here: https://developers.cloudflare.com/turnstile/troubleshooting/testing/
-				"PUBLIC_TURNSTILE": "1x00000000000000000000AA", //always succeeds
-				//"PUBLIC_TURNSTILE": "2x00000000000000000000AB", //always fails
-				//"PUBLIC_TURNSTILE": "3x00000000000000000000FF", //forces interactive challenge
+				"PUBLIC_CAPTCHA_NAME": "Turnstile",
+				"PUBLIC_CAPTCHA_KEY": "1x00000000000000000000AA", //always succeeds
+				//"PUBLIC_CAPTCHA_KEY": "2x00000000000000000000AB", //always fails
+				//"PUBLIC_CAPTCHA_KEY": "3x00000000000000000000FF", //forces interactive challenge
 			},
 			"secrets": { "required": [
-				"SECRET_TURNSTILE",
+				"SECRET_CAPTCHA_KEY",
 			]},
 		},
 		// If we're running a production build, host it at the real URL.
@@ -49,10 +51,11 @@
 				"zone_name": "cccgainesville.org"
 			},
 			"vars": {
-				"PUBLIC_TURNSTILE": "0x4AAAAAAAc02UX-EFdbhc0N",
+				"PUBLIC_CAPTCHA_NAME": "Turnstile",
+				"PUBLIC_CAPTCHA_KEY": "0x4AAAAAAAc02UX-EFdbhc0N",
 			},
 			"secrets": { "required": [
-				"SECRET_TURNSTILE",
+				"SECRET_CAPTCHA_KEY",
 			]},
 		}
 	}

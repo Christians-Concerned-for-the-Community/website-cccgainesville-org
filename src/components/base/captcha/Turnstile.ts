@@ -1,29 +1,12 @@
 /**
- * Turnstile integration requires defining two environment variables in your
- * wrangler.jsonc. The secret one also needs to be defined in a .env for local dev,
- * and up on the Cloudflare dashboard for deployment.
- * 
- *   PUBLIC_TURNSTILE: your turnstile widget's site key
- *   SECRET_TURNSTILE: your turnstile widget's secret
- * 
- * The required edits to wrangler.jsonc will look like this:
- *   "vars": {
- *     "PUBLIC_TURNSTILE": "...",
- *   },
- *   "secrets": { "required": [
- *     "SECRET_TURNSTILE",
- *   ]},
- * 
- * For testing different scenarios, you can sub in the dummy test keys listed
- * here: https://developers.cloudflare.com/turnstile/troubleshooting/testing/
+ * Contains "preconnect" and "validate" for Cloudflare Turnstile.
  */
+
 import { ActionError, type ActionAPIContext } from "astro:actions";
 import { getSecret } from "astro:env/server";
-import type { Captcha } from "./formUtil_types";
-
 import crypto from 'node:crypto';
 
-const FIELDNAME = "cfturnstile";
+export const preconnect = "https://challenges.cloudflare.com";
 
 // Inner helper for turnstile validation.
 const turnstileAttempt = async (params:{token: string, secret: string, ip: string, idemKey: string, timeout?: number}) => {
@@ -84,15 +67,15 @@ const turnstileAttempt = async (params:{token: string, secret: string, ip: strin
 
 
 // Main entry for turnstile validation.
-const validateTurnstile = async (input: Record<string, any>, context: ActionAPIContext) => {
+export const validate = async (input: Record<string, any>, context: ActionAPIContext) => {
 
-  const secret = getSecret("SECRET_TURNSTILE");
+  const secret = getSecret("SECRET_CAPTCHA_KEY");
   if (!secret) {
     console.error("Turnstile: secret missing");
     throw new ActionError({code:"FORBIDDEN", message: "Turnstile validation failed, try again later."});
   }
 
-  const token = input[FIELDNAME];
+  const token = input["cf-turnstile-response"];
   if (!token || typeof token !== "string" || token.length > (2048*4)) {
     console.error("Turnstile: token missing or invalid");
     throw new ActionError({code:"FORBIDDEN", message: "Turnstile validation failed, try again later."});
@@ -127,10 +110,3 @@ const validateTurnstile = async (input: Record<string, any>, context: ActionAPIC
     throw new ActionError({code:"FORBIDDEN", message: "Turnstile validation failed, try again later."})
   }
 }
-
-
-export const turnstile: Captcha = {
-  key: process.env.PUBLIC_TURNSTILE,
-  fieldname: FIELDNAME,
-  validate: validateTurnstile,
-};

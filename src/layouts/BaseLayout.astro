@@ -1,7 +1,7 @@
 ---
 import '@/styles/globals.css'
 import type { HTMLAttributes } from 'astro/types'
-import { SiteMeta } from '@/components/base'
+import { SiteMeta, captchaPreconnect } from '@/components/base'
 import Header from '@/components/Header.astro'
 import Footer from '@/components/Footer.astro'
 
@@ -40,9 +40,9 @@ export interface Props extends HTMLAttributes<"main"> {
    * Performance profile. Certain pages can benefit from additional optimizations,
    * depending on what features they use.
    *   'givelively' - add optimizations for an embedded Give Lively donation widget
-   *   'turnstile' - add optimizations for an embedded Cloudflare Turnstile widget
+   *   'captcha' - add optimizations for an embedded captcha widget
    */
-  profile?: 'givelively' | 'turnstile'
+  profile?: ('givelively' | 'captcha')[]
 }
 
 const {
@@ -73,7 +73,7 @@ const {
         TODO: this is still too many preload/preconnect instructions.
               Go through them and test to see which ones actually help.
       */}
-    {(profile === 'givelively') && (
+    {profile?.includes('givelively') && (
       <link rel="preconnect" href="https://secure.givelively.com">
       <link rel="preconnect" href="https://use.fontawesome.com">
       <link rel="preconnect" href="https://m.stripe.com">
@@ -89,8 +89,8 @@ const {
       <link rel="preconnect" href="https://js.captcha-display.com">
       <link rel="preconnect" href="https://static.hotjar.com">
     )}
-    {(profile === 'turnstile') && (
-      <link rel="preconnect" href="https://challenges.cloudflare.com">
+    {profile?.includes('captcha') && captchaPreconnect && (
+      <link rel="preconnect" href={captchaPreconnect}>
     )}
 
     {/* favicon stuff - see:
