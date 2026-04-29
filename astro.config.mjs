@@ -3,12 +3,32 @@ import { defineConfig } from "astro/config";
 import { fileURLToPath } from "url";
 
 import sitemap from "@astrojs/sitemap";
-
 import cloudflare from "@astrojs/cloudflare";
 
 const abspath = (path) => {
   return fileURLToPath(new URL(path, import.meta.url))
 };
+
+const csp = {
+  connect: new Set(["'self'"]),
+  font:    new Set(["'self'"]),
+  frame:   new Set(["'self'"]),
+  style:   new Set(["'self'"]),
+};
+
+// Add GiveLively CSP entries.
+csp.connect.add("https://secure.givelively.org");
+csp.font.add("https://fonts.gstatic.com");
+csp.frame.add("https://secure.givelively.org");
+csp.style.add("https://secure.givelively.org");
+csp.style.add("https://fonts.googleapis.com");
+
+// Add Captcha CSP entries.
+//* -- Turnstile --
+csp.connect.add("'self'");
+csp.frame.add("https://challenges.cloudflare.com");
+//*/
+
 
 // https://astro.build/config
 //
@@ -61,22 +81,9 @@ export default defineConfig({
          */
         strictDynamic: true,
       },
-      /*
-        TODO: we're currently overwriting style-src manually in middleware for
-        the give/ endpoint alone, because Give Lively includes inline styles in
-        their embedded widget. If we ever get them to fix that, uncomment the
-        following chunk of code after you remove the middleware.
-       */
-      /*
       styleDirective: {
-        resources: [
-          "'self'",
-          // These are needed for Give Lively's embedded donation widget.
-          "https://secure.givelively.org",
-          "https://fonts.googleapis.com",
-        ],
+        resources: [...csp.style],
       },
-      //*/
       directives: [
         // disable insecure legacy embeds like Flash and Java
         "object-src 'none'",
@@ -84,14 +91,11 @@ export default defineConfig({
         "base-uri 'none'",
         // upgrade http resource requests to https automatically
         "upgrade-insecure-requests",
-        // needed for cloudflare turnstile preclearance, and for Give Lively's
-        // embedded donation widget
-        "connect-src 'self' https://secure.givelively.org",
-        "frame-src 'self' https://secure.givelively.org https://challenges.cloudflare.com",
-        // needed for Give Lively's embedded donation widget
-        "font-src 'self' https://fonts.gstatic.com",
+        //
+        `connect-src ${[...csp.connect].join(" ")}`,
+        `font-src ${[...csp.font].join(" ")}`,
+        `frame-src ${[...csp.frame].join(" ")}`,
       ],
     },
-    //*/
   },
 })
