@@ -4,7 +4,7 @@
  * wrangler.jsonc. The secret one also needs to be defined in a .env for local dev,
  * and up on the Cloudflare dashboard for deployment.
  * 
- *   PUBLIC_CAPTCHA_NAME: turnstile
+ *   PUBLIC_CAPTCHA_NAME: Turnstile
  *   PUBLIC_CAPTCHA_KEY: [your turnstile widget's site key]
  *   SECRET_CAPTCHA_KEY: [your turnstile widget's secret]
  * 
@@ -40,7 +40,7 @@ const {
 
 <script>
 {
-  const scriptId = "base-captcha-turnstile";
+  const scriptId = "base-turnstile";
   if (!document.getElementById(scriptId)) {
     const script = document.createElement('script');
     script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js";

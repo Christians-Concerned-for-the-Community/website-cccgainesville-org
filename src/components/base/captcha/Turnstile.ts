@@ -68,17 +68,20 @@ const turnstileAttempt = async (params:{token: string, secret: string, ip: strin
 
 // Main entry for turnstile validation.
 export const validate = async (input: Record<string, any>, context: ActionAPIContext) => {
+  // Default error message shown to user - vague, because we don't want to confuse them
+  // with technical details. We'll log the actual error in the console on the backend.
+  const err = () => new ActionError({code:"FORBIDDEN", message: "Captcha validation failed, try again later."});
 
   const secret = getSecret("SECRET_CAPTCHA_KEY");
   if (!secret) {
     console.error("Turnstile: secret missing");
-    throw new ActionError({code:"FORBIDDEN", message: "Turnstile validation failed, try again later."});
+    throw err();
   }
 
   const token = input["cf-turnstile-response"];
   if (!token || typeof token !== "string" || token.length > (2048*4)) {
     console.error("Turnstile: token missing or invalid");
-    throw new ActionError({code:"FORBIDDEN", message: "Turnstile validation failed, try again later."});
+    throw err();
   }
 
   // Unique identifier for this request - lets us safely retry the request if
@@ -107,6 +110,6 @@ export const validate = async (input: Record<string, any>, context: ActionAPICon
   }
 
   if (!res.success) {
-    throw new ActionError({code:"FORBIDDEN", message: "Turnstile validation failed, try again later."})
+    throw err();
   }
 }
