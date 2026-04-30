@@ -122,7 +122,7 @@ const actionUrl = getActionPath(actions[handlerAction]);
 
   <Captcha />
 
-  <Button type="submit" {...submitButton}>
+  <Button type="submit" aria-disabled="true" {...submitButton}>
     <Fragment slot="label-secondary">
       {processingText}
       <Spinner class="size-[1lh] ms-[1em] inline"/>
@@ -191,6 +191,8 @@ const actionUrl = getActionPath(actions[handlerAction]);
         }
       }
 
+      await window.ccc_org_base_captchaPreprocess?.(formData);
+
       // Send form data to handler, then wait for results.
       const response = await fetch(form.dataset.action, {
         method: 'POST',
@@ -229,9 +231,9 @@ const actionUrl = getActionPath(actions[handlerAction]);
       //to ensure we don't announce the change in button text.
       submitButton.ariaDisabled = "false";
 
-      // Reset the captcha (if needed), to ensure that any additional
-      // submissions won't try to reuse the same token.
-      window.captchaReset?.();
+      // Refresh the captcha, to ensure that any additional submissions won't
+      // try to reuse the same token.
+      window.ccc_org_base_captchaRefresh?.();
     }); // END submit listener
   }); // END loop over forms
 }

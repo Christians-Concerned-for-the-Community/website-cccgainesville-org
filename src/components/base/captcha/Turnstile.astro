@@ -40,15 +40,20 @@ const {
 
 <script>
 {
-  const scriptId = "base-turnstile";
-  if (!document.getElementById(scriptId)) {
-    const script = document.createElement('script');
-    script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js";
-    script.id = scriptId;
-    script.async = true;
-    script.defer = true;
-    document.head.appendChild(script);
-  }
-  window.captchaReset = () => {window.turnstile.reset()};
+  const script = document.createElement('script');
+  script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js";
+  script.async = true;
+  script.defer = true;
+
+  script.onload = () => {
+    // Enable submission button once the script has been loaded.
+    document.querySelectorAll<HTMLButtonElement>(".base-form-submit").forEach((button) => {
+      button.ariaDisabled = "false";
+    });
+  };
+
+  document.head.appendChild(script);
+
+  window.ccc_org_base_captchaRefresh = () => {window.turnstile.reset()};
 }
 </script>

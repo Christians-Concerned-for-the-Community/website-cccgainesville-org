@@ -10,8 +10,15 @@
 	"main": "@astrojs/cloudflare/entrypoints/server",
 
 	"vars": {
+		/* // Turnstile
 		"PUBLIC_CAPTCHA_NAME": "Turnstile",
 		"PUBLIC_CAPTCHA_KEY": "0x4AAAAAAAc02UX-EFdbhc0N",
+		//*/
+		//* // RecaptchaScore
+		"PUBLIC_CAPTCHA_NAME": "RecaptchaScore",
+		"PUBLIC_CAPTCHA_ENDPOINT": "recaptcha-enterprise-endpoint", //gcloud project id
+		"PUBLIC_CAPTCHA_KEY": "6LccbdEsAAAAADxwH4nd0RWPqO3nzZKGja2R64CR",
+		//*/
 	},
 	"secrets": { "required": [
 		"SECRET_CAPTCHA_KEY",
@@ -28,15 +35,23 @@
 	},
 
 	"env": {
-		// If we're running a local dev build, use turnstile test keys.
+		// If we're running a local dev build, use captcha test keys.
 		"development": {
 			"name": "website-cccgainesville-org-dev",
 			"vars": {
+				/* // Turnstile
 				// dummy keys from here: https://developers.cloudflare.com/turnstile/troubleshooting/testing/
 				"PUBLIC_CAPTCHA_NAME": "Turnstile",
 				"PUBLIC_CAPTCHA_KEY": "1x00000000000000000000AA", //always succeeds
 				//"PUBLIC_CAPTCHA_KEY": "2x00000000000000000000AB", //always fails
 				//"PUBLIC_CAPTCHA_KEY": "3x00000000000000000000FF", //forces interactive challenge
+				//*/
+				//* // RecaptchaScore - dummy keys we defined in our cloud project
+				"PUBLIC_CAPTCHA_NAME": "RecaptchaScore",
+				"PUBLIC_CAPTCHA_ENDPOINT": "recaptcha-enterprise-endpoint", //gcloud project id
+				"PUBLIC_CAPTCHA_KEY": "6LcGcNEsAAAAADxi4bF3w7vpNIURwNwDWKtiMfyt", // 0.7 - success
+				//"PUBLIC_CAPTCHA_KEY": "6LcjftEsAAAAADicV50u0BfTiKJ0WeztuwFFXkDM", // 0.1 - failure
+				//*/
 			},
 			"secrets": { "required": [
 				"SECRET_CAPTCHA_KEY",
@@ -51,8 +66,15 @@
 				"zone_name": "cccgainesville.org"
 			},
 			"vars": {
+				/* // Turnstile
 				"PUBLIC_CAPTCHA_NAME": "Turnstile",
 				"PUBLIC_CAPTCHA_KEY": "0x4AAAAAAAc02UX-EFdbhc0N",
+				//*/
+				//* // RecaptchaScore
+				"PUBLIC_CAPTCHA_NAME": "RecaptchaScore",
+				"PUBLIC_CAPTCHA_ENDPOINT": "recaptcha-enterprise-endpoint", //gcloud project id
+				"PUBLIC_CAPTCHA_KEY": "6LdcodEsAAAAAHC6KykkX6QVmf52WICLXAhxJieX",
+				//*/
 			},
 			"secrets": { "required": [
 				"SECRET_CAPTCHA_KEY",

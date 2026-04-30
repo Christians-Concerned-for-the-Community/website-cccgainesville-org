@@ -1,0 +1,67 @@
+---
+/**
+ * Recaptcha integration requires defining four environment variables in your
+ * wrangler.jsonc. The secret one also needs to be defined in a .env for local dev,
+ * and up on the Cloudflare dashboard for deployment.
+ * 
+ * For instructions on how to set this up and get all the keys, see here:
+ * https://docs.cloud.google.com/recaptcha/docs/create-key-website
+ * 
+ *   PUBLIC_CAPTCHA_NAME: RecaptchaScore
+ *   PUBLIC_CAPTCHA_ENDPOINT: [ID of google cloud project that reCAPTCHA key belongs to]
+ *   PUBLIC_CAPTCHA_KEY: [your reCAPTCHA key from fraud defense]
+ *   SECRET_CAPTCHA_KEY: [reCAPTCHA enterprise API key]
+ * 
+ * The required edits to wrangler.jsonc will look like this:
+ *   "vars": {
+ *     "PUBLIC_CAPTCHA_NAME": "RecaptchaScore",
+ *     "PUBLIC_CAPTCHA_ENDPOINT": "my-spiffy-google-project"
+ *     "PUBLIC_CAPTCHA_KEY": "...",
+ *   },
+ *   "secrets": { "required": [
+ *     "SECRET_CAPTCHA_KEY",
+ *   ]},
+ */
+
+interface Props {};
+
+const {} = Astro.props;
+---
+
+{/* Only reason for this div is to let us pass the sitekey into the script. */}
+<div hidden
+  class="g-recaptcha-score"
+  data-sitekey={process.env.PUBLIC_CAPTCHA_KEY || ""}/>
+
+<script>
+{
+  const container = document.querySelector<HTMLElement>(".g-recaptcha-score");
+  const sitekey = container?.dataset.sitekey;
+  if (sitekey) {
+    const script = document.createElement('script');
+    script.src = `https://www.google.com/recaptcha/enterprise.js?render=${sitekey}`;
+    script.async = true;
+    script.defer = true;
+
+    script.onload = () => {
+      // Enable submission button once the script has been loaded.
+      document.querySelectorAll<HTMLButtonElement>(".base-form-submit").forEach((button) => {
+        grecaptcha.enterprise.ready(() => {
+          button.ariaDisabled = "false"
+        });
+      });
+    };
+    
+    // Add the returned token to the form data when a submission occurs.
+    window.ccc_org_base_captchaPreprocess = async (formData: FormData) => {
+      const token = await grecaptcha.enterprise.execute(
+        sitekey,
+        {action: "BASE_SUBMIT"}
+      );
+      formData.set("g-recaptcha-response", token);
+    };
+
+    document.head.appendChild(script);
+  }
+}
+</script>

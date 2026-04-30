@@ -28,6 +28,10 @@ csp.style.add("https://fonts.googleapis.com");
 csp.connect.add("'self'");
 csp.frame.add("https://challenges.cloudflare.com");
 //*/
+//* -- RecaptchaScore --
+csp.connect.add("https://www.google.com/recaptcha/");
+csp.frame.add("https://www.google.com/recaptcha/");
+//*/
 
 
 // https://astro.build/config
