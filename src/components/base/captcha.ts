@@ -31,11 +31,12 @@ try {
 
 if (!captcha.mod.validate) {
     throw new Error(
-`Can't find captcha validator for ${name}.
-Validator should be defined in captcha/${name}.ts like this:
+`Can't find captcha validator for ${captcha.name}.
+Validator should be defined in captcha/${captcha.name}.ts like this:
  "export const validate = (input: Record<string, any>, context: ActionAPIContext) => { ..."`);
 }
 
+export const captchaEveryPage = captcha.name === "RecaptchaScore";
 export const captchaComponent = captcha.component;
 export const captchaPreconnect = captcha.mod.preconnect as string | undefined;
 export const validateCaptcha = captcha.mod.validate as CaptchaValidator;

@@ -28,15 +28,19 @@ interface Props {};
 const {} = Astro.props;
 ---
 
-{/* Only reason for this div is to let us pass the sitekey into the script. */}
-<div hidden
-  class="g-recaptcha-score"
+{/*
+  Only reason for this div is to let us pass the sitekey into the script.
+
+  Because of that, we only need to add the div to the page once.
+*/}
+{ Astro.locals.first("RecaptchaScore") && (
+<div hidden id="base-recaptchascore"
   data-sitekey={process.env.PUBLIC_CAPTCHA_KEY || ""}/>
+)}
 
 <script>
 {
-  const container = document.querySelector<HTMLElement>(".g-recaptcha-score");
-  const sitekey = container?.dataset.sitekey;
+  const sitekey = document.getElementById("base-recaptchascore")?.dataset.sitekey;
   if (sitekey) {
     const script = document.createElement('script');
     script.src = `https://www.google.com/recaptcha/enterprise.js?render=${sitekey}`;
@@ -44,6 +48,20 @@ const {} = Astro.props;
     script.defer = true;
 
     script.onload = () => {
+      /*
+        Run execute once on page load, so that Google has more data about how
+        the user is interacting with our site, which improves anti-bot performance.
+        
+        Including the captcha twice (once at the top of the page, and again inside
+        a form) is fine, it won't hurt anything.
+      */
+      grecaptcha.enterprise.ready(() => {
+        // Don't await this, just let it run in the background. We're only
+        // running this so that Google has more info for future assessments,
+        // we're not using the returned token for an assessment now.
+        grecaptcha.enterprise.execute(sitekey, {action: "BASE_PAGE_LOAD"});
+      })
+
       // Enable submission button once the script has been loaded.
       document.querySelectorAll<HTMLButtonElement>(".base-form-submit").forEach((button) => {
         grecaptcha.enterprise.ready(() => {

@@ -1,7 +1,12 @@
 ---
 import '@/styles/globals.css'
 import type { HTMLAttributes } from 'astro/types'
-import { SiteMeta, captchaPreconnect } from '@/components/base'
+import {
+  SiteMeta,
+  captchaPreconnect,
+  captchaEveryPage,
+  captchaComponent as Captcha,
+} from '@/components/base'
 import Header from '@/components/Header.astro'
 import Footer from '@/components/Footer.astro'
 
@@ -89,7 +94,7 @@ const {
       <link rel="preconnect" href="https://js.captcha-display.com">
       <link rel="preconnect" href="https://static.hotjar.com">
     )}
-    {profile?.includes('captcha') && captchaPreconnect && (
+    {(captchaEveryPage || profile?.includes('captcha')) && captchaPreconnect && (
       <link rel="preconnect" href={captchaPreconnect}>
     )}
 
@@ -136,6 +141,7 @@ const {
   <body class="min-h-dvh flex flex-col overflow-x-clip">
     <Header />
     <main id="main-content" class:list={["grow shrink-0 basis-auto", className]}>
+      {captchaEveryPage && (<Captcha />)}
       <slot />
     </main>
     <Footer class="shrink-0" />

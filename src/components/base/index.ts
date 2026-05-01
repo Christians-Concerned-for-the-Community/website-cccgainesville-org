@@ -13,4 +13,9 @@ export {default as Prose} from './Prose.astro'
 export {default as Spinner} from './Spinner.astro'
 export {default as Form} from './Form.astro'
 export {default as FormField} from './FormField.astro'
-export {validateCaptcha, captchaPreconnect} from './captcha.ts'
+export {
+  validateCaptcha,
+  captchaComponent,
+  captchaPreconnect,
+  captchaEveryPage
+} from './captcha.ts'
