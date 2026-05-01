@@ -4,10 +4,15 @@
  */
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
-	"compatibility_date": "2026-04-24",
+	"compatibility_date": "2026-05-01",
 	"compatibility_flags": ["nodejs_compat"],
 	"name": "website-cccgainesville-org-staging",
 	"main": "@astrojs/cloudflare/entrypoints/server",
+
+	"assets": {
+		// prevent random requests from running workers
+		"not_found_handling": "404-page",
+	},
 
 	"vars": {
 		/* // Turnstile
