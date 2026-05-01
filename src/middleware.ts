@@ -28,6 +28,23 @@ export const onRequest = defineMiddleware(async (context, next) => {
     }
   })();
 
+  /* Returns true if this is the first time this function has been called with
+   * the given name during this page request.
+   *
+   * This is useful if you have a component that needs to do something different
+   * during it's first rendering on the page.
+   */
+  context.locals.first = (() => {
+    const names = new Set<string>();
+    return (name: string) => {
+      if (names.has(name)) {
+        return false;
+      }
+      names.add(name);
+      return true;
+    }
+  })();
+
 
   /** Put in special CSP headers for the giving page, since Give Lively currently
     * includes inline styles in their embedded donation widget. We need to allow
