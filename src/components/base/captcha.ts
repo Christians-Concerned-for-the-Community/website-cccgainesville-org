@@ -1,7 +1,5 @@
-import type { ActionAPIContext } from "astro:actions";
+import type { CaptchaValidator } from "./captcha/captcha-types";
 
-export type CaptchaValidator =
-  (input: Record<string, any>, context: ActionAPIContext) => Promise<void>;
 
 export type CaptchaCsp = {
   frame?: string[],

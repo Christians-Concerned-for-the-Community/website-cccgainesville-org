@@ -1,6 +1,5 @@
 import type { ActionAPIContext } from "astro:actions";
 import { getSecret } from "astro:env/server";
-import { keyof } from "astro:schema";
 
 // Arguments needed to create an assessment. Also returned as part of result.
 // We're only specifying a subset of the fields here.
@@ -40,11 +39,11 @@ type Assessment = AssessmentEvent & {
 // tokens (score-based, checkbox, and policy).
 // 1.0 -> definitely a human
 // 0.0 -> definitely a bot
-export const recaptchaValidate = async(
+export const recaptchaValidate = async (
   input: Record<string, any>,
   context: ActionAPIContext,
   successThreshold: 0.1 | 0.2 | 0.3 | 0.4 | 0.5 | 0.6 | 0.7 | 0.8 | 0.9 | 1.0 = 0.5,
-  timeoutMs: number = 10000) => {
+  timeoutMs: number = 10000): Promise<boolean> => {
   
   let success = false;
   const controller = new AbortController();

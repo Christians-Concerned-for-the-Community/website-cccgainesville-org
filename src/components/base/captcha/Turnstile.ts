@@ -2,7 +2,8 @@
  * Contains "preconnect" and "validate" for Cloudflare Turnstile.
  */
 
-import { ActionError, type ActionAPIContext } from "astro:actions";
+import { ActionError } from "astro:actions";
+import type { CaptchaValidator } from "./captcha-types";
 import { getSecret } from "astro:env/server";
 import crypto from 'node:crypto';
 
@@ -13,7 +14,7 @@ const turnstileAttempt = async (params:{token: string, secret: string, ip: strin
   const {token, secret, ip, idemKey, timeout=10000} = params;
 
   type TurnstileResp = {
-    "success": boolean,
+    "success"?: boolean,
     "error-codes"?: string[],
     [key: string]: any, // allow any extra fields
   };
@@ -45,7 +46,7 @@ const turnstileAttempt = async (params:{token: string, secret: string, ip: strin
       res.responseOk = true;
 
       const result = (await response.json()) as TurnstileResp;
-      res.success = result.success;
+      res.success = Boolean(result.success);
       if (result['error-codes']) {
         for (const err of result['error-codes']) {
           console.error(`Turnstile: ${err}`);
@@ -67,14 +68,14 @@ const turnstileAttempt = async (params:{token: string, secret: string, ip: strin
 
 
 // Main entry for turnstile validation.
-export const validate = async (input: Record<string, any>, context: ActionAPIContext) => {
+export const validate: CaptchaValidator = async (input, context): Promise<void> => {
   // Default error message shown to user - vague, because we don't want to confuse them
   // with technical details. We'll log the actual error in the console on the backend.
   const err = () => new ActionError({code:"FORBIDDEN", message: "Captcha validation failed, try again later."});
 
   const secret = getSecret("SECRET_CAPTCHA_KEY");
   if (!secret) {
-    console.error("Turnstile: secret missing");
+    console.error("Turnstile: secret missing, forgot to set SECRET_CAPTCHA_KEY?");
     throw err();
   }
 
@@ -110,6 +111,6 @@ export const validate = async (input: Record<string, any>, context: ActionAPICon
   }
 
   if (!res.success) {
-    throw err();
+    throw new ActionError({code:"FORBIDDEN", message: "Captcha validation failed, try again later."});
   }
 }
