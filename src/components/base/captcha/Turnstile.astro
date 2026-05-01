@@ -54,6 +54,13 @@ const {
 
   document.head.appendChild(script);
 
+  window.ccc_org_base_captchaPreprocess = (formData: FormData) => {
+    return formData.get("cf-turnstile-response")?
+      ""
+      :
+      "Click the checkbox to verify that you're human.";
+  }
+
   window.ccc_org_base_captchaRefresh = () => {window.turnstile.reset()};
 }
 </script>

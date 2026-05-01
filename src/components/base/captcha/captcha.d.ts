@@ -4,6 +4,11 @@
  */
 export {}; //needed so that this is treated as a module
 
+type MaybePromise<T> = T | Promise<T>;
+
+type CaptchaPreprocessResult =
+  string; // error message to display, or empty string if we're OK to proceed
+
 declare global {
   interface Window {
     // Cloudflare Turnstile API.
@@ -18,16 +23,14 @@ declare global {
 
     // Allow captchas to add to the form data before it's sent to the backend.
     //
-    // We can't just use the formdata event for this, because captcha's might need
-    // to await an async operation during preprocessing, and there's no way to
-    // make the main form submit handler wait for an async formdata callback before
-    // proceeding.
-    ccc_org_base_captchaPreprocess?: (formData: FormData) => (void | Promise<void>);
+    // This also allows captchas to cancel the form submission if they're not
+    // ready.
+    ccc_org_base_captchaPreprocess?: (formData: FormData) => MaybePromise<CaptchaPreprocessResult>;
 
     // Recalculate the captcha token, if it's not already being recalculated on
     // every form submission. This lets us refresh only the captcha, instead of
     // having to refresh the whole page.
-    ccc_org_base_captchaRefresh?: () => void;
+    ccc_org_base_captchaRefresh?: () => MaybePromise<void>;
   }
 
   // Google reCAPTCHA Enterprise API:

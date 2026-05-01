@@ -132,28 +132,13 @@ const actionUrl = getActionPath(actions[handlerAction]);
 
 <script>
 { 
-  const addErr = (errs: HTMLLIElement[], text?: string, id?: string ) => {
-    if (text) {
-      const li = document.createElement('li');
-      if (id) {
-        const a = document.createElement('a');
-        a.href = '#' + id;
-        a.textContent = text;
-        li.appendChild(a);
-      } else {
-        li.textContent = text;
-      }
-      errs.push(li);
-    }
-  };
-
   document.querySelectorAll<HTMLFormElement>(".base-form").forEach((form) => {
     const msgContainer = form.querySelector<HTMLElement>('section');
     const errList = msgContainer?.querySelector<HTMLUListElement>('ul');
     const fields = form.querySelectorAll<HTMLElement>('.base-form-field');
     const submitButton = form.querySelector<HTMLButtonElement>('.base-form-submit');
 
-    // Pre-fill any single field values passed via URL query params.
+    // On page load, pre-fill any single field values passed via URL query params.
     // TODO: add support for single-select FormPickField, once we write that component.
     const params = new URLSearchParams(window.location.search);
     for (const el of fields) {
@@ -180,6 +165,22 @@ const actionUrl = getActionPath(actions[handlerAction]);
         return;
       }
 
+      const errs: HTMLLIElement[] = [];
+      const addErr = (text?: string, id?: string ) => {
+        if (text) {
+          const li = document.createElement('li');
+          if (id) {
+            const a = document.createElement('a');
+            a.href = '#' + id;
+            a.textContent = text;
+            li.appendChild(a);
+          } else {
+            li.textContent = text;
+          }
+          errs.push(li);
+        }
+      };
+
       submitButton.ariaDisabled = "true";
       submitButton.focus(); //refocus on button to announce changed button text in screen reader
 
@@ -191,32 +192,39 @@ const actionUrl = getActionPath(actions[handlerAction]);
         }
       }
 
-      await window.ccc_org_base_captchaPreprocess?.(formData);
+      // Run captcha-specific preprocessing, if present.
+      // If it returns an error, add it to error messages.
+      addErr(
+        await window.ccc_org_base_captchaPreprocess?.(formData)
+      );
 
-      // Send form data to handler, then wait for results.
-      const response = await fetch(form.dataset.action, {
-        method: 'POST',
-        body: formData,
-      });
-      // don't call response.json() directly, will throw error if body is empty
-      const text = await response.text();
-      const result = text? JSON.parse(text) : {};
-      
-      const errs: HTMLLIElement[] = [];
-      for (const el of fields) {
-        const errDest = el.dataset.err? document.getElementById(el.dataset.err) : undefined;
-        const errText = el.dataset.name? (result.fields?.[el.dataset.name]?.join(", ")) : undefined;
-        addErr(errs, errText);
-        el.ariaInvalid = errText? "true" : "false";
-        errDest?.replaceChildren(errText);
-      };
+      // If the preprocess step didn't encounter any problems, run the form
+      // handler and display the results.
+      if (errs.length == 0) {
+        // Send form data to handler, then wait for results.
+        const response = await fetch(form.dataset.action, {
+          method: 'POST',
+          body: formData,
+        });
+        // don't call response.json() directly, will throw error if body is empty
+        const text = await response.text();
+        const result = text? JSON.parse(text) : {};
+        
+        for (const el of fields) {
+          const errDest = el.dataset.err? document.getElementById(el.dataset.err) : undefined;
+          const errText = el.dataset.name? (result.fields?.[el.dataset.name]?.join(", ")) : undefined;
+          addErr(errText);
+          el.ariaInvalid = errText? "true" : "false";
+          errDest?.replaceChildren(errText);
+        };
 
-      if (!response.ok && errs.length == 0) {
-        addErr(errs, result.message?
-          result.message 
-          :
-          "Network error, please try again later"
-        );
+        if (!response.ok && errs.length == 0) {
+          addErr(result.message?
+            result.message 
+            :
+            "Network error, please try again later"
+          );
+        }
       }
 
       if (errs.length == 0) {

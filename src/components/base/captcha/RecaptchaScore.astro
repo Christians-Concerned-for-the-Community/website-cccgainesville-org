@@ -59,6 +59,7 @@ const {} = Astro.props;
         {action: "BASE_SUBMIT"}
       );
       formData.set("g-recaptcha-response", token);
+      return ""; //always OK to proceed, since we're generating a fresh token during the submit
     };
 
     document.head.appendChild(script);
