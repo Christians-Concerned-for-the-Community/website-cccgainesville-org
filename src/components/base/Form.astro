@@ -213,7 +213,7 @@ const actionUrl = getActionPath(actions[handlerAction]);
         for (const el of fields) {
           const errDest = el.dataset.err? document.getElementById(el.dataset.err) : undefined;
           const errText = el.dataset.name? (result.fields?.[el.dataset.name]?.join(", ")) : undefined;
-          addErr(errText);
+          addErr(errText, el.id);
           el.ariaInvalid = errText? "true" : "false";
           errDest?.replaceChildren(errText);
         };
