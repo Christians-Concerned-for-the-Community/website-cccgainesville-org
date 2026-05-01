@@ -14,12 +14,14 @@
  *   This will accept a number of different US phone number formats, it's fairly
  *   lenient. Anything it accepts will be normalized to 555-555-5555, however.
  * 
- *   Examples of accepted inputs:
+ *   Examples of accepted inputs (not exhaustive):
  *    352-555-0132     <-- other variants will all be normalized to this one.
  *    (352) 555-0132
  *    352.555.0132
  *    352 555 0132
  *    3525550132
+ *    tel:3525550132 <-- format seen when copy/pasting telephone number links.
+ *    +13525550132
  *    tel+13525550132  <-- format seen when copy/pasting telephone number links.
  */
 import { z } from 'astro/zod';

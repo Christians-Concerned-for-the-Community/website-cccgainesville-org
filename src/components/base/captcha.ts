@@ -7,7 +7,7 @@ export type CaptchaCsp = {
   font?: string[],
 };
 
-const DEFAULT_CAPTCHA = "Turnstile";
+const DEFAULT_CAPTCHA = "RecaptchaScore";
 
 const captcha: Record<string, any> = {};
 
