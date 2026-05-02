@@ -6,6 +6,11 @@ import { twMerge } from 'tailwind-merge';
 import { Button, Icon, Spinner } from '.';
 import { captchaComponent as Captcha } from './captcha.ts';
 
+//Allow pages that use Form to connect to our own endpoints, to handle the
+//form submissions.
+//TODO: uncomment when Astro accepts my bugfix PR.
+//Astro.csp?.insertDirective("connect-src 'self'");
+
 type Props = HTMLAttributes<"form"> & {
   /**
    * Properties to style the submit button.

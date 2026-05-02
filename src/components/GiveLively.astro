@@ -3,6 +3,18 @@ import { twMerge } from 'tailwind-merge'
 import { type HTMLAttributes } from "astro/types";
 import { Button, Icon, Spinner } from '@/components/base';
 
+// Add the required CSP directives for Give Lively, but only on pages where
+// the donation widget is actually present.
+//TODO: uncomment when Astro accepts my bugfix PR.
+/*
+Astro.csp?.insertDirective("connect-src https://secure.givelively.org");
+Astro.csp?.insertDirective("frame-src https://secure.givelively.org");
+Astro.csp?.insertDirective("font-src https://fonts.gstatic.com");
+Astro.csp?.insertStyleResource("https://secure.givelively.org");
+Astro.csp?.insertStyleResource("https://fonts.googleapis.com");
+*/
+
+
 export interface Props extends HTMLAttributes<"div"> {
   labelId: string,
 };

@@ -23,6 +23,12 @@
  *   ]},
  */
 
+// Add the required CSP directives for this captcha, but only on the pages where
+// this captcha is actually being used.
+//TODO: uncomment when Astro accepts my bugfix PR.
+/*Astro.csp?.insertDirective("connect-src https://www.google.com/recaptcha/");
+Astro.csp?.insertDirective("frame-src https://www.google.com/recaptcha/");*/
+
 interface Props {};
 
 const {} = Astro.props;
