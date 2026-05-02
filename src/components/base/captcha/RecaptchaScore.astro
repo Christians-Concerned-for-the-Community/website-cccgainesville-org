@@ -44,8 +44,6 @@ const {} = Astro.props;
   if (sitekey) {
     const script = document.createElement('script');
     script.src = `https://www.google.com/recaptcha/enterprise.js?render=${sitekey}`;
-    script.async = true;
-    script.defer = true;
 
     script.onload = () => {
       /*
