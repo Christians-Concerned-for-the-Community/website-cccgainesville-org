@@ -12,13 +12,17 @@ export const preconnect = "https://cdn.jsdelivr.net";
 
 
 type Response = {
-  "success": boolean,
-  "data": {
-    "event_id": string, // Unique identifier for the siteverify request.
-    "challenge": {
-        "timestamp": string, // ISO 8601 timestamp when the captcha challenge was completed.
-        "origin"?: string // Origin where the challenge happened. This can be empty if unknown.
+  success: boolean,
+  data?: {
+    event_id: string, // Unique identifier for the siteverify request.
+    challenge: {
+        timestamp: string, // ISO 8601 timestamp when the captcha challenge was completed.
+        origin?: string // Origin where the challenge happened. This can be empty if unknown.
     },
+  },
+  error?: {
+    error_code: string,
+    detail?: any,
   }
 }
 
@@ -50,27 +54,28 @@ export const validate: CaptchaValidator = async (input, context): Promise<void> 
     // ------------------------------
     // Construct the request payload.
     const request = {
-      token: token,
-      siteKey: sitekey,
+      response: token,
+      sitekey: sitekey,
     };
 
     // ----------------------------------
     // Request an assessment from FriendlyCaptcha's backend.
-    const response = await fetch(
-      `https://global.frcapi.com/api/v2/captcha/siteverify`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-API-Key": secret,
-        },
-        body: JSON.stringify(request),
-        signal: controller.signal,
+    const response = await fetch("https://global.frcapi.com/api/v2/captcha/siteverify", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-API-Key": secret,
       },
-    );
+      body: JSON.stringify(request),
+      signal: controller.signal,
+    });
 
     if (!response.ok) {
-      throw new Error(`bad response from endpoint: [${response.status}] - ${response.statusText}`);
+      let err;
+      try {
+        err = ((await response.json()) as Partial<Response>)?.error?.error_code;
+      } catch(e){};
+      throw new Error(`bad response from endpoint: [${response.status}] - ${response.statusText}, err code: ${err}`);
     }
     
     const res: Partial<Response> = await response.json();
