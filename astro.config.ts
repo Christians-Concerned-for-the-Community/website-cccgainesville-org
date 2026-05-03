@@ -32,6 +32,9 @@ csp.frame.add("https://challenges.cloudflare.com");
 csp.connect.add("https://www.google.com/recaptcha/");
 csp.frame.add("https://www.google.com/recaptcha/");
 //*/
+//* -- FriendlyCaptcha --
+csp.frame.add("*.frcapi.com");
+//*/
 
 
 // https://astro.build/config

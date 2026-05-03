@@ -1,24 +1,21 @@
 ---
 /**
- * Turnstile integration requires defining three environment variables in your
+ * This captcha requires defining three environment variables in your
  * wrangler.jsonc. The secret one also needs to be defined in a .env for local dev,
  * and up on the Cloudflare dashboard for deployment.
  * 
- *   PUBLIC_CAPTCHA_NAME: Turnstile
+ *   PUBLIC_CAPTCHA_NAME: FriendlyCaptcha
  *   PUBLIC_CAPTCHA_KEY: [your turnstile widget's site key]
  *   SECRET_CAPTCHA_KEY: [your turnstile widget's secret]
  * 
  * The required edits to wrangler.jsonc will look like this:
  *   "vars": {
- *     "PUBLIC_CAPTCHA_NAME": "Turnstile",
+ *     "PUBLIC_CAPTCHA_NAME": "FriendlyCaptcha",
  *     "PUBLIC_CAPTCHA_KEY": "...",
  *   },
  *   "secrets": { "required": [
  *     "SECRET_CAPTCHA_KEY",
  *   ]},
- * 
- * For testing different scenarios, you can sub in the dummy test keys listed
- * here: https://developers.cloudflare.com/turnstile/troubleshooting/testing/
  */
 
 import type { HTMLAttributes } from "astro/types";
@@ -26,8 +23,7 @@ import type { HTMLAttributes } from "astro/types";
 // Add the required CSP directives for this captcha, but only on the pages where
 // this captcha is actually being used.
 //TODO: uncomment when Astro accepts my bugfix PR.
-/*Astro.csp?.insertDirective("connect-src 'self'");
-Astro.csp?.insertDirective("frame-src https://challenges.cloudflare.com");*/
+//Astro.csp?.insertDirective("frame-src *.frcapi.com");
 
 interface Props extends HTMLAttributes<"div"> {
   class?: string,
@@ -37,10 +33,14 @@ const {
   class: className,
   ...rest
 } = Astro.props;
+
+const captchaId = Astro.locals.id("form-captcha");
 ---
 
-<div class:list={["cf-turnstile", className]}
+<div class:list={["frc-captcha", className]} id={captchaId}
   data-sitekey={process.env.PUBLIC_CAPTCHA_KEY || ""}
+  data-start="auto"
+  data-theme="auto"
   {...rest}
 />
 
@@ -48,29 +48,44 @@ const {
 import type { CaptchaPreprocessResult } from "./captcha-types";
 {
   const script = document.createElement('script');
-  script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js";
+  script.type = "module";
+  script.src = "https://cdn.jsdelivr.net/npm/@friendlycaptcha/sdk@0.2.0/site.min.js";
 
-  script.onload = () => {
+  script.onload = async () => {
     // Enable submission button once the script has been loaded.
     document.querySelectorAll<HTMLButtonElement>(".base-form-submit").forEach((button) => {
       button.ariaDisabled = "false";
     });
+
+    // Create a reset function that uses FriendlyCaptcha's SDK.
+    window.ccc_org_base_captchaRefresh = () => {
+      for (const widget of window.frcaptcha.getAllWidgets()) {
+        widget.reset();
+      }
+    };
   };
 
   document.head.appendChild(script);
 
   window.ccc_org_base_captchaPreprocess = (form: HTMLFormElement, formData: FormData) => {
-    const val = formData.get("cf-turnstile-response");
+    
+    const val = formData.get("frc-captcha-response") as string;
     const ret: CaptchaPreprocessResult = {
       err: ""
     };
-    if (!val) {
-      ret.err = "Click the checkbox to verify that you're human.";
-      ret.id = form.querySelector(".cf-turnstile")?.id;
+    // When the captcha hasn't been completed, it will have a state string instead
+    // of a token, starting with a period. Response tokens do not start with a period.
+    if (!val || val[0] === '.') {
+      ret.id = form.querySelector('.frc-captcha')?.id;
+      if (val === ".ACTIVATED") {
+        ret.err = "Click the checkbox to verify that you're human.";
+      } else if (val === ".ERROR") {
+        ret.err = "Error verifying that you're human. May need to disable your ad-blocker.";
+      } else {
+        ret.err = "Still working on verifying that you're human - wait a moment, then try again.";
+      }
     }
     return ret;
   }
-
-  window.ccc_org_base_captchaRefresh = () => {window.turnstile.reset()};
 }
 </script>

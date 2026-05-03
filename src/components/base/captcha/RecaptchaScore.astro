@@ -75,13 +75,16 @@ const {} = Astro.props;
     };
     
     // Add the returned token to the form data when a submission occurs.
-    window.ccc_org_base_captchaPreprocess = async (formData: FormData) => {
+    window.ccc_org_base_captchaPreprocess = async (_: HTMLFormElement, formData: FormData) => {
       const token = await grecaptcha.enterprise.execute(
         sitekey,
         {action: "BASE_SUBMIT"}
       );
       formData.set("g-recaptcha-response", token);
-      return ""; //always OK to proceed, since we're generating a fresh token during the submit
+      //always OK to proceed, since we're generating a fresh token during the submit
+      return {
+        err: ""
+      }
     };
 
     document.head.appendChild(script);

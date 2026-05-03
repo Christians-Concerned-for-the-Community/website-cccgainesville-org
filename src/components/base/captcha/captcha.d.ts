@@ -4,10 +4,13 @@
  */
 export {}; //needed so that this is treated as a module
 
+import type { CaptchaPreprocessResult } from "./captcha-types.ts";
+
 type MaybePromise<T> = T | Promise<T>;
 
-type CaptchaPreprocessResult =
-  string; // error message to display, or empty string if we're OK to proceed
+type FriendlyCaptchaWidget = {
+  reset: () => void;
+}
 
 declare global {
   interface Window {
@@ -18,6 +21,12 @@ declare global {
     };
 
 
+    // FriendlyCaptcha SDK:
+    // https://developer.friendlycaptcha.com/docs/v2/sdk/reference/sdk
+    frcaptcha: {
+      getAllWidgets: () => FriendlyCaptchaWidget[];
+    }
+
     // Function hooks that will be called by our form handler, if present.
     // Individual captcha implementations can define these if needed.
 
@@ -25,7 +34,8 @@ declare global {
     //
     // This also allows captchas to cancel the form submission if they're not
     // ready.
-    ccc_org_base_captchaPreprocess?: (formData: FormData) => MaybePromise<CaptchaPreprocessResult>;
+    ccc_org_base_captchaPreprocess?: (form: HTMLFormElement, formData: FormData)
+      => MaybePromise<CaptchaPreprocessResult>;
 
     // Recalculate the captcha token, if it's not already being recalculated on
     // every form submission. This lets us refresh only the captcha, instead of

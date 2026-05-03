@@ -199,9 +199,8 @@ const actionUrl = getActionPath(actions[handlerAction]);
 
       // Run captcha-specific preprocessing, if present.
       // If it returns an error, add it to error messages.
-      addErr(
-        await window.ccc_org_base_captchaPreprocess?.(formData)
-      );
+      const res = await window.ccc_org_base_captchaPreprocess?.(form, formData);
+      addErr(res?.err, res?.id);
 
       // If the preprocess step didn't encounter any problems, run the form
       // handler and display the results.
