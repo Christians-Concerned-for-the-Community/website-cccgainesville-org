@@ -10,6 +10,7 @@ type MaybePromise<T> = T | Promise<T>;
 
 type FriendlyCaptchaWidget = {
   reset: () => void;
+  start: () => void;
 }
 
 declare global {

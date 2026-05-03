@@ -39,7 +39,6 @@ const captchaId = Astro.locals.id("form-captcha");
 
 <div class:list={["frc-captcha", className]} id={captchaId}
   data-sitekey={process.env.PUBLIC_CAPTCHA_KEY || ""}
-  data-start="auto"
   data-theme="auto"
   {...rest}
 />
@@ -61,6 +60,7 @@ import type { CaptchaPreprocessResult } from "./captcha-types";
     window.ccc_org_base_captchaRefresh = () => {
       for (const widget of window.frcaptcha.getAllWidgets()) {
         widget.reset();
+        widget.start();
       }
     };
   };
