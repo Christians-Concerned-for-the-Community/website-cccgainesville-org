@@ -17,5 +17,6 @@ export {
   validateCaptcha,
   captchaComponent,
   captchaPreconnect,
+  captchaAttribution,
   captchaEveryPage
 } from './captcha.ts'

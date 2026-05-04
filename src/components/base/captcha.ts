@@ -39,4 +39,5 @@ Validator should be defined in captcha/${captcha.name}.ts like this:
 export const captchaEveryPage = captcha.name === "RecaptchaScore";
 export const captchaComponent = captcha.component;
 export const captchaPreconnect = captcha.mod.preconnect as string | undefined;
+export const captchaAttribution = captcha.mod.attribution as string | undefined;
 export const validateCaptcha = captcha.mod.validate as CaptchaValidator;

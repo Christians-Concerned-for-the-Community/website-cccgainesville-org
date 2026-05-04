@@ -4,7 +4,11 @@ import {actions, getActionPath} from "astro:actions";
 import { twMerge } from 'tailwind-merge';
 
 import { Button, Icon, Spinner } from '.';
-import { captchaComponent as Captcha } from './captcha.ts';
+import {
+  captchaComponent as Captcha,
+  captchaAttribution,
+  captchaEveryPage
+} from './captcha.ts';
 
 //Allow pages that use Form to connect to our own endpoints, to handle the
 //form submissions.
@@ -133,6 +137,10 @@ const actionUrl = getActionPath(actions[handlerAction]);
       <Spinner class="size-[1lh] ms-[1em] inline"/>
     </Fragment>
   </Button>
+
+  { captchaAttribution && !captchaEveryPage && (
+    <div class="font-light text-current/90 text-[90%]">{captchaAttribution}</div>
+  )}
 </form>
 
 <script>

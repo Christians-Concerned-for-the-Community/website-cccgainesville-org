@@ -4,6 +4,7 @@ import type { HTMLAttributes } from 'astro/types'
 import {
   SiteMeta,
   captchaPreconnect,
+  captchaAttribution,
   captchaEveryPage,
   captchaComponent as Captcha,
 } from '@/components/base'
@@ -144,6 +145,12 @@ const {
       {captchaEveryPage && (<Captcha />)}
       <slot />
     </main>
-    <Footer class="shrink-0" />
+    <Footer class="shrink-0">
+      {captchaEveryPage && captchaAttribution && (
+      <section class="text-sm mt-md text-current/85 max-w-(--content-max) w-full text-center">
+        {captchaAttribution}
+      </section>
+      )}
+    </Footer>
   </body>
 </html>

@@ -12,7 +12,7 @@ const currentYear = new Date().getFullYear();
 const navIcons = socials as NavIcon[];
 ---
 
-<footer id="footer" class="flex justify-center text-md py-md border-t border-muted not-dark:bg-gray-100">
+<footer id="footer" class="flex-col items-center text-md py-md border-t border-muted not-dark:bg-gray-100">
   <section class:list={[
     "flex max-w-(--content-max) w-full items-center justify-center sm:flex-wrap-reverse sm:justify-around",
     "px-md gap-x-[3ch] gap-y-[0.8em]"
@@ -28,4 +28,5 @@ const navIcons = socials as NavIcon[];
       <DarkModeToggle iconOff="tabler:sun" iconOn="tabler:moon"/>
     </div>
   </section>
+  <slot />
 </footer>

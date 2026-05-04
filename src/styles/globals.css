@@ -85,6 +85,11 @@
   @variant dark {
     color-scheme: dark;
   }
+
+  /*
+    Hide the google recaptcha badge, if present.
+   */
+  .grecaptcha-badge { visibility: hidden; }
 }
 
 @layer base {
