@@ -12,6 +12,7 @@
 	"assets": {
 		// prevent random requests from running workers
 		"not_found_handling": "404-page",
+		"run_worker_first": ["/_actions/*"], // only execute workers for Astro Actions
 	},
 
 	"vars": {
