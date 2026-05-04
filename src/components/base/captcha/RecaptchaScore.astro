@@ -46,7 +46,8 @@ const {} = Astro.props;
 
 <script>
 {
-  const sitekey = document.getElementById("base-recaptchascore")?.dataset.sitekey;
+  const captcha = document.getElementById("base-recaptchascore");
+  const sitekey = captcha?.dataset.sitekey;
   if (sitekey) {
     const script = document.createElement('script');
     script.src = `https://www.google.com/recaptcha/enterprise.js?render=${sitekey}`;
@@ -87,7 +88,18 @@ const {} = Astro.props;
       }
     };
 
-    document.head.appendChild(script);
+    if (captcha.closest("form")) {
+      // If the first captcha was inside a form, load the script immediately.
+      document.head.appendChild(script);
+    } else {
+      // Otherwise, wait until after the page has completely loaded. Recaptcha
+      // is pretty heavy, it will affect our loading times.
+      window.addEventListener('load', () => {
+        setTimeout(() => {
+          document.head.appendChild(script);
+        }, 100);
+      });
+    }
   }
 }
 </script>
