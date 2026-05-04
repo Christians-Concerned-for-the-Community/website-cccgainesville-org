@@ -142,10 +142,10 @@ const {
   <body class="min-h-dvh flex flex-col overflow-x-clip">
     <Header />
     <main id="main-content" class:list={["grow shrink-0 basis-auto", className]}>
-      {captchaEveryPage && (<Captcha />)}
       <slot />
     </main>
     <Footer class="shrink-0">
+      {captchaEveryPage && (<Captcha />)}
       {captchaEveryPage && captchaAttribution && (
       <section class="text-sm mt-md text-current/85 max-w-(--content-max) w-full text-center">
         {captchaAttribution}
