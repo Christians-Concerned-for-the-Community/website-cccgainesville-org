@@ -1,7 +1,7 @@
 ---
 import type { ComponentProps } from 'astro/types';
 import PageLayout from '@/layouts/PageLayout.astro'
-import { Prose } from "@/components/base";
+import Prose from "@/components/base/Prose.astro";
 
 export interface Props
   extends Omit<ComponentProps<typeof PageLayout>, "title" | "subtitle"> {
