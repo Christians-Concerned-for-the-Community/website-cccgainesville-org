@@ -88,18 +88,16 @@ const {} = Astro.props;
       }
     };
 
-    if (captcha.closest("form")) {
-      // If the first captcha was inside a form, load the script immediately.
-      document.head.appendChild(script);
-    } else {
-      // Otherwise, wait until after the page has completely loaded. Recaptcha
-      // is pretty heavy, it will affect our loading times.
-      window.addEventListener('load', () => {
-        setTimeout(() => {
-          document.head.appendChild(script);
-        }, 100);
-      });
-    }
+    /*
+      Wait until after the page has completely loaded to run recaptcha.
+      It's pretty heavy, it will affect our loading times for other page elements
+      otherwise.
+     */
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        document.head.appendChild(script);
+      }, 100);
+    });
   }
 }
 </script>
