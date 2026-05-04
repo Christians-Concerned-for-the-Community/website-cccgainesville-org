@@ -1,5 +1,5 @@
 ---
-import { Form, FormField, validateCaptcha } from '@/components/base';
+import { Form, FormInput, validateCaptcha } from '@/components/base';
 import { defineAction } from 'astro:actions';
 import { z } from 'astro/zod';
 import { zc, zclimits } from "./zod-common.ts"
@@ -31,10 +31,10 @@ export const handleForm = defineAction({
 ---
 
 <Form handlerAction="handleContactForm">
-  <FormField name="name"    label="Name"    type="full-name" required maxlength={zclimits.full_name} />
-  <FormField name="email"   label="Email"   type="email"     required maxlength={zclimits.email} />
-  <FormField name="phone"   label="Phone"   type="tel"       required maxlength={zclimits.us_phone} />
-  <FormField name="message" label="Message" type="textarea"  required maxlength={MAX_MESSAGE} />
+  <FormInput name="name"    label="Name"    type="full-name" required maxlength={zclimits.full_name} />
+  <FormInput name="email"   label="Email"   type="email"     required maxlength={zclimits.email} />
+  <FormInput name="phone"   label="Phone"   type="tel"       required maxlength={zclimits.us_phone} />
+  <FormInput name="message" label="Message" type="textarea"  required maxlength={MAX_MESSAGE} />
 
   <div slot="success">
     Thanks for reaching out! We'll get back to you shortly.

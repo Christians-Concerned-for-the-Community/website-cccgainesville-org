@@ -1,6 +1,12 @@
 ---
 /**
- * TODO: implement single checkbox variant in here.
+ * FormInput.astro
+ * 
+ * A form field that accepts strings of typed-in text from the user.
+ * 
+ * Includes multi-line text areas as well as one-line fields like email.
+ * 
+ * TODO: implement separate component (FormToggle) for individual checkbox/toggle boxes.
  * TODO: implement separate component (FormPickField) for selects, checkbox groups,
  *       and radio groups.
  */
@@ -25,19 +31,20 @@ type Props = Omit<
 
   /**
    * What kind of data we're collecting.
-   *  - text: one line of generic text
+   *  - text: generic text (one line)
    *  - textarea: multiple lines of text
-   *  - checkbox: one checkbox on its own
-   *  - name: full name (one line)
-   *  - email: email address (one line)
-   *  - tel: phone number (one line)
+   *  - full-name: full name
+   *  - first-name: given name
+   *  - last-name: family name
+   *  - email: email address
+   *  - tel: phone number
    * 
    * Textareas default to max length of 1500 chars; all others
    * default to maxlength of 255 chars.
    * 
    * @default "text"
    */
-  type: "text" | "textarea" | "checkbox"
+  type: "text" | "textarea"
       | "full-name" | "first-name" | "last-name"
       | "email" | "tel",
 

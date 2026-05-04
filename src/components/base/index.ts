@@ -12,7 +12,7 @@ export {default as Modal} from './Modal.astro'
 export {default as Prose} from './Prose.astro'
 export {default as Spinner} from './Spinner.astro'
 export {default as Form} from './Form.astro'
-export {default as FormField} from './FormField.astro'
+export {default as FormInput} from './FormInput.astro'
 export {
   validateCaptcha,
   captchaComponent,
