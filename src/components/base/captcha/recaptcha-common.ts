@@ -96,8 +96,21 @@ export const recaptchaValidate = async (
     }
     
     const ip =
+      // Cloudflare
       hdrs.get("CF-Connecting-IP") ||
-      hdrs.get("X-Forwarded-For");
+      // AWS Cloudfront
+      hdrs.get("CloudFront-Viewer-Address")?.replace(/:(\d+)$/,"") ||
+      // Azure Front Door
+      hdrs.get("X-Azure-ClientIP") ||
+      // Fastly
+      hdrs.get("Fastly-Client-IP") ||
+      // Bunny.net, Nginx
+      hdrs.get("X-Real-IP") ||
+      // Generic
+      hdrs.get("true-client-ip") ||
+      hdrs.get("X-Forwarded-For") ||
+      // The IP that directly made the request (if not proxied)
+      context.clientAddress;
     if (ip) {
       request.event.userIpAddress = ip;
     }
