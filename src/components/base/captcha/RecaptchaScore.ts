@@ -3,13 +3,16 @@
  */
 
 import { ActionError } from "astro:actions";
-import type { CaptchaValidator } from "./captcha-types";
+import type { CaptchaValidator, Preconnect } from "./captcha-types";
 import { recaptchaValidate } from "./recaptcha-common";
 
 const THRESHOLD = 0.5;
 const TIMEOUT_MS = 10000;
 
-export const preconnect = "https://www.google.com";
+export const preconnects: Preconnect[] = [
+  {href: "https://www.google.com"},
+  {href: "https://www.gstatic.com", crossorigin: ""},
+];
 
 export const attribution = "This site is protected by reCAPTCHA.";
 

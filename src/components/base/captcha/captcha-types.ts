@@ -7,3 +7,8 @@ export type CaptchaPreprocessResult = {
   err: string; // error message to display, or empty string if we're OK to proceed
   id?: string; // id of element to use in error link (may be null, if it's an invisible captcha)
 }
+
+export type Preconnect = {
+  href: string,
+  crossorigin?: "anonymous" | "use-credentials" | "",
+}

@@ -3,11 +3,11 @@
  */
 
 import { ActionError } from "astro:actions";
-import type { CaptchaValidator } from "./captcha-types";
+import type { CaptchaValidator, Preconnect } from "./captcha-types";
 import { getSecret } from "astro:env/server";
 import crypto from 'node:crypto';
 
-export const preconnect = "https://challenges.cloudflare.com";
+export const preconnects: Preconnect[] = [{href:"https://challenges.cloudflare.com"}];
 
 // Inner helper for turnstile validation.
 const turnstileAttempt = async (params:{token: string, secret: string, ip: string, idemKey: string, timeout?: number}) => {

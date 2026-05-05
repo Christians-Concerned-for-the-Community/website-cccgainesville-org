@@ -4,11 +4,11 @@
 
 import { ActionError } from "astro:actions";
 import { getSecret } from "astro:env/server";
-import type { CaptchaValidator } from "./captcha-types";
+import type { CaptchaValidator, Preconnect } from "./captcha-types";
 
 const TIMEOUT_MS = 10000;
 
-export const preconnect = "https://cdn.jsdelivr.net";
+export const preconnects: Preconnect[] = [{href:"https://cdn.jsdelivr.net"}];
 
 
 type Response = {

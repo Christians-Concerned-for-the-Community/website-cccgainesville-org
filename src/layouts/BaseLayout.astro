@@ -3,7 +3,7 @@ import '@/styles/globals.css'
 import type { HTMLAttributes } from 'astro/types'
 import {
   SiteMeta,
-  captchaPreconnect,
+  captchaPreconnects,
   captchaAttribution,
   captchaEveryPage,
   captchaComponent as Captcha,
@@ -95,9 +95,9 @@ const {
       <link rel="preconnect" href="https://js.captcha-display.com">
       <link rel="preconnect" href="https://static.hotjar.com">
     )}
-    {(captchaEveryPage || profile?.includes('captcha')) && captchaPreconnect && (
-      <link rel="preconnect" href={captchaPreconnect}>
-    )}
+    {(captchaEveryPage || profile?.includes('captcha')) && captchaPreconnects?.map((precon) => (
+      <link rel="preconnect" href={precon.href} crossorigin={precon.crossorigin}>
+    ))}
 
     {/* favicon stuff - see:
         https://evilmartians.com/chronicles/how-to-favicon-in-2021-six-files-that-fit-most-needs */}

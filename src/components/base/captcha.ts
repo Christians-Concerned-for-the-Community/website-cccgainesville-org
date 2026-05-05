@@ -1,11 +1,4 @@
-import type { CaptchaValidator } from "./captcha/captcha-types";
-
-
-export type CaptchaCsp = {
-  frame?: string[],
-  connect?: string[],
-  font?: string[],
-};
+import type { CaptchaValidator, Preconnect } from "./captcha/captcha-types";
 
 const DEFAULT_CAPTCHA = "RecaptchaScore";
 
@@ -38,6 +31,6 @@ Validator should be defined in captcha/${captcha.name}.ts like this:
 
 export const captchaEveryPage = captcha.name === "RecaptchaScore";
 export const captchaComponent = captcha.component;
-export const captchaPreconnect = captcha.mod.preconnect as string | undefined;
+export const captchaPreconnects = captcha.mod.preconnects as Preconnect[] | undefined;
 export const captchaAttribution = captcha.mod.attribution as string | undefined;
 export const validateCaptcha = captcha.mod.validate as CaptchaValidator;

@@ -15,7 +15,7 @@ export {default as FormInput} from './FormInput.astro'
 export {
   validateCaptcha,
   captchaComponent,
-  captchaPreconnect,
+  captchaPreconnects,
   captchaAttribution,
   captchaEveryPage
 } from './captcha.ts'
