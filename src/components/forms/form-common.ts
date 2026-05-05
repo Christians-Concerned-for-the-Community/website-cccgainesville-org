@@ -5,7 +5,7 @@
  * with retries and idempotency.
  * 
  * To use zod from here:
- *   import { z, zc } from "./zod-common.ts"
+ *   import { z, zc } from "./form-common.ts"
  *   ...
  *   z.object {
  *     phone: zc.us_phone,
