@@ -56,6 +56,13 @@ export const zc = {
       return `${digits.slice(0,3)}-${digits.slice(3,6)}-${digits.slice(6,10)}`;
     }),
 
+  checkbox: z
+    .preprocess((val) => val === 'on', z.boolean()),
+
+  checkbox_required: (msg: string) => { return z
+    .preprocess((val) => val === 'on', z.literal(true, msg))
+  },
+
 
   /*
     Improved version of Zod's optional() that works better for forms by correctly

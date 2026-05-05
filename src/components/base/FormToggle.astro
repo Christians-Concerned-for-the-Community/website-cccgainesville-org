@@ -1,20 +1,18 @@
 ---
 /**
- * FormInput.astro
+ * FormToggle.astro
  * 
- * A form field that accepts strings of typed-in text from the user.
+ * A form field for a single, on/off choice.
  * 
- * Includes multi-line text areas as well as one-line fields like email.
- * 
- * TODO: implement separate component (FormPick) for selects, checkbox groups,
- *       and radio groups.
+ * Useful for simple yes/no questions, like "sign up for newsletter?" or
+ * "I agree to these terms".
  */
 import type { HTMLAttributes } from "astro/types";
 import { Icon } from "@/components/base";
 import { twMerge } from "tailwind-merge";
 
 type Props = Omit<
-  HTMLAttributes<"input"|"textarea">,
+  HTMLAttributes<"input">,
   "id" | "type" | "autocomplete" | "aria-describedby"
 > & {
 
@@ -29,25 +27,6 @@ type Props = Omit<
   name: string,
 
   /**
-   * What kind of data we're collecting.
-   *  - text: generic text (one line)
-   *  - textarea: multiple lines of text
-   *  - full-name: full name
-   *  - first-name: given name
-   *  - last-name: family name
-   *  - email: email address
-   *  - tel: phone number
-   * 
-   * Textareas default to max length of 1500 chars; all others
-   * default to maxlength of 255 chars.
-   * 
-   * @default "text"
-   */
-  type: "text" | "textarea"
-      | "full-name" | "first-name" | "last-name"
-      | "email" | "tel",
-
-  /**
    * Is this field required for a succcessful form submission?
    * 
    * @default false
@@ -56,7 +35,7 @@ type Props = Omit<
 
   /**
    * Additional classes to apply to the field label, which also acts
-   * as a layout container for the error message and the field itself.
+   * as a layout container for the field itself.
    */
   class?: string | string[],
 
@@ -74,7 +53,6 @@ type Props = Omit<
 const {
   label,
   name,
-  type = "text",
   required = false,
   class: className,
   fieldClass,
@@ -88,39 +66,6 @@ const {
 // see middleware.ts for the "id" function.
 const inputId = Astro.locals.id(`form-${name}`);
 const errId = Astro.locals.id(`form-${name}-err`);
-
-let autoAttrs: HTMLAttributes<"input"> | HTMLAttributes<"textarea"> = {};
-let autoClass: string | null = null;
-switch (type) {
-  case "textarea":
-    autoAttrs = { autocapitalize: "sentences", autocorrect: "on" };
-    autoClass = "resize-y h-[10.5em]"
-    break;
-  case "full-name":
-    autoAttrs = { type: "text", autocomplete: "name",
-      spellcheck: "false", autocapitalize: "words", autocorrect: "off"
-     };
-    break;
-  case "first-name":
-    autoAttrs = { type: "text", autocomplete: "given-name",
-      spellcheck: "false", autocapitalize: "words", autocorrect: "off"
-     };
-    break;
-  case "last-name":
-    autoAttrs = { type: "text", autocomplete: "family-name",
-      spellcheck: "false", autocapitalize: "words", autocorrect: "off"
-     };
-    break;
-  case "email":
-    autoAttrs = { type: "email", autocomplete: "email" };
-    break;
-  case "tel":
-    autoAttrs = { type: "tel", autocomplete: "tel" };
-    break;
-}
-
-autoAttrs.maxlength = (type==="textarea")? "1500" : "255";
-const Tag = (type === "textarea")? "textarea" : "input";
 
 ---
 
@@ -145,16 +90,26 @@ const Tag = (type === "textarea")? "textarea" : "input";
 */}
 
 <label for={inputId} class={twMerge(
-  "group/field w-full px-xs text-md has-enabled:cursor-pointer",
+  "group/field block w-full px-xs text-md has-enabled:cursor-pointer",
   "has-aria-invalid:border-l-error-accent has-aria-invalid:border-l-3",
   className)}
 >
-  {/* Label text. */}
-  {label}
-  {required && (
-    <span aria-hidden="true" class="font-light text-current/90 text-[90%]"> (required)</span>
-  )}
-
+  <span class="flex justify-start items-center">
+  {/* Checkbox. */}
+    <input type="checkbox" id={inputId} name={name} data-name={name} aria-describedby={errId} data-err={errId} required={required}
+      class={twMerge(
+        "base-form-field mr-2xs",
+        "border rounded-sm aria-invalid:border-2",
+        fieldClass)}
+      {...rest}
+    />
+    {/* Label text. */}
+    {label}
+    {required && (
+      <span aria-hidden="true" class="font-light text-current/90 text-[90%]"> (required)</span>
+    )}
+  </span>
+  
   {/* Error message. Always hide with aria-hidden, so that it's only read via aria-describedby. */}
   <div aria-hidden="true" class={twMerge(
     "hidden group-has-aria-invalid/field:block",
@@ -164,16 +119,4 @@ const Tag = (type === "textarea")? "textarea" : "input";
     <Icon name="tabler:alert-triangle" size="1lh" class="text-error me-[0.25em]"/>
     <span id={errId}></span>
   </div>
-
-  {/* Input field. */}
-  <Tag id={inputId} name={name} data-name={name} aria-describedby={errId} data-err={errId} required={required}
-    class={twMerge(
-      "base-form-field w-full px-[1em] py-[0.35em] rounded-md",
-      "border aria-invalid:border-2",
-      "text-current/90 text-base",
-      autoClass, fieldClass)}
-    {...autoAttrs /* astro will make attributes passed in by the user override those in ...autoAttrs, if ...rest is last */}
-    {...rest}
-  >
-  </Tag>
 </label>

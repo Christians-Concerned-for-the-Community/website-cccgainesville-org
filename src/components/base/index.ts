@@ -12,6 +12,7 @@ export {default as Modal} from './Modal.astro'
 export {default as Spinner} from './Spinner.astro'
 export {default as Form} from './Form.astro'
 export {default as FormInput} from './FormInput.astro'
+export {default as FormToggle} from './FormToggle.astro'
 export {
   validateCaptcha,
   captchaComponent,
