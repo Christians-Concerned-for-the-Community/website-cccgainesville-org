@@ -106,4 +106,5 @@ export const validate: CaptchaValidator = async (input, context): Promise<void> 
   if (!success) {
     throw new ActionError({code:"FORBIDDEN", message: "Captcha validation failed, try again later."});
   }
+  input["frc-captcha-response"] = undefined;
 };

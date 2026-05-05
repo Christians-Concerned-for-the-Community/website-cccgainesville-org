@@ -166,7 +166,11 @@ export const recaptchaValidate = async (
     if (score == null || typeof score !== "number") {
       throw new Error("risk analysis score missing or invalid");
     }
-    
+    input.assessment_name = res.name;
+    input.assessment_score = score;
+    input.assessment_threshold = successThreshold;
+    input["g-recaptcha-response"] = undefined;
+
     if (score >= successThreshold) { //checking for success first ensures NaN won't register as pass
       console.log(`reCAPTCHA: accepted as human, score ${score} meets threshold ${successThreshold}`);
       success = true;

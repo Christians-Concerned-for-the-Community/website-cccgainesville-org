@@ -113,4 +113,5 @@ export const validate: CaptchaValidator = async (input, context): Promise<void> 
   if (!res.success) {
     throw new ActionError({code:"FORBIDDEN", message: "Captcha validation failed, try again later."});
   }
+  input["cf-turnstile-response"] = undefined;
 }
