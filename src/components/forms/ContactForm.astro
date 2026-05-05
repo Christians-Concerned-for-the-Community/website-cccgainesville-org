@@ -2,29 +2,20 @@
 // Set SECRET_CONTACT_FORM_DEST environment variable to the webhook you wish
 // to send contact form submissions to.
 
-import { Form, FormInput, FormToggle, validateCaptcha } from '@/components/base';
-import { defineAction } from 'astro:actions';
-import { z } from 'astro/zod';
-import { zc, zclimits, sendToWebhook } from "./zod-common.ts"
+import { Form, FormInput } from '@/components/base';
+import { webhookHandler, z, zc, zclimits } from "./zod-common.ts"
 
 export const MAX_MESSAGE = 1500;
 
-export const handleForm = defineAction({
-  accept: 'form',
-
-  input: z.looseObject({
-    name: zc.full_name,
-    email: zc.email,
-    phone: zc.us_phone,
-    message: z
-      .string("Type in your message to us.")
-      .max(MAX_MESSAGE, `Message is too long, max is ${MAX_MESSAGE} characters.`),
-  }),
-
-  handler: async (input, context) => {
-    await validateCaptcha(input, context);
-    await sendToWebhook("SECRET_CONTACT_FORM_DEST", "contact", input);
-  },
+export const handleForm = webhookHandler("contact", "SECRET_CONTACT_FORM_DEST", {
+  name: zc.full_name,
+  email: zc.email,
+  phone: zc.us_phone,
+  message: z
+    .string("Type in your message to us.")
+    .max(MAX_MESSAGE, {error: ({input}) =>
+      `Message is too long - has ${input?.length} characters, but max is ${MAX_MESSAGE}.`
+    }),
 });
 
 ---

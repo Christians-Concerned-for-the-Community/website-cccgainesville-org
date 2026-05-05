@@ -1,8 +1,11 @@
 /**
  * Zod schema fields and error messages that are used across multiple forms.
  * 
- * To use:
- *   import { zc } from "./zod-common.ts"
+ * Also has helper function to send form data to a webhook endpoint,
+ * with retries and idempotency.
+ * 
+ * To use zod from here:
+ *   import { z, zc } from "./zod-common.ts"
  *   ...
  *   z.object {
  *     phone: zc.us_phone,
@@ -25,9 +28,29 @@
  *    tel+13525550132  <-- format seen when copy/pasting telephone number links.
  */
 import { z } from 'astro/zod';
-import { ActionError } from 'astro:actions';
+import { validateCaptcha } from '@/components/base';
+import { ActionError, defineAction } from 'astro:actions';
 import { getSecret } from 'astro:env/server';
 import crypto from 'node:crypto';
+
+export { z } from 'astro/zod';
+
+export const webhookHandler = <T extends z.ZodType>(
+  formName: string,
+  endpoint: string,
+  schema: Record<string,T>,
+) => {
+  return defineAction({
+    accept: 'form',
+
+    input: z.looseObject(schema),
+
+    handler: async (input, context) => {
+      await validateCaptcha(input, context);
+      await sendToWebhook(endpoint, formName, input);
+    },
+});
+}
 
 export const zclimits = {
   full_name: 255, // Salesforce length limit
