@@ -46,6 +46,28 @@ const {} = Astro.props;
 
 <script>
 {
+  const idleCallback = (callback: () => void | Promise<void>) => {
+    if ('requestIdleCallback' in (window as any)) {
+      /*
+        Delay up to 1 second for browser to finish loading the page and the
+        user to be idle, before performing the load. This improves page load
+        performance.
+
+        See: https://developer.chrome.com/blog/using-requestidlecallback
+       */
+      window.requestIdleCallback(callback, {timeout: 1000});
+    } else {
+      /*
+        Fallback for browsers that don't support the idle callback - attach after
+        DOMContentLoaded.
+      
+        TODO: remove this fallback when requestIdleCallback hits baseline
+              widely avaiable (estimated Feb 2029).
+      */
+     callback();
+    }
+  }
+
   const captcha = document.getElementById("base-recaptchascore");
   const sitekey = captcha?.dataset.sitekey;
   if (sitekey) {
@@ -53,24 +75,26 @@ const {} = Astro.props;
     script.src = `https://www.google.com/recaptcha/enterprise.js?render=${sitekey}`;
 
     script.onload = () => {
-      /*
-        Run execute once on page load, so that Google has more data about how
-        the user is interacting with our site, which improves anti-bot performance.
-        
-        Including the captcha twice (once at the top of the page, and again inside
-        a form) is fine, it won't hurt anything.
-      */
-      grecaptcha.enterprise.ready(() => {
-        // Don't await this, just let it run in the background. We're only
-        // running this so that Google has more info for future assessments,
-        // we're not using the returned token for an assessment now.
-        grecaptcha.enterprise.execute(sitekey, {action: "BASE_PAGE_LOAD"});
-      })
-
-      // Enable submission button once the script has been loaded.
-      document.querySelectorAll<HTMLButtonElement>(".base-form-submit").forEach((button) => {
+      idleCallback(() => {
+        /*
+          Run execute once on page load, so that Google has more data about how
+          the user is interacting with our site, which improves anti-bot performance.
+          
+          Including the captcha twice (once at the bottom of the page, and again inside
+          a form) is fine, it won't run any of this twice.
+        */
         grecaptcha.enterprise.ready(() => {
-          button.ariaDisabled = "false"
+          // Don't await this, just let it run in the background. We're only
+          // running this so that Google has more info for future assessments,
+          // we're not using the returned token for an assessment now.
+          grecaptcha.enterprise.execute(sitekey, {action: "BASE_PAGE_LOAD"});
+        })
+
+        // Enable submission button once the script has been loaded.
+        document.querySelectorAll<HTMLButtonElement>(".base-form-submit").forEach((button) => {
+          grecaptcha.enterprise.ready(() => {
+            requestAnimationFrame(()=>{button.ariaDisabled = "false"});
+          });
         });
       });
     };
@@ -88,15 +112,8 @@ const {} = Astro.props;
       }
     };
 
-    /*
-      Wait until after the page has completely loaded to run recaptcha.
-      It's pretty heavy, it will affect our loading times for other page elements
-      otherwise.
-     */
-    window.addEventListener('load', () => {
-      setTimeout(() => {
-        document.head.appendChild(script);
-      }, 100);
+    document.addEventListener("DOMContentLoaded", () => {
+      document.head.appendChild(script);
     });
   }
 }
