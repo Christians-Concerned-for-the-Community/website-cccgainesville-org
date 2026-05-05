@@ -79,13 +79,16 @@ export const zc = {
       return `${digits.slice(0,3)}-${digits.slice(3,6)}-${digits.slice(6,10)}`;
     }),
 
+  // An optional checkbox, properly converts the default data sent by native
+  // FormData to a boolean true/false value.
   checkbox: z
     .preprocess((val) => val === 'on', z.boolean()),
 
+  // A required checkbox, returns an error if the user didn't check it.
+  // (Note that this is a function, to let you specify the error message)
   checkbox_required: (msg: string) => { return z
     .preprocess((val) => val === 'on', z.literal(true, msg))
   },
-
 
   /*
     Improved version of Zod's optional() that works better for forms by correctly
