@@ -11,7 +11,7 @@ export const MAX_MESSAGE = 1500;
 
 export const handleForm = defineAction({
   accept: 'form',
-  
+
   input: z.looseObject({
     name: zc.full_name,
     email: zc.email,
@@ -19,7 +19,6 @@ export const handleForm = defineAction({
     message: z
       .string("Type in your message to us.")
       .max(MAX_MESSAGE, `Message is too long, max is ${MAX_MESSAGE} characters.`),
-    newsletter: zc.checkbox,
   }),
 
   handler: async (input, context) => {
