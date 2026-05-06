@@ -187,37 +187,48 @@
     max-width: 100%;
   }
 
-  /* Default checkbox styling.
+  /* Default checkbox/radio button styling.
    *  See: https://moderncss.dev/pure-css-custom-checkbox-style/
+   *  See: https://moderncss.dev/pure-css-custom-styled-radio-buttons/
    */
-  input[type="checkbox"] {
-    appearance: none;
-    background-color: transparent;
-    margin: 0;
-    width: 1lh;
-    height: 1lh;
-    display: grid;
-    place-content: center;
+  input {
+    &[type="checkbox"],&[type="radio"] {
+      appearance: none;
+      background-color: transparent;
+      margin: 0;
+      width: 1lh;
+      height: 1lh;
+      display: grid;
+      place-content: center;
 
-    &:not(:disabled) {
-      cursor: pointer;
+      &:not(:disabled) {
+        cursor: pointer;
+      }
+
+      &::before {
+        content: "";
+        width: 0.65lh;
+        height: 0.65lh;
+        transform: scale(0);
+        box-shadow: inset 1lh 1lh currentcolor;
+        background-color: CanvasText; /* for Windows High Contrast Mode */
+        @media (prefers-reduced-motion: no-preference) {
+          transition: 120ms transform ease-in-out;
+        }
+      }
+
+      &:checked::before {
+        transform: scale(1);
+      }
     }
 
-    &::before {
-      content: "";
-      width: 0.65lh;
-      height: 0.65lh;
-      transform: scale(0);
-      transition: 120ms transform ease-in-out;
-      box-shadow: inset 1lh 1lh var(--color-foreground);
-      /* Windows High Contrast Mode */
-      background-color: CanvasText;
+    &[type="checkbox"]::before {
       transform-origin: bottom left;
       clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
     }
 
-    &:checked::before {
-      transform: scale(1);
+    &[type="radio"]::before {
+      border-radius: 50%; 
     }
   }
 }
