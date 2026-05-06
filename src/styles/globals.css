@@ -191,7 +191,7 @@
   input,textarea {
     border: 1px solid var(--color-border-strong);
     border-radius: var(--radius-md);
-    transition: 150ms box-shadow ease-in-out;
+    transition: 120ms box-shadow ease-in-out;
     
     &:hover, &:focus-visible {
       box-shadow: 0 0 0 1px var(--color-secondary-accent);
