@@ -125,8 +125,16 @@
   }
 
   /*
-     Remove default popover styles.
-     See: https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/anchor#using_anchor_to_position_popovers
+    Add margin to every element that we might make a jump link point to, to
+    prevent them from being flush up against the top of the screen when scrolled.
+   */
+  [id] {
+    scroll-margin-top: 2lh;
+  }
+
+  /*
+    Remove default popover styles.
+    See: https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/anchor#using_anchor_to_position_popovers
    */
   [popover] {
     margin: 0;
