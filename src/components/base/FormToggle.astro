@@ -90,15 +90,15 @@ const errId = Astro.locals.id(`form-${name}-err`);
 */}
 
 <label for={inputId} class={twMerge(
-  "group/field block w-full px-xs py-2xs text-md has-enabled:cursor-pointer",
+  "group/field w-full px-xs py-2xs text-md has-enabled:cursor-pointer",
   "has-aria-invalid:border-l-error-accent has-aria-invalid:border-l-3",
   className)}
 >
-  <span class="flex justify-start items-center">
+  <span class="flex justify-start items-start">
   {/* Checkbox. */}
     <input type="checkbox" id={inputId} name={name} data-name={name} aria-describedby={errId} data-err={errId} required={required}
       class={twMerge(
-        "base-form-field mr-2xs",
+        "base-form-field shrink-0 mr-2xs",
         "border rounded-sm aria-invalid:border-2",
         fieldClass)}
       {...rest}
