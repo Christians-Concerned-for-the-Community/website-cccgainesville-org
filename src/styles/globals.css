@@ -239,16 +239,22 @@
     display: grid;
     position: relative;
 
-    &:not(:has([multiple]))::after {
-      position: absolute;
-      top: 50%;
-      right: 0.2em;
-      transform: translateY(-50%);
-      content: "";
-      width: 0.8em;
-      height: 0.5em;
-      background-color: var(--color-secondary-foreground);
-      clip-path: polygon(100% 0%, 0 0%, 50% 100%);
+    &:not(:has([multiple])) {
+      &::after {
+        position: absolute;
+        top: 50%;
+        right: 0.2em;
+        transform: translateY(-50%);
+        content: "";
+        width: 0.8em;
+        height: 0.5em;
+        background-color: var(--color-secondary-foreground);
+        transition: 120ms clip-path ease-in-out;
+        clip-path: polygon(100% 0%, 0 0%, 50% 100%); /* triangle pointing down */
+      }
+      &:has(:open)::after {
+        clip-path: polygon(100% 100%, 0% 100%, 50% 0%); /* triangle pointing up */
+      }
     }
   }
 
