@@ -107,13 +107,12 @@
     light-dark(var(--color-green-700), var(--color-green-800));
   --color-border:
     light-dark(var(--color-neutral-600), --alpha(var(--color-neutral-50) / 20%));
-  --color-input:
-    light-dark(var(--color-neutral-200), --alpha(var(--color-neutral-50) / 25%));
+  --color-border-strong:
+    light-dark(var(--color-neutral-900), var(--color-gray-100));
   --color-outline:
     light-dark(var(--color-neutral-400), var(--color-neutral-500));
+  
 
-
-  /* Color settings for our own components. */
   --color-banner: /* background */
     light-dark(var(--color-neutral-800), var(--color-neutral-850));
   --color-banner-fg:
