@@ -78,7 +78,7 @@ export const zc = {
       const digits = phone.replace("tel:","").replace("+1","").replace(/\D/g, "");
       return `${digits.slice(0,3)}-${digits.slice(3,6)}-${digits.slice(6,10)}`;
     }),
-
+  
   // An optional checkbox, properly converts the default data sent by native
   // FormData to a boolean true/false value.
   checkbox: z
@@ -86,9 +86,13 @@ export const zc = {
 
   // A required checkbox, returns an error if the user didn't check it.
   // (Note that this is a function, to let you specify the error message)
-  checkbox_required: (msg: string) => { return z
+  checkbox_required: (msg: string) => (z
     .preprocess((val) => val === 'on', z.literal(true, msg))
-  },
+  ),
+
+  single_pick: (options: Record<string,string>, msg: string) => (z
+    .enum(Object.keys(options), msg)
+  ),
 
   /*
     Improved version of Zod's optional() that works better for forms by correctly

@@ -1,0 +1,165 @@
+---
+/**
+ * FormPick.astro
+ * 
+ * A form field for picking one or multiple options from a list of choices.
+ * 
+ * 
+ * TODO: implement checkbox/radio version of this, too, put it behind an option.
+ */
+import type { HTMLAttributes } from "astro/types";
+import { Icon } from "@/components/base";
+import { twMerge } from "tailwind-merge";
+
+type Props = Omit<
+  HTMLAttributes<"div">,
+  "id" | "aria-describedby"
+> & {
+
+  /**
+   * Display name of the field, visible to the user.
+   */
+  label: string,
+
+  /**
+   * Internal name of the field, visible to code that processes form submissions.
+   */
+  name: string,
+
+  /**
+   * An object mapping option values to display labels.
+   * 
+   * For example, if we want the user to see the options "Honda Accord"
+   * and "Toyota Camry", and we want to submit the values "car_honda" and
+   * "car_toyota" in the form data when each option is selected, we'd
+   * set options as follows:
+   * 
+   * {
+   *  car_honda: "Honda Accord",
+   *  car_toyota: "Toyota Camry"
+   * }
+   */
+  options: Record<string,string>,
+
+  /**
+   * Provide the value(s) that should be selected initially (if any).
+   */
+  startWith?: string | string[],
+
+  /**
+   * Is this field required for a succcessful form submission?
+   * 
+   * @default false
+   */
+  required?: boolean,
+
+  /**
+   * Are we allowed to select more than one choice?
+   */
+  multiple?: boolean,
+
+  /**
+   * Additional classes to apply to the field label, which also acts
+   * as a layout container for the field itself.
+   */
+  class?: string | string[],
+
+  /**
+   * Additional classes to apply to the form field itself.
+   */
+  fieldClass?: string | string[],
+
+  /**
+   * Additional classes to apply to the form field inline-error container.
+   */
+  errorClass?: string | string[],
+};
+
+const {
+  label,
+  name,
+  options,
+  startWith,
+  required = false,
+  multiple = false,
+  class: className,
+  fieldClass,
+  errorClass,
+  ...rest
+} = Astro.props;
+
+// Generate unique-per-page, sequentially-numbered id's for each form field,
+// using the given prefix.
+//
+// see middleware.ts for the "id" function.
+const inputId = Astro.locals.id(`form-${name}`);
+const errId = Astro.locals.id(`form-${name}-err`);
+
+const multipleVal = multiple? "true" : undefined;
+
+let defaults: string[] = [];
+if (startWith) {
+  defaults = (typeof startWith === "string")? [startWith] : [...startWith];
+}
+
+---
+
+{/*
+  We nest the error message and input field inside the label for a couple of reasons:
+    
+  * Nesting causes the error message to be included in the label's clickable area.
+  This is helpful because we're showing the error messages above the field, right
+  below the label text, so that they don't get blocked by autocomplete boxes, and
+  it's awkward to have a gap in clickable area between the two.
+
+  * Nesting the field as well makes it easier to avoid accidentally introducing
+  clickable area gaps through margins and such.
+  
+  * Finally, if we nest everything, we can use the label element as the overall
+  layout container for the field, too. This avoids having to add a wrapper div.
+
+  Because screen readers don't always interpret nesting properly, we still link
+  the label to the input field using "for", and we link the error message to it
+  using aria-describedby. The error message itself is marked with aria-hidden="true"
+  to prevent it from being read in any other context than through aria-describedby.
+*/}
+
+<label for={inputId} class={twMerge(
+  "group/field w-full px-xs py-2xs text-md has-enabled:cursor-pointer",
+  "has-aria-invalid:border-l-error-accent has-aria-invalid:border-l-3",
+  className)}
+>
+  {/* Label text. */}
+  {label}
+  {required && (
+    <span aria-hidden="true" class="font-light text-current/90 text-[90%]"> (required)</span>
+  )}
+
+  {/* Error message. Always hide with aria-hidden, so that it's only read via aria-describedby. */}
+  <div aria-hidden="true" class={twMerge(
+    "hidden group-has-aria-invalid/field:block",
+    "w-full text-sm text-error ms-[0.5em]",
+    errorClass
+  )}>
+    <Icon name="tabler:alert-triangle" size="1lh" class="text-error me-[0.25em]"/>
+    <span id={errId}></span>
+  </div>
+
+  {/* Select box. */}
+  <div class={twMerge("select text-current/90 text-base", fieldClass)}>
+    <select id={inputId} name={name} data-name={name} multiple={multipleVal} required={required}
+      aria-describedby={errId} data-err={errId}
+      class="base-form-field",
+      {...rest}
+    >
+      { (!required || defaults.length === 0) && (
+        <option value="" disabled={required} selected={defaults.length===0}
+          class="hidden [selected]:visible"
+        ></option>
+      )}
+      { Object.entries(options).map(([value, label]) => (
+        <option value={value} selected={defaults.includes(value)}>{label}</option>
+      ))}
+    </select>
+  </div>
+</label>
