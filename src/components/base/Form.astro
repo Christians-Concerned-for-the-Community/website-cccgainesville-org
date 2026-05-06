@@ -80,7 +80,7 @@ if(!submitButton.label && !submitButton.icon && !submitButton.iconBefore) {
   submitButton.label = "Submit";
 }
 submitButton.class = twMerge(
-  "base-form-submit text-md min-w-[50%] mt-sm",
+  "base-form-submit text-md min-w-[50%] mt-md",
   // Hide the primary button label during processing, and show the secondary label instead.
   "aria-disabled:opacity-90 aria-disabled:cursor-progress",
   "aria-disabled:[&_.label-primary]:hidden",
@@ -97,7 +97,7 @@ const actionUrl = getActionPath(actions[handlerAction]);
 <form novalidate data-action={actionUrl} data-state="initial"
   class={twMerge(
     "base-form group/form flex flex-col items-center max-w-[60ch]",
-    "gap-sm p-sm border-t-foreground border-t-2 rounded-sm shadow-md dark:border-muted dark:border-2",
+    "p-sm border-t-foreground border-t-2 rounded-sm shadow-md dark:border-muted dark:border-2",
     className
   )}
   {...rest}
