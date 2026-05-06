@@ -102,6 +102,9 @@ export const zc = {
 }
 
 export const sendToWebhook = async (webhookUrlVar: string, formName: string, formData: Record<string,any>) => {
+  const fetchTimeout = 10000; //10 seconds
+  const backoffDelta = 5000; //5 seconds
+
   const body = {
     form: formName,
     ts: new Date().toISOString(),
@@ -122,11 +125,11 @@ export const sendToWebhook = async (webhookUrlVar: string, formName: string, for
     if (attempt > 1) {
       console.warn(`Form ${formName}: retrying send, attempt ${attempt} of ${maxAttempts}`);
       // delay before retrying (exponential backoff)
-      await new Promise((resolve) => setTimeout(resolve, Math.pow(2, attempt - 1) * 10000));
+      await new Promise((resolve) => setTimeout(resolve, Math.pow(2, attempt - 1) * backoffDelta));
     }
 
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 10000);
+    const timeoutId = setTimeout(() => controller.abort(), fetchTimeout);
     try {
       const response = await fetch(webhookUrl, {
         method: "POST",
