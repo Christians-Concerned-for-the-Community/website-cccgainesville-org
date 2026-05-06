@@ -168,8 +168,7 @@ const Tag = (type === "textarea")? "textarea" : "input";
   {/* Input field. */}
   <Tag id={inputId} name={name} data-name={name} aria-describedby={errId} data-err={errId} required={required}
     class={twMerge(
-      "base-form-field w-full px-[1em] py-[0.35em] rounded-md",
-      "text-current/90 text-base",
+      "base-form-field text-current/90 text-base",
       autoClass, fieldClass)}
     {...autoAttrs /* astro will make attributes passed in by the user override those in ...autoAttrs, if ...rest is last */}
     {...rest}

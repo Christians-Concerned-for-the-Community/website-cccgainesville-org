@@ -99,7 +99,6 @@ const errId = Astro.locals.id(`form-${name}-err`);
     <input type="checkbox" id={inputId} name={name} data-name={name} aria-describedby={errId} data-err={errId} required={required}
       class={twMerge(
         "base-form-field shrink-0 mr-2xs",
-        "border rounded-sm",
         fieldClass)}
       {...rest}
     />

@@ -136,7 +136,7 @@
   /*
     Default styling for keyboard-focused elements.
    */
-  *:focus-visible {
+  *:not(select):focus-visible, .select:has(:focus-visible) {
     outline: var(--outline-width-default) dashed var(--color-bw);
     outline-offset: var(--outline-offset-default);
     box-shadow: none;
@@ -188,13 +188,59 @@
   }
 
   /* Default form control styling. */
-  input,textarea {
+  input,textarea,.select {
     border: 1px solid var(--color-border-strong);
     border-radius: var(--radius-md);
     transition: 120ms box-shadow ease-in-out;
+    width: 100%;
+    cursor: inherit;
+    &:not(.select) {
+      padding: 0.35em 1em;
+    }
     
-    &:hover, &:focus-visible {
+    &:hover, &:focus-visible, &:has(:focus-visible) {
       box-shadow: 0 0 0 1px var(--color-secondary-accent);
+    }
+  }
+
+  /* Default select styling. Requires wrapping the select in a div with a "select" class.
+   * See: https://moderncss.dev/custom-select-styles-with-pure-css/
+   */
+  select {
+    appearance: none;
+    border: none;
+    background-color: transparent;
+    margin: 0;
+    padding: 0.35em 2em 0.35em 1em;
+    height: 100%;
+    width: 100%;
+    font-family: inherit;
+    font-size: inherit;
+    cursor: inherit;
+    line-height: inherit;
+    outline: none;
+
+    &[multiple] {
+      padding-right: 0;
+      option {
+        white-space: normal;
+      }
+    }
+  }
+  .select {
+    display: grid;
+    position: relative;
+
+    &:not(:has([multiple]))::after {
+      position: absolute;
+      top: 50%;
+      right: 0.2em;
+      transform: translateY(-50%);
+      content: "";
+      width: 0.8em;
+      height: 0.5em;
+      background-color: var(--color-secondary-foreground);
+      clip-path: polygon(100% 0%, 0 0%, 50% 100%);
     }
   }
 
@@ -207,6 +253,7 @@
       appearance: none;
       background-color: transparent;
       margin: 0;
+      padding: 0;
       width: 1lh;
       height: 1lh;
       display: grid;
