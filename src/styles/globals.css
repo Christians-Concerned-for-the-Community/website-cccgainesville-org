@@ -187,6 +187,17 @@
     max-width: 100%;
   }
 
+  /* Default form control styling. */
+  input,textarea {
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-md);
+    transition: 150ms box-shadow ease-in-out;
+    
+    &:hover, &:focus-visible {
+      box-shadow: 0 0 0 1px var(--color-secondary-accent);
+    }
+  }
+
   /* Default checkbox/radio button styling.
    *  See: https://moderncss.dev/pure-css-custom-checkbox-style/
    *  See: https://moderncss.dev/pure-css-custom-styled-radio-buttons/
@@ -213,7 +224,7 @@
         box-shadow: inset 1lh 1lh currentcolor;
         background-color: CanvasText; /* for Windows High Contrast Mode */
         @media (prefers-reduced-motion: no-preference) {
-          transition: 120ms transform ease-in-out;
+          transition: 150ms transform ease-in-out;
         }
       }
 
@@ -221,14 +232,20 @@
         transform: scale(1);
       }
     }
-
-    &[type="checkbox"]::before {
-      transform-origin: bottom left;
-      clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+  
+    &[type="checkbox"] {
+      border-radius: var(--radius-sm);
+      &::before {
+        transform-origin: bottom left;
+        clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+      }
     }
 
-    &[type="radio"]::before {
+    &[type="radio"] {
       border-radius: 50%; 
+      &::before {
+        border-radius: 50%;
+      }
     }
   }
 }
