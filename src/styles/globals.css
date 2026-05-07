@@ -227,6 +227,7 @@
     cursor: inherit;
     line-height: inherit;
     outline: none;
+    box-shadow: none;
 
     &[multiple] {
       padding-right: 0;
@@ -236,7 +237,6 @@
     }
   }
   .select {
-    display: grid;
     position: relative;
 
     &:not(:has([multiple])) {
