@@ -1,13 +1,13 @@
 ---
 import '@/styles/globals.css'
 import type { HTMLAttributes } from 'astro/types'
+import SiteMeta from '@base/SiteMeta.astro';
 import {
-  SiteMeta,
   captchaPreconnects,
   captchaAttribution,
   captchaEveryPage,
   captchaComponent as Captcha,
-} from '@/components/base'
+} from '@base/captcha.ts'
 import Header from '@/components/Header.astro'
 import Footer from '@/components/Footer.astro'
 

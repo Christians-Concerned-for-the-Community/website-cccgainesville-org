@@ -3,8 +3,8 @@
  */
 
 import { ActionError } from "astro:actions";
-import type { CaptchaValidator, Preconnect } from "./captcha-types";
-import { recaptchaValidate } from "./recaptcha-common";
+import type { CaptchaValidator, Preconnect } from "./captcha-types.ts";
+import { recaptchaValidate } from "./recaptcha-common.ts";
 
 const THRESHOLD = 0.5;
 const TIMEOUT_MS = 10000;

@@ -72,6 +72,7 @@ export default defineConfig({
       alias: {
         '@':       abspath('./src'),
         '@public': abspath('./public'),
+        '@base':   abspath('./src/components/base'),
       },
     },
   },

@@ -28,7 +28,7 @@
  *    tel+13525550132  <-- format seen when copy/pasting telephone number links.
  */
 import { z } from 'astro/zod';
-import { validateCaptcha } from '@/components/base';
+import { validateCaptcha } from '@base/captcha.ts';
 import { ActionError, defineAction } from 'astro:actions';
 import { getSecret } from 'astro:env/server';
 import crypto from 'node:crypto';

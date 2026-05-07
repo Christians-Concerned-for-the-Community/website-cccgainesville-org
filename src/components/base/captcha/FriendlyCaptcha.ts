@@ -4,7 +4,7 @@
 
 import { ActionError } from "astro:actions";
 import { getSecret } from "astro:env/server";
-import type { CaptchaValidator, Preconnect } from "./captcha-types";
+import type { CaptchaValidator, Preconnect } from "./captcha-types.ts";
 
 const TIMEOUT_MS = 10000;
 

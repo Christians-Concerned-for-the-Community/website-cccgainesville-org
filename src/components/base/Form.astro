@@ -3,7 +3,9 @@ import type { HTMLAttributes, ComponentProps } from "astro/types";
 import {actions, getActionPath} from "astro:actions";
 import { twMerge } from 'tailwind-merge';
 
-import { Button, Icon, Spinner } from '.';
+import Button from "./Button.astro";
+import Icon from "./Icon.astro";
+import Spinner from "./Spinner.astro";
 import {
   captchaComponent as Captcha,
   captchaAttribution,

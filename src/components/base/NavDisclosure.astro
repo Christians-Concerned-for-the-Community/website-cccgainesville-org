@@ -28,7 +28,7 @@
 import type { HTMLAttributes } from "astro/types";
 import { tv, type VariantProps } from "tailwind-variants";
 import { twMerge } from 'tailwind-merge'
-import { Button } from '@/components/base'
+import Button from "./Button.astro";
 
 type Props =
   Omit<HTMLAttributes<"ul">, "id"> &

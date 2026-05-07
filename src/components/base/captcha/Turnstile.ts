@@ -3,7 +3,7 @@
  */
 
 import { ActionError } from "astro:actions";
-import type { CaptchaValidator, Preconnect } from "./captcha-types";
+import type { CaptchaValidator, Preconnect } from "./captcha-types.ts";
 import { getSecret } from "astro:env/server";
 import crypto from 'node:crypto';
 

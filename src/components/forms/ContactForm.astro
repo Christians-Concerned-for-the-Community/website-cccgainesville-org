@@ -2,7 +2,9 @@
 // Set SECRET_CONTACT_FORM_DEST environment variable to the webhook you wish
 // to send contact form submissions to.
 
-import { Form, FormInput, FormPick } from '@/components/base';
+import Form from "@base/Form.astro";
+import FormInput from "@base/FormInput.astro";
+import FormPick from "@base/FormPick.astro";
 import { webhookHandler, z, zc, zclimits } from "./form-common.ts"
 
 export const MAX_MESSAGE = 1500;

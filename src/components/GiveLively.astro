@@ -1,7 +1,10 @@
 ---
 import { twMerge } from 'tailwind-merge'
 import { type HTMLAttributes } from "astro/types";
-import { Button, Icon, Spinner } from '@/components/base';
+
+import Button from '@base/Button.astro';
+import Icon from '@base/Icon.astro';
+import Spinner from '@base/Spinner.astro';
 
 // Add the required CSP directives for Give Lively, but only on pages where
 // the donation widget is actually present.
