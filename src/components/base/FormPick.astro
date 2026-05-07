@@ -154,8 +154,7 @@ if (startWith) {
     >
       { (!required || defaults.length === 0) && (
         <option value="" disabled={required} selected={defaults.length===0}
-          class="hidden [selected]:visible"
-        ></option>
+          class="disabled:not-[selected]:hidden"/>
       )}
       { Object.entries(options).map(([value, label]) => (
         <option value={value} selected={defaults.includes(value)}>{label}</option>
