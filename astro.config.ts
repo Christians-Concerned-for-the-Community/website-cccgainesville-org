@@ -1,4 +1,5 @@
 import tailwindcss from "@tailwindcss/vite";
+import browserslistToEsbuild from 'browserslist-to-esbuild'
 import { defineConfig } from "astro/config";
 import { fileURLToPath } from "url";
 
@@ -37,6 +38,8 @@ csp.frame.add("*.frcapi.com");
 //*/
 
 
+const blist = browserslistToEsbuild();
+
 // https://astro.build/config
 //
 // Note: site can be overriden by using the "--site" flag when building.
@@ -68,6 +71,10 @@ export default defineConfig({
 
   vite: {
     plugins: [tailwindcss()],
+    build: {
+      target: blist,
+      cssTarget: blist,
+    },
     resolve: {
       alias: {
         '@':       abspath('./src'),
