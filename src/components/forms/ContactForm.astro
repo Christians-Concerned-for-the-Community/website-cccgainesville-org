@@ -7,20 +7,20 @@ import { webhookHandler, z, zc, zclimits } from "./form-common.ts"
 
 export const MAX_MESSAGE = 1500;
 
-export const subjects = {
-  "need_furniture": "Need furniture or other home goods",
-  "need_ramp": "Need wheelchair ramp / accessibility help",
-  "need_other": "Need something else",
-  "donate_furniture": "Want to donate furniture or other home goods",
-  "donate_other": "Want to donate something else",
-  "other": "Anything else not listed as an option"
+export const topics = {
+  need_furniture: "Need help: furniture, beds, home goods",
+  need_ramp: "Need help: wheelchair ramp, other accomodation",
+  need_other: "Need help: other",
+  donate_furniture: "Donate: furniture, beds, home goods",
+  donate_other: "Donate: other",
+  other: "Something else",
 };
 
 export const handleForm = webhookHandler("contact", "SECRET_CONTACT_FORM_DEST", {
   name: zc.full_name,
   email: zc.email,
   phone: zc.us_phone,
-  subject: zc.single_pick(subjects, "Select the subject of your message."),
+  subject: zc.single_pick(topics, "Select a topic for your message."),
   message: z
     .string("Type in your message to us.")
     .max(MAX_MESSAGE, {error: ({input}) =>
@@ -35,7 +35,7 @@ export const handleForm = webhookHandler("contact", "SECRET_CONTACT_FORM_DEST", 
   <FormInput name="email"   label="Email"   type="email"       required maxlength={zclimits.email} />
   <FormInput name="phone"   label="Phone"   type="tel"         required maxlength={zclimits.us_phone} />
   
-  <FormPick  name="subject" label="Subject" options={subjects} required />
+  <FormPick  name="topic" label="Topic" options={topics} required />
   
   <FormInput name="message" label="Message" type="textarea"    required maxlength={MAX_MESSAGE} />
 
