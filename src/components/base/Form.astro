@@ -152,7 +152,6 @@ const actionUrl = getActionPath(actions[handlerAction]);
     const submitButton = form.querySelector<HTMLButtonElement>('.base-form-submit');
 
     // On page load, pre-fill any single field values passed via URL query params.
-    // TODO: add support for single-select FormPickField, once we write that component.
     const params = new URLSearchParams(window.location.search);
     for (const el of fields) {
       const val = el.dataset.name? params.get(el.dataset.name) : null;
@@ -166,6 +165,8 @@ const actionUrl = getActionPath(actions[handlerAction]);
         } else {
           el.value = val;
         }
+      } else if (el instanceof HTMLSelectElement && el.querySelector(`option[value="${val}"]`)) {
+        el.value = val;
       }
     }
 
