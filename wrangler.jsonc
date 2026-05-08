@@ -30,9 +30,6 @@
 		"PUBLIC_CAPTCHA_KEY": "FCMLQFNHQOES71QN",
 		//*/
 	},
-	"secrets": { "required": [
-		"SECRET_CAPTCHA_KEY",
-	]},
 
 	"observability": {
 		"enabled": true,
@@ -67,9 +64,6 @@
 				"PUBLIC_CAPTCHA_KEY": "FCMLQFNHQOES71QN",
 				//*/
 			},
-			"secrets": { "required": [
-				"SECRET_CAPTCHA_KEY",
-			]},
 		},
 		// If we're running a production build, host it at the real URL.
 		"production": {
@@ -94,9 +88,6 @@
 				"PUBLIC_CAPTCHA_KEY": "FCMLQFNHQOES71QN",
 				//*/
 			},
-			"secrets": { "required": [
-				"SECRET_CAPTCHA_KEY",
-			]},
 		}
 	}
 }
