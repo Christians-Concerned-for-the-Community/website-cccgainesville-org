@@ -13,8 +13,7 @@ import {
 
 //Allow pages that use Form to connect to our own endpoints, to handle the
 //form submissions.
-//TODO: uncomment when Astro accepts my bugfix PR.
-//Astro.csp?.insertDirective("connect-src 'self'");
+Astro.csp?.insertDirective("connect-src 'self'");
 
 type Props = HTMLAttributes<"form"> & {
   /**
