@@ -141,6 +141,7 @@ export const zc = {
 export const sendToWebhook = async (webhookUrlVar: string, formName: string, formData: Record<string,any>) => {
   const fetchTimeout = 10000; //10 seconds
   const backoffDelta = 5000; //5 seconds
+  const maxAttempts = 3;
 
   const body = {
     form: formName,
@@ -152,11 +153,10 @@ export const sendToWebhook = async (webhookUrlVar: string, formName: string, for
 
   const webhookUrl = getSecret(webhookUrlVar);
   if (!webhookUrl) {
-    console.error(`Form ${formName}: missing destination for submission, forgot to set SECRET_FORM_DEST_CONTACT?`);
+    console.error(`Form ${formName}: missing destination for submission, forgot to set ${webhookUrlVar}?`);
     return false;
   }
 
-  const maxAttempts = 4;
   let ok = false;
   for (let attempt = 1; attempt <= maxAttempts && !ok; attempt++) {
     if (attempt > 1) {
