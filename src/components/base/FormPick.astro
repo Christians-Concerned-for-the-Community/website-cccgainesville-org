@@ -42,21 +42,11 @@ type Props = Omit<
   options: Record<string,string>,
 
   /**
-   * Provide the value(s) that should be selected initially (if any).
-   */
-  startWith?: string | string[],
-
-  /**
    * Is this field required for a succcessful form submission?
    * 
    * @default false
    */
   required?: boolean,
-
-  /**
-   * Are we allowed to select more than one choice?
-   */
-  multiple?: boolean,
 
   /**
    * Additional classes to apply to the field label, which also acts
@@ -73,7 +63,29 @@ type Props = Omit<
    * Additional classes to apply to the form field inline-error container.
    */
   errorClass?: string | string[],
-};
+} & (
+  {
+    /**
+     * Are we allowed to select more than one choice?
+     */
+    multiple: true,
+    /**
+     * Provide the values that should be selected initially (if any).
+     */
+    startWith?: string | string[],
+  }
+  |
+  {
+    /**
+     * Are we allowed to select more than one choice?
+     */
+    multiple: false | null | undefined,
+    /**
+     * Provide the value that should be selected initially (if any).
+     */
+    startWith?: string,
+  }
+);
 
 const {
   label,
@@ -97,9 +109,19 @@ const errId = Astro.locals.id(`form-${name}-err`);
 
 const multipleVal = multiple? "true" : undefined;
 
+// Convert starting values to array, filter out those that aren't present in the
+// options list.
 let defaults: string[] = [];
 if (startWith) {
-  defaults = (typeof startWith === "string")? [startWith] : [...startWith];
+  defaults = (typeof startWith === "string"? [startWith] : startWith).filter(
+    val => {
+      const ret = options.keys.includes(val);
+      if (!ret) {
+        console.warn(`FormPick - ${inputId} - requested default value ${val} is not in list of options.`);
+      }
+      return ret;
+    }
+  );
 }
 
 ---
