@@ -14,8 +14,7 @@
     "deploy": "wrangler deploy --env=''",
     "deploy-production": "wrangler deploy --env='production'",
     "generate-types": "wrangler types",
-
-    "postinstall": "pnpx update-browserslist-db@latest -y"
+    "postinstall": "pnpm up --depth=Infinity --no-save caniuse-lite baseline-browser-mapping"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.5",
