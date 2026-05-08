@@ -28,7 +28,7 @@
  *    tel+13525550132  <-- format seen when copy/pasting telephone number links.
  */
 import { z } from 'astro/zod';
-import { validateCaptcha } from '@base/captcha.ts';
+import { captchaImpl } from '@base/captcha.ts';
 import { ActionError, defineAction } from 'astro:actions';
 import { getSecret } from 'astro:env/server';
 import crypto from 'node:crypto';
@@ -46,7 +46,7 @@ export const webhookHandler = <T extends z.ZodType>(
     input: z.looseObject(schema),
 
     handler: async (input, context) => {
-      await validateCaptcha(input, context);
+      await captchaImpl.validate(input, context);
       await sendToWebhook(endpoint, formName, input);
     },
 });

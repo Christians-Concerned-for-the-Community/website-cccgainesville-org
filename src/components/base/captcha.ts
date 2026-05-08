@@ -1,6 +1,6 @@
-import type { CaptchaValidator, Preconnect } from "./captcha/captcha-types";
+import type { CaptchaImpl } from "./captcha/captcha-types";
 
-const DEFAULT_CAPTCHA = "RecaptchaScore";
+const DEFAULT_CAPTCHA = "Turnstile";
 
 const captcha: Record<string, any> = {};
 
@@ -22,15 +22,12 @@ try {
   );
 }
 
-if (!captcha.mod.validate) {
+if (!captcha.mod.impl) {
     throw new Error(
-`Can't find captcha validator for ${captcha.name}.
-Validator should be defined in captcha/${captcha.name}.ts like this:
- "export const validate = (input: Record<string, any>, context: ActionAPIContext) => { ..."`);
+`Can't find captcha backend for ${captcha.name}.
+Backend should be defined in captcha/${captcha.name}.ts like this:
+ "export const impl: CaptchaImpl = { ..."`);
 }
 
-export const captchaEveryPage = captcha.name === "RecaptchaScore";
 export const captchaComponent = captcha.component;
-export const captchaPreconnects = captcha.mod.preconnects as Preconnect[] | undefined;
-export const captchaAttribution = captcha.mod.attribution as string | undefined;
-export const validateCaptcha = captcha.mod.validate as CaptchaValidator;
+export const captchaImpl = captcha.mod.impl as CaptchaImpl;

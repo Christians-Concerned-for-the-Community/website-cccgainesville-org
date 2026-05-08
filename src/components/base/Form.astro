@@ -7,9 +7,8 @@ import Button from "./Button.astro";
 import Icon from "./Icon.astro";
 import Spinner from "./Spinner.astro";
 import {
+  captchaImpl,
   captchaComponent as Captcha,
-  captchaAttribution,
-  captchaEveryPage
 } from './captcha.ts';
 
 //Allow pages that use Form to connect to our own endpoints, to handle the
@@ -140,8 +139,10 @@ const actionUrl = getActionPath(actions[handlerAction]);
     </Fragment>
   </Button>
 
-  { captchaAttribution && !captchaEveryPage && (
-    <div class="font-light text-current/90 text-[90%]">{captchaAttribution}</div>
+  { !captchaImpl.everyPage && captchaImpl.attribution && (
+    <div class="font-light text-current/90 text-[90%]">
+      {captchaImpl.attribution}
+    </div>
   )}
 </form>
 

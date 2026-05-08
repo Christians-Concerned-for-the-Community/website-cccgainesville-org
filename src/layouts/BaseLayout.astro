@@ -3,9 +3,7 @@ import '@/styles/globals.css'
 import type { HTMLAttributes } from 'astro/types'
 import SiteMeta from '@base/SiteMeta.astro';
 import {
-  captchaPreconnects,
-  captchaAttribution,
-  captchaEveryPage,
+  captchaImpl,
   captchaComponent as Captcha,
 } from '@base/captcha.ts'
 import Header from '@/components/Header.astro'
@@ -95,7 +93,7 @@ const {
       <link rel="preconnect" href="https://js.captcha-display.com">
       <link rel="preconnect" href="https://static.hotjar.com">
     )}
-    {(captchaEveryPage || profile?.includes('captcha')) && captchaPreconnects?.map((precon) => (
+    {(captchaImpl.everyPage || profile?.includes('captcha')) && captchaImpl.preconnects?.map((precon) => (
       <link rel="preconnect" href={precon.href} crossorigin={precon.crossorigin}>
     ))}
 
@@ -145,10 +143,10 @@ const {
       <slot />
     </main>
     <Footer class="shrink-0">
-      {captchaEveryPage && (<Captcha />)}
-      {captchaEveryPage && captchaAttribution && (
+      {captchaImpl.everyPage && (<Captcha />)}
+      {captchaImpl.everyPage && captchaImpl.attribution && (
       <section class="text-sm mt-md text-current/85 max-w-(--content-max) w-full text-center">
-        {captchaAttribution}
+        {captchaImpl.attribution}
       </section>
       )}
     </Footer>

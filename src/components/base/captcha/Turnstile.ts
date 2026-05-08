@@ -3,11 +3,61 @@
  */
 
 import { ActionError } from "astro:actions";
-import type { CaptchaValidator, Preconnect } from "./captcha-types.ts";
+import type { CaptchaImpl } from "./captcha-types.ts";
 import { getSecret } from "astro:env/server";
 import crypto from 'node:crypto';
 
-export const preconnects: Preconnect[] = [{href:"https://challenges.cloudflare.com"}];
+export const impl: CaptchaImpl = {
+  preconnects: [{href:"https://challenges.cloudflare.com"}],
+
+  validate: async (input, context): Promise<void> => {
+    // Default error message shown to user - vague, because we don't want to confuse them
+    // with technical details. We'll log the actual error in the console on the backend.
+    const err = () => new ActionError({code:"FORBIDDEN", message: "Captcha validation failed, try again later."});
+
+    const secret = getSecret("SECRET_CAPTCHA_KEY");
+    if (!secret) {
+      console.error("Turnstile: secret missing, forgot to set SECRET_CAPTCHA_KEY?");
+      throw err();
+    }
+
+    const token = input["cf-turnstile-response"];
+    if (!token || typeof token !== "string" || token.length > (2048*4)) {
+      console.error("Turnstile: token missing or invalid");
+      throw err();
+    }
+
+    // Unique identifier for this request - lets us safely retry the request if
+    // the response wasn't received due to some network issue.
+    const idemKey = crypto.randomUUID();
+
+    const ip =
+      context.request.headers.get("CF-Connecting-IP") ||
+      context.request.headers.get("X-Forwarded-For") ||
+      "unknown";
+
+    let res = {responseOk: false, success: false};
+    const maxAttempts = 3;
+    for (let attempt = 1; attempt <= maxAttempts && !res.responseOk; attempt++) {
+      if (attempt > 1) {
+        console.warn(`Turnstile: retrying, attempt ${attempt} of ${maxAttempts}`);
+        // delay before retrying (exponential backoff)
+        await new Promise((resolve) => setTimeout(resolve, Math.pow(2, attempt - 1) * 1000));
+      }
+      res = await turnstileAttempt({
+        token: token,
+        secret: secret,
+        ip: ip,
+        idemKey: idemKey,
+      });
+    }
+
+    if (!res.success) {
+      throw new ActionError({code:"FORBIDDEN", message: "Captcha validation failed, try again later."});
+    }
+    input["cf-turnstile-response"] = undefined;
+  }
+}
 
 // Inner helper for turnstile validation.
 const turnstileAttempt = async (params:{token: string, secret: string, ip: string, idemKey: string, timeout?: number}) => {
@@ -65,53 +115,3 @@ const turnstileAttempt = async (params:{token: string, secret: string, ip: strin
   clearTimeout(timeoutId);
   return res;
 };
-
-
-// Main entry for turnstile validation.
-export const validate: CaptchaValidator = async (input, context): Promise<void> => {
-  // Default error message shown to user - vague, because we don't want to confuse them
-  // with technical details. We'll log the actual error in the console on the backend.
-  const err = () => new ActionError({code:"FORBIDDEN", message: "Captcha validation failed, try again later."});
-
-  const secret = getSecret("SECRET_CAPTCHA_KEY");
-  if (!secret) {
-    console.error("Turnstile: secret missing, forgot to set SECRET_CAPTCHA_KEY?");
-    throw err();
-  }
-
-  const token = input["cf-turnstile-response"];
-  if (!token || typeof token !== "string" || token.length > (2048*4)) {
-    console.error("Turnstile: token missing or invalid");
-    throw err();
-  }
-
-  // Unique identifier for this request - lets us safely retry the request if
-  // the response wasn't received due to some network issue.
-  const idemKey = crypto.randomUUID();
-
-  const ip =
-    context.request.headers.get("CF-Connecting-IP") ||
-    context.request.headers.get("X-Forwarded-For") ||
-    "unknown";
-
-  let res = {responseOk: false, success: false};
-  const maxAttempts = 3;
-  for (let attempt = 1; attempt <= maxAttempts && !res.responseOk; attempt++) {
-    if (attempt > 1) {
-      console.warn(`Turnstile: retrying, attempt ${attempt} of ${maxAttempts}`);
-      // delay before retrying (exponential backoff)
-      await new Promise((resolve) => setTimeout(resolve, Math.pow(2, attempt - 1) * 1000));
-    }
-    res = await turnstileAttempt({
-      token: token,
-      secret: secret,
-      ip: ip,
-      idemKey: idemKey,
-    });
-  }
-
-  if (!res.success) {
-    throw new ActionError({code:"FORBIDDEN", message: "Captcha validation failed, try again later."});
-  }
-  input["cf-turnstile-response"] = undefined;
-}
