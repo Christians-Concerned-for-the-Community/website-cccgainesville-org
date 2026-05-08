@@ -154,7 +154,7 @@ export const sendToWebhook = async (webhookUrlVar: string, formName: string, for
   const webhookUrl = getSecret(webhookUrlVar);
   if (!webhookUrl) {
     console.error(`Form ${formName}: missing destination for submission, forgot to set ${webhookUrlVar}?`);
-    return false;
+    throw new ActionError({code:"SERVICE_UNAVAILABLE", message: "Could not save submission, try again later."});
   }
 
   let ok = false;
