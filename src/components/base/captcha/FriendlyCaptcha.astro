@@ -22,8 +22,7 @@ import type { HTMLAttributes } from "astro/types";
 
 // Add the required CSP directives for this captcha, but only on the pages where
 // this captcha is actually being used.
-//TODO: uncomment when Astro accepts my bugfix PR.
-//Astro.csp?.insertDirective("frame-src *.frcapi.com");
+Astro.csp?.insertDirective("frame-src *.frcapi.com");
 
 interface Props extends HTMLAttributes<"div"> {
   class?: string,

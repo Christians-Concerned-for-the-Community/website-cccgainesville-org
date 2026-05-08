@@ -68,21 +68,21 @@ export const onRequest = defineMiddleware(async (context, next) => {
     updatedHtml = html.replace(
       /(<meta\s+[^>]+"content-security-policy"[^>]+style-src )([^;]*)/i,
       `$1${newStyleSrc}`);
+  } else {
+    /*
+      Astro is adding style="object-position: center" to img tags as part
+      of responsive image handling, but isn't generating a hash for it
+      automatically with CSP. Add it ourselves.
+
+      TODO: remove this once the bug is fixed, see: https://github.com/withastro/astro/issues/16656
+    */
+    const styleSrcAttr = "style-src-attr 'unsafe-hashes' "
+      + "'sha256-0740ZBP3M2FiEkXbUWsIqxUsdOBsp+qkWY2dR0rl5T4=';";
+    updatedHtml = html.replace(
+      /(<meta\s+[^>]+"content-security-policy"[^>]+content=\"[^"]+)\"/i,
+      `$1${styleSrcAttr}"`
+    );
   }
-
-  /*
-    Astro is adding style="object-position: center" to img tags as part
-    of responsive image handling, but isn't generating a hash for it
-    automatically with CSP. Add it ourselves.
-
-    TODO: remove this once the bug is fixed, see: https://github.com/withastro/astro/issues/16656
-  */
-  const styleSrcAttr = "style-src-attr 'unsafe-hashes' "
-    + "'sha256-0740ZBP3M2FiEkXbUWsIqxUsdOBsp+qkWY2dR0rl5T4=';";
-  updatedHtml = html.replace(
-    /(<meta\s+[^>]+"content-security-policy"[^>]+content=\"[^"]+)\"/i,
-    `$1${styleSrcAttr}"`
-  );
 
   return new Response(updatedHtml, {
     status: 200,

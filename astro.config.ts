@@ -10,34 +10,6 @@ const abspath = (path: string) => {
   return fileURLToPath(new URL(path, import.meta.url))
 };
 
-// TODO: remove all these CSP exceptions in favor of module-level ones,
-//       once Astro accepts my PR bugfix for Astro.csp runtime api.
-const csp = {
-  connect: new Set(["'self'"]),
-  font:    new Set(["'self'"]),
-  frame:   new Set(["'self'"]),
-  style:   new Set(["'self'"]),
-};
-// Add GiveLively CSP entries.
-csp.connect.add("https://secure.givelively.org");
-csp.font.add("https://fonts.gstatic.com");
-csp.frame.add("https://secure.givelively.org");
-csp.style.add("https://secure.givelively.org");
-csp.style.add("https://fonts.googleapis.com");
-// Add Captcha CSP entries.
-//* -- Turnstile --
-csp.connect.add("'self'");
-csp.frame.add("https://challenges.cloudflare.com");
-//*/
-//* -- RecaptchaScore --
-csp.connect.add("https://www.google.com/recaptcha/");
-csp.frame.add("https://www.google.com/recaptcha/");
-//*/
-//* -- FriendlyCaptcha --
-csp.frame.add("*.frcapi.com");
-//*/
-
-
 const blist = browserslistToEsbuild();
 
 // https://astro.build/config
@@ -107,9 +79,6 @@ export default defineConfig({
          */
         strictDynamic: true,
       },
-      styleDirective: {
-        resources: [...csp.style],
-      },
       directives: [
         // disable insecure legacy embeds like Flash and Java
         "object-src 'none'",
@@ -117,14 +86,10 @@ export default defineConfig({
         "base-uri 'none'",
         // upgrade http resource requests to https automatically
         "upgrade-insecure-requests",
-        // default everything to off, except for img-src and font-src
+        // default everything else to off, except for img-src and font-src
         "default-src 'none'",
         "img-src 'self'",
-        //"font-src 'self'",
-        // (remove these once the Astro.csp bug is fixed)
-        `connect-src ${[...csp.connect].join(" ")}`,
-        `font-src ${[...csp.font].join(" ")}`,
-        `frame-src ${[...csp.frame].join(" ")}`,
+        "font-src 'self'",
       ],
     },
   },
