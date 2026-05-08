@@ -22,12 +22,13 @@ export const handleForm = webhookHandler("contact", "SECRET_CONTACT_FORM_DEST", 
   name: zc.full_name,
   email: zc.email,
   phone: zc.us_phone,
-  subject: zc.single_pick(topics, "Select a topic for your message."),
-  message: z
+  topic: zc.single_pick(topics, "Select a topic for your message."),
+  message: zc.safe(z
     .string("Type in your message to us.")
     .max(MAX_MESSAGE, {error: ({input}) =>
       `Message is too long - has ${input?.length} characters, but max is ${MAX_MESSAGE}.`
-    }),
+    })
+  ),
 });
 
 ---

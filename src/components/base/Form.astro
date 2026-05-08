@@ -200,13 +200,7 @@ const actionUrl = getActionPath(actions[handlerAction]);
       submitButton.ariaDisabled = "true";
       submitButton.focus(); //refocus on button to announce changed button text in screen reader
 
-      // Trim whitespace from all form values before submitting for validaiton.
       const formData = new FormData(form);
-      for (const [key, value] of formData.entries()) {
-        if (typeof value === 'string') {
-          formData.set(key, value.trim());
-        }
-      }
 
       // Run captcha-specific preprocessing, if present.
       // If it returns an error, add it to error messages.

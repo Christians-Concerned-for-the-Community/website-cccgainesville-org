@@ -52,22 +52,48 @@ export const webhookHandler = <T extends z.ZodType>(
 });
 }
 
+// Predefined limits for zod helpers for form validation (see zc below.
 export const zclimits = {
+  first_name: 40, // Salesforce length limit
+  last_name: 80, // Salesforce length limit
   full_name: 255, // Salesforce length limit
   email: 80, // Salesforce length limit
   us_phone: 40, // for security, to prevent malicious actors from hammering the regex
 }
 
+const safe = (schema: z.ZodType) => (
+  z.preprocess((v) => {
+    if (typeof v === "string") {
+      const vt = v.trim();
+      return vt === ""? undefined : vt;
+    }
+    return v;
+  }, schema
+));
+
+// Zod helpers for form validation.
 export const zc = {
-  full_name: z
+  full_name: safe(z
     .string("Enter your full name (John Smith).")
-    .max(zclimits.full_name, `Enter a shorter name (${zclimits.full_name} letters max).`),
+    .max(zclimits.full_name, `Enter a shorter full name (${zclimits.full_name} letters max).`)
+  ),
 
-  email: z
+  first_name: safe(z
+    .string("Enter your first name (John).")
+    .max(zclimits.first_name, `Enter a shorter first name (${zclimits.first_name} letters max).`)
+  ),
+
+  last_name: safe(z
+    .string("Enter your last name (Smith).")
+    .max(zclimits.last_name, `Enter a shorter last name (${zclimits.last_name} letters max).`)
+  ),
+
+  email: safe(z
     .email("Enter a valid email (jsmith@example.com)")
-    .max(zclimits.email, `Enter a shorter email (${zclimits.email} letters max).`),
+    .max(zclimits.email, `Enter a shorter email (${zclimits.email} letters max).`)
+  ),
 
-  us_phone: z
+  us_phone: safe(z
     .string("Enter a valid phone number (352-555-0132).")
     .max(zclimits.us_phone)
     .regex(/^(tel:)?(\+1)?[\(]*[0-9]{3}[ .\-\)]*[0-9]{3}[ .\-]*[0-9]{4}$/,
@@ -77,7 +103,8 @@ export const zc = {
       // at the right spots: xxx-xxx-xxxx
       const digits = phone.replace("tel:","").replace("+1","").replace(/\D/g, "");
       return `${digits.slice(0,3)}-${digits.slice(3,6)}-${digits.slice(6,10)}`;
-    }),
+    })
+  ),
   
   // An optional checkbox, properly converts the default data sent by native
   // FormData to a boolean true/false value.
@@ -90,19 +117,25 @@ export const zc = {
     .preprocess((val) => val === 'on', z.literal(true, msg))
   ),
 
-  single_pick: (options: Record<string,string>, msg: string) => (z
+  // Pick one value from a list of options.
+  single_pick: (options: Record<string,string>, msg: string) => safe(z
     .enum(Object.keys(options), msg)
   ),
 
   /*
-    Improved version of Zod's optional() that works better for forms by correctly
-    interpreting the empty string as the field being unset.
+    Fixes up form data by trimming whitespace, then replacing empty strings
+    with undefined so that Zod sees the field as being unset. This makes
+    .optional() work properly, and prevents us from having to add .min(1) in a
+    lot of places. Also prevents needing to do string trimming on the client.
+
+    The zc.* helpers already call safe internally where appropriate. Use zc.safe
+    externally to wrap any direct calls you make with z.* functions.
   
-    Example usage: zc.optional(zc.us_phone)
+    Example usage:
+      zc.safe(z.string("Provide a string here! It's required"));
+      zc.safe(z.string("This is optional.")).optional();
   */
-  optional: (schema: z.ZodType) => (
-    z.preprocess((v) => (v === "" ? undefined : v), schema.optional())
-  ),
+  safe: (schema: z.ZodType) => safe(schema),
 }
 
 export const sendToWebhook = async (webhookUrlVar: string, formName: string, formData: Record<string,any>) => {
