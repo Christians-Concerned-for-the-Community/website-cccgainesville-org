@@ -4,6 +4,8 @@ allowBuilds:
   workerd: true
 
 minimumReleaseAge: 1440 # 1 day in minutes
+minimumReleaseAgeExclude:
+  - "@typescript-eslint/*"
 
 packages:
   - .
