@@ -1,33 +1,31 @@
+import type { AstroInstance } from "astro";
 import type { CaptchaImpl } from "./captcha/captcha-types";
 
 const DEFAULT_CAPTCHA = "Turnstile";
 
-const captcha: Record<string, any> = {};
+const name = process.env.PUBLIC_CAPTCHA_NAME || DEFAULT_CAPTCHA
 
-captcha.name = process.env.PUBLIC_CAPTCHA_NAME || DEFAULT_CAPTCHA
 
-try {
-  captcha.component = (await import(`./captcha/${captcha.name}.astro`)).default;
-} catch (err) {
+const component = ((await import(`./captcha/${name}.astro`).catch((e)=>{
   throw new Error(
-    `Can't find captcha ${captcha.name}, missing "captcha/${captcha.name}.astro".\nError: ${err}`
+    `Can't find captcha ${name}, missing "captcha/${name}.astro".\nError: ${e}`
   );
-}
+})) as AstroInstance).default;
 
-try {
-  captcha.mod = (await import(`./captcha/${captcha.name}.ts`));
-} catch (err) {
+
+const impl = (await import(`./captcha/${name}.ts`).catch((e)=>{
   throw new Error(
-    `Can't find captcha ${captcha.name}, missing "captcha/${captcha.name}.ts".\nError: ${err}`
+    `Can't find captcha ${name}, missing "captcha/${name}.ts".\nError: ${e}`
   );
-}
+})).impl;
 
-if (!captcha.mod.impl) {
+if (!impl) {
     throw new Error(
-`Can't find captcha backend for ${captcha.name}.
-Backend should be defined in captcha/${captcha.name}.ts like this:
+`Can't find captcha backend for ${name}.
+Backend should be defined in captcha/${name}.ts like this:
  "export const impl: CaptchaImpl = { ..."`);
 }
 
-export const captchaComponent = captcha.component;
-export const captchaImpl = captcha.mod.impl as CaptchaImpl;
+
+export const captchaComponent = component;
+export const captchaImpl = impl as CaptchaImpl;
