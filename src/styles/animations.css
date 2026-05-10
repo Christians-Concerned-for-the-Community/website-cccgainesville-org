@@ -4,9 +4,14 @@
 @view-transition {
     navigation: auto;
 }
-@layer theme {
+@layer base {
   ::view-transition-group(root) {
-    animation-duration: 200ms;
+    animation-duration: 120ms;
+  }
+
+  ::view-transition-group(header),
+  ::view-transition-group(darkmode) {
+    animation-duration: 0s !important;
   }
 }
 
