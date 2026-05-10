@@ -36,6 +36,12 @@ export default defineConfig({
     }),
   ],
 
+  markdown: {
+    // Use Prism for syntax highlighting instead of Shiki, which doesn't currently
+    // work under Astro's strict CSP support.
+    syntaxHighlight: 'prism',
+  },
+
   image: {
     // Enable responsive images:
     layout: 'constrained',
