@@ -7,9 +7,6 @@
  */
 import { type HTMLAttributes } from 'astro/types'
 
-import './assets/base-spinner.css' //defines animations for the spinner, among other things
-
-
 type Props = HTMLAttributes<"svg"> | HTMLAttributes<"div">;
 
 const {
@@ -18,7 +15,44 @@ const {
 
 ---
 <svg stroke="currentcolor" viewBox="0 0 24 24" {...rest}>
-  <g class="base-spinner">
+  <g>
     <circle cx="12" cy="12" r="9.5" fill="none" stroke-width="3"/>
   </g>
 </svg>
+
+<style>
+@layer base {
+  g {
+    transform-origin: center;
+    animation: base-spinner-outer 2s linear infinite;
+
+    circle {
+      stroke-linecap: round;
+      animation: base-spinner-inner 1.5s ease-in-out infinite;
+    }
+  }
+
+  @keyframes base-spinner-outer {
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes base-spinner-inner {
+    0% {
+      stroke-dasharray: 0 150;
+      stroke-dashoffset: 0;
+    }
+    
+    47.5% {
+      stroke-dasharray: 42 150;
+      stroke-dashoffset: -16;
+    }
+    
+    95%,100% {
+      stroke-dasharray: 42 150;
+      stroke-dashoffset: -59;
+    }
+  }
+}
+</style>
