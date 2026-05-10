@@ -92,7 +92,10 @@ const {} = Astro.props;
         // Enable submission button once the script has been loaded.
         document.querySelectorAll<HTMLButtonElement>(".base-form-submit").forEach((button) => {
           grecaptcha.enterprise.ready(() => {
-            requestAnimationFrame(()=>{button.ariaDisabled = "false"});
+            requestAnimationFrame(()=>{
+              button.ariaDisabled = "false";
+              delete button.dataset.state;
+            });
           });
         });
       });

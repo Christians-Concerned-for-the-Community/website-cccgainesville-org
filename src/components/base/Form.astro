@@ -58,7 +58,14 @@ type Props = HTMLAttributes<"form"> & {
   successHeadingText?: string,
 
   /**
-   * Text to display in submit button during processing.
+   * Text to display in submit button during form initialization.
+   * 
+   * @default "Loading"
+   */
+  loadingText?: string,
+
+  /**
+   * Text to display in submit button during submission.
    * 
    * @default "Processing"
    */
@@ -71,6 +78,7 @@ const {
   messageHeadingTag : HeadTag = "h3",
   errorHeadingText = "Oops, let's fix these errors first:",
   successHeadingText = "Successfully submitted!",
+  loadingText = "Loading",
   processingText = "Processing",
   class: className,
   ...rest
@@ -83,8 +91,6 @@ submitButton.class = twMerge(
   "base-form-submit text-md min-w-[50%] mt-md",
   // Hide the primary button label during processing, and show the secondary label instead.
   "aria-disabled:opacity-90 aria-disabled:cursor-progress",
-  "aria-disabled:[&_.label-primary]:hidden",
-  "aria-disabled:[&_.label-secondary]:inline",
   submitButton.class
 );
 
@@ -131,10 +137,11 @@ const actionUrl = getActionPath(actions[handlerAction]);
 
   <Captcha />
 
-  <Button type="submit" aria-disabled="true" {...submitButton}>
+  <Button type="submit" aria-disabled="true" data-state="loading" {...submitButton}>
     <Fragment slot="label-secondary">
-      {processingText}
-      <Spinner class="size-[1lh] ms-[1em] inline"/>
+      <span class="hidden group-data-[state=loading]/button:inline">{loadingText}</span>
+      <span class="hidden group-data-[state=submitting]/button:inline">{processingText}</span>
+      <Spinner class="hidden group-data-state/button:inline size-[1lh] ms-[1em]"/>
     </Fragment>
   </Button>
 
@@ -198,6 +205,7 @@ const actionUrl = getActionPath(actions[handlerAction]);
       };
 
       submitButton.ariaDisabled = "true";
+      submitButton.dataset.state = "submitting";
       submitButton.focus(); //refocus on button to announce changed button text in screen reader
 
       const formData = new FormData(form);
@@ -247,6 +255,7 @@ const actionUrl = getActionPath(actions[handlerAction]);
       //make sure to update the button AFTER the message container is focused,
       //to ensure we don't announce the change in button text.
       submitButton.ariaDisabled = "false";
+      delete submitButton.dataset.state;
 
       // Refresh the captcha, to ensure that any additional submissions won't
       // try to reuse the same token.

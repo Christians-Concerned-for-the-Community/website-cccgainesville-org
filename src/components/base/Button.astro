@@ -71,15 +71,18 @@ const {
 
 const content = label? "hasText" : "iconOnly";
 
+const offIfStateDefined = "hidden not-group-data-state/button:inline";
+
 const iconClassName = twMerge(
   label? "h-[1.8em]" : "h-[2.2em]",
   "w-auto pointer-events-none",
+  offIfStateDefined,
   iconClass
 );
 
 export const button = tv({
   base: [
-    "inline-flex items-center justify-center font-medium whitespace-nowrap",
+    "group/button inline-flex items-center justify-center font-medium whitespace-nowrap",
     "h-[3em] gap-[1ch] rounded-sm shadow-xs border-solid border-[0.15em]",
     "transition-[color,background-color] duration-200"
   ],
@@ -137,26 +140,21 @@ const Tag = Astro.props.href ? "a" : "button";
 ---
 
 <Tag class={button({ content, variant, animation, class: className })} {...rest}>
-  <span class="label-primary">
-    {iconBefore && (
-      <Icon name={iconBefore} class={iconClassName}/>
-    )}
+  {iconBefore && (
+    <Icon name={iconBefore} class={iconClassName}/>
+  )}
 
-    {(label && alt)?
-      (<span aria-hidden="true">{label}</span>)
-      :
-      label && (<Fragment>{label}</Fragment>)
-    }
+  {label && (
+    <span aria-hidden={Boolean(alt)} class={offIfStateDefined}>{label}</span>
+  )}
 
-    {alt && (
-      <span class="sr-only">{alt}</span>
-    )}
+  {alt && (
+    <span class:list={["sr-only", offIfStateDefined]}>{alt}</span>
+  )}
 
-    {icon && (
-      <Icon name={icon} class={iconClassName}/>
-    )}
-  </span>
-  <span class="label-secondary hidden">
-    <slot name="label-secondary"/>
-  </span>
+  {icon && (
+    <Icon name={icon} class={iconClassName}/>
+  )}
+
+  <slot name="label-secondary"/>
 </Tag>

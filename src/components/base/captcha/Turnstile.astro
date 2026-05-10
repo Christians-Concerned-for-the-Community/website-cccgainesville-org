@@ -53,6 +53,7 @@ import type { CaptchaPreprocessResult } from "./captcha-types";
     // Enable submission button once the script has been loaded.
     document.querySelectorAll<HTMLButtonElement>(".base-form-submit").forEach((button) => {
       button.ariaDisabled = "false";
+      delete button.dataset.state;
     });
   };
 
