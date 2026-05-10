@@ -42,7 +42,7 @@ export const impl: CaptchaImpl = {
       if (attempt > 1) {
         console.warn(`Turnstile: retrying, attempt ${attempt} of ${maxAttempts}`);
         // delay before retrying (exponential backoff)
-        await new Promise((resolve) => setTimeout(resolve, Math.pow(2, attempt - 1) * 1000));
+        await new Promise((resolve) => setTimeout(resolve, Math.pow(2, attempt - 1) * (700 + Math.random()*800)));
       }
       res = await turnstileAttempt({
         token: token,
