@@ -1,13 +1,15 @@
 ---
 import '@/styles/globals.css'
 import type { HTMLAttributes } from 'astro/types'
-import SiteMeta from '@base/SiteMeta.astro';
+import BaseInit from '@base/BaseInit.astro';
 import {
   captchaImpl,
   captchaComponent as Captcha,
 } from '@base/captcha.ts'
 import Header from '@/components/Header.astro'
 import Footer from '@/components/Footer.astro'
+
+const orgName = "Christians Concerned for the Community";
 
 // Used for preloading.
 const fontPath = "/fonts/AtkinsonHyperlegibleNext-VariableFont_wght.woff2";
@@ -50,9 +52,9 @@ export interface Props extends HTMLAttributes<"main"> {
 }
 
 const {
-  title = 'Christians Concerned for the Community',
+  title,
   description = 'CCC is a Christian charity based in Gainesville, FL that provides used furniture and builds wheelchair ramps for our neighbors in Alachua County.',
-  author = 'Christians Concerned for the Community',
+  author = orgName,
   alwaysHide = false,
   profile,
   class: className,
@@ -97,6 +99,15 @@ const {
       <link rel="preconnect" href={precon.href} crossorigin={precon.crossorigin}>
     ))}
 
+    <BaseInit
+      pageTitle={title === "Home" ? undefined : title}
+      siteTitle={orgName}
+      description={description}
+      url={Astro.site?.toString() || "cccgainesville.org"}
+      image='social-preview.png'
+      author={author}
+    />
+
     {/* favicon stuff - see:
         https://evilmartians.com/chronicles/how-to-favicon-in-2021-six-files-that-fit-most-needs */}
     <link rel="icon" href="/favicon.ico" sizes="32x32" >
@@ -105,36 +116,6 @@ const {
     
     {/* sitemap hint */}
     <link rel="sitemap" href="/sitemap-index.xml" />
-
-    <SiteMeta
-      title={title}
-      description={description}
-      url={Astro.site?.toString() || "cccgainesville.org"}
-      image='social-preview.png'
-      author={author}
-    />
-
-    {/*
-      Script that applies the dark mode settings on page load.
-      See: src/components/base/DarkModeToggle.astro
-
-      Also sets the 'js' class so that we can detect Javascript with CSS.
-      See: src/styles/globals.css (js custom variant)
-    */}
-    <script>
-    {
-      const cl = document.documentElement.classList;
-      const colorTheme = localStorage.getItem("colorTheme");
-      cl.toggle("dark",
-        colorTheme?
-          colorTheme==="dark"
-          :
-          window.matchMedia("(prefers-color-scheme: dark)").matches
-      );
-
-      cl.add("js");
-    }
-    </script>
 
   </head>
   <body class="min-h-dvh flex flex-col overflow-x-clip">

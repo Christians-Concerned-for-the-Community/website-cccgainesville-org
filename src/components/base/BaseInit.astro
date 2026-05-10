@@ -1,0 +1,96 @@
+---
+/**
+ * BaseInit
+ * 
+ * Put this inside the <head> tag of every page that uses the Base library.
+ * Typically, this is located in your base page layout.
+ *
+ * Adds essential tags and scripts, including darkmode handling and site metadata tags.
+ */
+interface Props {
+  /**
+   * The title of the page
+   */
+  pageTitle?: string
+  /**
+   * The title of the whole site.
+   */
+  siteTitle: string
+  /**
+   * The description of the page.
+   */
+  description: string
+  /**
+   * The URL of the page.
+   */
+  url: string
+  /**
+   * The image path for social sharing.
+   */
+  image: string
+  /**
+   * The author of the page.
+   */
+  author: string
+}
+
+const { pageTitle, siteTitle, description, url, image, author = "CCC Office" } = Astro.props
+
+const title = (pageTitle? `${pageTitle} - ` : "") + siteTitle;
+---
+
+{/*
+  Script that applies the dark mode settings on page load.
+  See: src/components/base/DarkModeToggle.astro
+
+  Also sets the 'js' class so that we can detect Javascript with CSS.
+  See: src/styles/globals.css (js custom variant)
+*/}
+<script>
+{
+  const cl = document.documentElement.classList;
+  const colorTheme = localStorage.getItem("colorTheme");
+  cl.toggle("dark",
+    colorTheme?
+      colorTheme==="dark"
+      :
+      window.matchMedia("(prefers-color-scheme: dark)").matches
+  );
+
+  cl.add("js");
+}
+</script>
+
+{/*
+  Change the color scheme from light to dark when the "dark"
+  class gets added to the root HTML element of the page.
+
+  This switches browser default styles and the light-dark()
+  CSS function to dark mode.
+*/}
+<style is:global>
+  :root {
+    color-scheme: light dark; /* obey system theme if JS disabled */
+    &.js {
+      color-scheme: light;
+      &.dark {
+        color-scheme: dark;
+      }
+    }
+  }
+</style>
+
+{/* general meta */}
+<meta name="title" content={title} />
+<meta name="description" content={description} />
+<meta name="author" content={author} />
+
+{/* open graph */}
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:type" content="website" />
+<meta property="og:url" content={url} />
+<meta property="og:image" content={`${Astro.site}${image}`} />
+
+{/* page title */}
+<title>{title}</title>
