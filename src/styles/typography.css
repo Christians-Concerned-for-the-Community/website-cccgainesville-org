@@ -179,8 +179,8 @@
   }
 
   /* Settings to render lists and links for prose (default styling removed by Preflight). */
-  .text, .text * {
-    ul {
+  .text {
+    ul:is(&, & *) {
       list-style-type: disc;
       /* Aligns bullet with text, prevents them from being cut off */
       padding-inline-start: 1.5em; 
@@ -189,7 +189,7 @@
       margin-block-end: 0em;
     }
 
-    li {
+    li:is(&, & *) {
       /* Improves readability between items */
       line-height: 1.5;
       /* Space between list items */
@@ -200,7 +200,7 @@
       }
     }
 
-    a {
+    a:is(&, & *) {
       text-decoration: underline;
       text-underline-offset: 0.25em;
       text-decoration-thickness: from-font;
