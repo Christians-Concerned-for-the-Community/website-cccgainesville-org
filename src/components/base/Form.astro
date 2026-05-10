@@ -6,6 +6,7 @@ import { twMerge } from 'tailwind-merge';
 import Button from "./Button.astro";
 import Icon from "./Icon.astro";
 import Spinner from "./Spinner.astro";
+import FormInput from "./FormInput.astro";
 import {
   captchaImpl,
   captchaComponent as Captcha,
@@ -133,6 +134,10 @@ const actionUrl = getActionPath(actions[handlerAction]);
     </div>
   </section>
 
+  {/* Honeypot. Lots of spam will still make it past this, but it's a cheap way to
+      reduce the number of calls we need to make to captcha API's on the backend. */}
+  <FormInput type="text" label="Approver Email" name="approver-email" class="reqd" value="jsmith@example.com" required/>
+
   <slot />
 
   <Captcha />
@@ -178,6 +183,8 @@ const actionUrl = getActionPath(actions[handlerAction]);
         el.value = val;
       }
     }
+    // Part of honeypot handling.
+    form.querySelector<HTMLInputElement>(".reqd > input")?.removeAttribute("value");
 
     // Process form on submission.
     form.addEventListener('submit', async (ev) => {
@@ -292,6 +299,11 @@ const actionUrl = getActionPath(actions[handlerAction]);
     }
   }
 
+  /* For honeypot. */
+  label.reqd {
+    display: var(--toggle);
+  }
+
   /* Default select styling. Requires wrapping the select in a div with a "select" class.
   * See: https://moderncss.dev/custom-select-styles-with-pure-css/
   */
@@ -343,6 +355,9 @@ const actionUrl = getActionPath(actions[handlerAction]);
       }
     }
   }
+
+  /* Also part of honeypot handling. */
+  --toggle: none;
 
   /* Default checkbox/radio button styling.
     *  See: https://moderncss.dev/pure-css-custom-checkbox-style/

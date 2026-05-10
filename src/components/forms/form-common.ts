@@ -46,7 +46,16 @@ export const webhookHandler = <T extends z.ZodType>(
     input: z.looseObject(schema),
 
     handler: async (input, context) => {
-      await captchaImpl.validate(input, context);
+      // Check the honeypot first, before we do any real work.
+      if (input['approver-email']) {
+        // If the honeypot field has anything in it, act like it was a succesful
+        // submission, without doing anything. Delay randomly from 900 to 2400 ms
+        // before returning.
+        console.log(`${formName}: blocked submission due to honeypot failure.`);
+        await new Promise((res) => setTimeout(res, Math.random()*1500 + 900));
+        return;
+      }
+      await captchaImpl?.validate(input, context);
       await sendToWebhook(endpoint, formName, input);
     },
 });
