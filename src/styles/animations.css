@@ -2,16 +2,33 @@
 
 /* Page transition */
 @view-transition {
-    navigation: auto;
+  navigation: auto;
+  types: base-cross;
 }
 @layer base {
-  ::view-transition-group(root) {
-    animation-duration: 120ms;
+  /* By default, elements will participate in both cross-document and in-document
+     transitions.
+
+     If you want an element to only partipate in same-page transitions (like the
+     dark-mode toggle), give it a view-transition-class of "base-same-only".
+
+     If you want an element to only participate in cross-document transitions
+     (navigation), give it a view-transition-class of "base-cross-only".
+
+     If you want an element to skip all transitions, give it a view-transition-class
+     of "base-static".
+  */
+  html::view-transition-group(root),
+  html::view-transition-group(.base-cross-only),
+  html::view-transition-group(.base-same-only) {
+    animation-duration: 150ms;
   }
 
-  ::view-transition-group(header),
-  ::view-transition-group(darkmode) {
-    animation-duration: 0s !important;
+  html::view-transition-group(.base-static),
+  html:active-view-transition-type(base-cross)::view-transition-group(.base-same-only),
+  html:not(:active-view-transition-type(base-cross))::view-transition-group(.base-cross-only)
+  {
+    animation-duration: 0ms;
   }
 }
 

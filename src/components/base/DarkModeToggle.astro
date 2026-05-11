@@ -54,16 +54,17 @@ const {
 ---
 
 <button type="button" {...rest} class={twMerge("base-darkmodetoggle",
-  "@container-[size] inline-grid h-[3em] aspect-21/10 rounded-full shadow-sm",
+  "@container-[size] group/button no-js:invisible loading inline-grid h-[3em] aspect-21/10 rounded-full shadow-sm",
   "bg-gray-400 dark:bg-muted-foreground disabled:opacity-50 **:pointer-events-none",
-  "hocus:ring-muted hocus:ring-4 [view-transition-name:darkmode]",
+  "hocus:ring-muted hocus:ring-4",
+  "[view-transition-name:darkmode] [view-transition-class:base-cross-only]",
   className
 )}>
   {/* Slider thumb */}
   <div aria-hidden="true" class:list={[
     "col-start-1 row-start-1 flex items-center justify-start",
     "mt-[10cqh] size-[80cqh] ms-[10cqh] dark:ms-[calc(100cqw-90cqh)]",
-    "transition-[margin-inline-start] duration-200 ease-out",
+    "transition-[margin-inline-start] duration-150 group-[.loading]/button:duration-0 ease-out",
     "rounded-full shadow-sm bg-gray-100 dark:bg-muted",
   ]}/>
 
@@ -98,6 +99,10 @@ const {
   const allToggles = document.querySelectorAll(".base-darkmodetoggle");
 
   allToggles.forEach((toggle) => {
+    // Only allow the toggle animation after the page has finished loading.
+    // This prevents seeing the toggle move every time a page is loaded in dark mode.
+    window.addEventListener("load", () => toggle.classList.remove("loading"));
+
     // Initialize checked state to match current darkmode setting.
     toggle.ariaPressed = init;
 
@@ -112,8 +117,12 @@ const {
         If browser supports view transitions, use it to smoothly fade to/from
         dark mode.
       */
+      
       const doToggle = () => (cl.toggle('dark', enableDark));
-      (document.startViewTransition)? document.startViewTransition(doToggle) : doToggle();
+      document.startViewTransition?
+        document.startViewTransition(doToggle)
+        :
+        doToggle();
 
       // Persist this state in local storage for future navigation.
       localStorage.setItem("colorTheme", enableDark? "dark" : "light");
