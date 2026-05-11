@@ -1,8 +1,16 @@
-/* Custom animations and page transition settings. */
+/* Custom animations and page transition settings.
+ *
+ * Cross-doc transitions (transition on navigation) is enabled
+ * by default, with a duration of 150ms. This can be configured
+ * by setting the following vars on root:
+ *
+ *  --vt-nav: none  //to disable cross-doc view transitions
+ *  --vt-duration: [time]  //view transition duration
+ */
 
 /* Page transition */
 @view-transition {
-  navigation: auto;
+  navigation: var(--vt-nav, auto);
   types: base-cross;
 }
 @layer base {
@@ -21,7 +29,7 @@
   html::view-transition-group(root),
   html::view-transition-group(.base-cross-only),
   html::view-transition-group(.base-same-only) {
-    animation-duration: 150ms;
+    animation-duration: var(--vt-duration, 150ms);
   }
 
   html::view-transition-group(.base-static),
@@ -70,7 +78,7 @@
       transform: rotate(0deg);
     }
     50% {
-      transform: rotate(var(--rotateAmount, 10deg));
+      transform: rotate(10deg);
     }
     100% {
       transform: rotate(0deg);

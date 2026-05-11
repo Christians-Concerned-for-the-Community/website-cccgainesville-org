@@ -1,12 +1,5 @@
 /* Color vars, default colors, and box shadows. */
 
-:root {
-  /* CCC's brand colors - our palette will be produced from these. */
-  --brand-primary:   #D4AF36;
-  --brand-secondary: #4F688F;
-  --brand-neutral:   #32425B;
-}
-
 @layer theme {
   /* default text and background colors */
   html {
@@ -41,7 +34,12 @@
  *    ... etc.
  */
 @theme inline {
-  
+    
+  --color-bw:
+    light-dark(var(--color-black), var(--color-white));
+  --color-wb:
+    light-dark(var(--color-white), var(--color-black));
+
   /* Color palette - variations of the three brand colors. */
   --color-primary-100: oklch(from var(--brand-primary) 90% c h);
   --color-primary-200: oklch(from var(--brand-primary) 80% c h);
@@ -122,7 +120,6 @@
   --color-link-hover:
     light-dark(var(--color-primary-400), var(--color-primary-200));
 
-
   --color-theme-grad1:
     light-dark(var(--color-neutral-700),   var(--color-secondary-100));
   --color-theme-grad2:
@@ -131,9 +128,4 @@
     light-dark(var(--color-primary-100),   var(--color-secondary-100));
   --color-theme-grad4:
     light-dark(var(--color-secondary-100), var(--color-primary-200));
-  
-  --color-bw:
-    light-dark(var(--color-black), var(--color-white));
-  --color-wb:
-    light-dark(var(--color-white), var(--color-black));
 }
