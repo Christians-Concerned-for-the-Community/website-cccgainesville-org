@@ -28,6 +28,17 @@
     inset: auto;
   }
 
+  html {
+    /* Use animated scrolls when clicking in-page links, instead of sudden jumps. */
+    scroll-behavior: smooth;
+
+    /*
+      Needed to prevent annoying layout shifts when opening dialogs, such as the
+      sidebar nav menu.
+     */
+    scrollbar-gutter: stable;
+  }
+
   /*
     Default styling for keyboard-focused elements.
    */

@@ -1,0 +1,195 @@
+@theme {
+  /* Override these two vars to use your own fonts. */
+  --font-body: var(--font-geometric-humanist);
+  --font-heading: var(--font-slab-serif);
+
+  /* Note: font-sans is the default font in Tailwind (set by Preflight). */
+  --font-sans: var(--font-body);
+}
+
+@layer base {
+  /* Global font settings. */
+  html {
+    font-synthesis: none;
+  }
+
+  /* Settings to render lists and links for basic prose (default styling removed by Preflight). */
+  .text {
+    ul:is(&, & *) {
+      list-style-type: disc;
+      /* Aligns bullet with text, prevents them from being cut off */
+      padding-inline-start: 1.5em; 
+      /* Maintains vertical rhythm with paragraphs */
+      margin-block-start: 0.5em;
+      margin-block-end: 0em;
+    }
+
+    li:is(&, & *) {
+      /* Improves readability between items */
+      line-height: 1.5;
+      /* Space between list items */
+      margin-block-end: 0.5em;
+      /* Remove spacing from last item */
+      &:last-child {
+        margin-block-end: 0em;
+      }
+    }
+
+    a:is(&, & *) {
+      text-decoration: underline;
+      text-underline-offset: 0.25em;
+      text-decoration-thickness: from-font;
+      transition-property: color,text-decoration-color,text-decoration-thickness,text-underline-offset;
+      transition-duration: 200ms;
+      transition-timing-function: var(--ease-fast);
+
+      @variant hocus {
+        color: --alpha(currentColor / 85%);
+        text-decoration-color: --alpha(currentColor / 80%);
+        text-decoration-thickness: 1px;
+        text-underline-offset: 0.125em;
+      }
+    }
+  }
+
+  /* Set margin between paragraphs. */
+  p + p, ul + p {
+    margin-block-start: 1.5em;
+  }
+  h1 + p, h2 + p, h3 + p, h4 + p, h5 + p, h6 + p {
+    margin-block-start: 1.8em;
+  }
+
+  p.inset {
+    margin-block-start: 0.6em;
+    margin-inline-start: 0.6em;
+    padding-inline-start: 0.6em;
+    border-left-style: solid;
+    border-left-width: 0.25em;
+    border-left-color: var(--color-secondary);
+  }
+
+  /* Default text wrap settings for headers and paragraphs. */
+  p {
+    text-wrap: pretty;
+  }
+  h1,h2,h3,h4,h5,h6 {
+    font-family: var(--font-heading);
+    text-wrap: balance;
+  }
+
+  /* Default header font settings. */
+  h1 {
+    @apply text-h1;
+  }
+  h2 {
+    @apply text-h2;
+  }
+  h3 {
+    @apply text-h3;
+  }
+  h4 {
+    @apply text-h4;
+  }
+  h5 {
+    @apply text-h5;
+  }
+  h6 {
+    @apply text-h6;
+  }
+
+  :root {
+    /* Support for system-native emojis (added to end of each font stack below). */
+    --add-emojis:
+      "Apple Color Emoji",
+      "Segoe UI Emoji",
+      "Segoe UI Symbol",
+      "Noto Color Emoji";
+  }
+}
+
+@theme inline {
+  /* The font stacks below are native - they rely on fonts that come preloaded in
+   * modern browsers, so they don't require downloading additional font files.
+   *
+   * See: https://modernfontstacks.com/
+   */
+
+  /* Native font: Geometric Humanist */
+  --font-geometric-humanist:
+    Avenir,
+    Montserrat,
+    Corbel,
+    'URW Gothic',
+    source-sans-pro,
+    sans-serif,
+    var(--add-emojis);
+
+  /* Native font: Slab Serif */
+  --font-slab-serif:
+    Rockwell,
+    'Rockwell Nova',
+    'Roboto Slab',
+    'DejaVu Serif',
+    'Sitka Small',
+    serif,
+    var(--add-emojis);
+
+  /* Native font: Old Style */
+  --font-old:
+    'Iowan Old Style',
+    'Palatino Linotype',
+    'URW Palladio L',
+    P052,
+    serif,
+    var(--add-emojis);
+
+  /* Native font: handwritten look */
+  --font-hand:
+    'Segoe Print',
+    'Bradley Hand',
+    Chilanka,
+    TSCu_Comic,
+    casual,
+    cursive,
+    var(--add-emojis);
+
+
+
+  /* Text sizes, line heights and weights for headers.
+   *
+   * These are handy because accessibility guidelines require a strict hierarchy
+   * when using header tags - you can't skip over numbers, even if you really
+   * want a smaller size for the sub-header than the default.
+   *
+   * These classes let you specify the header size separately from the logical
+   * tag name:
+   *
+   *  <h1>A Header with Default Size</h1>
+   *     <h2 class="text-h3">A Header with Smaller Size</h2>
+   *     <h2 class="text-h1">A Header with Bigger Size </h2>
+   */
+  --text-h1:              var(--text-4xl);
+  --text-h1--line-height: var(--text-5xl);
+  --text-h1--font-weight: 600;
+
+  --text-h2:              var(--text-3xl);
+  --text-h2--line-height: var(--text-4xl);
+  --text-h2--font-weight: 600;
+
+  --text-h3:              var(--text-2xl);
+  --text-h3--line-height: var(--text-3xl);
+  --text-h3--font-weight: 500;
+  
+  --text-h4:              var(--text-xl);
+  --text-h4--line-height: var(--text-2xl);
+  --text-h4--font-weight: 500;
+
+  --text-h5:              var(--text-lg);
+  --text-h5--line-height: var(--text-xl);
+  --text-h5--font-weight: 500;
+
+  --text-h6:              var(--text-md);
+  --text-h6--line-height: var(--text-lg);
+  --text-h6--font-weight: 500;
+}

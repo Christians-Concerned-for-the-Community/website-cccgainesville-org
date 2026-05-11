@@ -23,19 +23,12 @@
     --brand-secondary: #4F688F;
     --brand-neutral:   #32425B;
   }
+}
 
-  html {
-    /*
-      Use animated scrolls when clicking in-page links, instead of sudden jumps.
-    */
-    scroll-behavior: smooth;
-
-    /*
-      Needed to prevent annoying layout shifts when opening dialogs, such as the
-      sidebar nav menu.
-     */
-    scrollbar-gutter: stable;
-  }
+/* Project font overrides. */
+@theme {
+  --font-body: var(--font-hyperlegible);
+  --font-heading: var(--font-hyperlegible);
 }
 
 
@@ -49,4 +42,68 @@
     light-dark(var(--color-primary-100),   var(--color-secondary-100));
   --color-theme-grad4:
     light-dark(var(--color-secondary-100), var(--color-primary-200));
+}
+
+
+/* Additional project font stacks. */
+@theme inline {
+  --font-hyperlegible:
+    'Atkinson Hyperlegible Next',
+    'Fallback - Atkinson Hyperlegible Next',
+    system-ui,
+    sans-serif,
+    var(--add-emojis);
+}
+
+/* Atkinson Hyperlegible Next
+ * 
+ * See: https://fonts.google.com/specimen/Atkinson+Hyperlegible+Next
+ *
+ * This uses the variable version of the font, which saves quite a bit on
+ * download size. It also needs a lot less code.
+ *
+ * Static fonts: 98 kB (regular, medium, semi-bold, bold)
+ * Variable font: 47 kB
+ */
+@font-face {
+  font-family: "Atkinson Hyperlegible Next";
+  font-style: normal;
+  src:
+    local(AtkinsonHyperlegibleNext-Regular),
+    local(Atkinson Hyperlegible Next Regular),
+    url("/fonts/AtkinsonHyperlegibleNext-VariableFont_wght.woff2") format("woff2-variations");
+  font-weight: 200 800;
+  font-display: swap;
+}
+
+/* We don't currently need the Italic versions of this font, but leave it in here
+ * as a comment in case we that changes in the future.
+ */
+/*
+@font-face {
+  font-family: "Atkinson Hyperlegible Next";
+  font-style: italic;
+  src:
+    local(AtkinsonHyperlegibleNext-Italic),
+    local(Atkinson Hyperlegible Next Italic),
+    url("/fonts/AtkinsonHyperlegibleNext-Italic-VariableFont_wght.woff2") format("woff2-variations");
+  font-weight: 200 800;
+  font-display: swap;
+}
+*/
+
+/* Fallback font - helps prevent layout shifts during font loading.
+ *
+ * Used the tool below to figure out the adjustments needed to get the fallback
+ * font to render as close to the same size as the real font as possible:
+ *
+ * https://screenspan.net/fallback
+ */
+@font-face {
+    font-family: 'Fallback - Atkinson Hyperlegible Next';
+    src: local(Arial);
+    size-adjust: 99%;
+    ascent-override: 87%;
+    descent-override: normal;
+    line-gap-override: normal;
 }
