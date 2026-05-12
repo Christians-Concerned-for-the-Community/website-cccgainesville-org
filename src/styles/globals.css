@@ -22,6 +22,12 @@
     --brand-primary:   #D4AF36;
     --brand-secondary: #4F688F;
     --brand-neutral:   #32425B;
+
+    /* Config for generating fluid font sizes and spacing. */
+    --f-max-w-px: 1200;  /* max screen width */
+    --f-min-w-px: 320;   /* min screen width */
+    --f-max-font-px: 20;
+    --f-min-font-px: 14;
   }
 }
 
@@ -32,8 +38,8 @@
 }
 
 
-/* Additional project colors. */
 @theme inline {
+  /* Additional project colors. */
   --color-theme-grad1:
     light-dark(var(--color-neutral-700),   var(--color-secondary-100));
   --color-theme-grad2:
@@ -42,11 +48,8 @@
     light-dark(var(--color-primary-100),   var(--color-secondary-100));
   --color-theme-grad4:
     light-dark(var(--color-secondary-100), var(--color-primary-200));
-}
-
-
-/* Additional project font stacks. */
-@theme inline {
+  
+  /* Additional project font stacks. */
   --font-hyperlegible:
     'Atkinson Hyperlegible Next',
     'Fallback - Atkinson Hyperlegible Next',
@@ -54,6 +57,7 @@
     sans-serif,
     var(--add-emojis);
 }
+
 
 /* Atkinson Hyperlegible Next
  * 

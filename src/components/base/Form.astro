@@ -89,7 +89,7 @@ if(!submitButton.label && !submitButton.icon && !submitButton.iconBefore) {
   submitButton.label = "Submit";
 }
 submitButton.class = twMerge(
-  "base-form-submit text-md min-w-[50%] mt-md",
+  "base-form-submit text-lg min-w-[50%] mt-md",
   // Hide the primary button label during processing, and show the secondary label instead.
   "aria-disabled:opacity-90 aria-disabled:cursor-progress",
   submitButton.class
@@ -117,7 +117,7 @@ const actionUrl = getActionPath(actions[handlerAction]);
   ]}>
     {/* Error message display. */}
     <div class="hidden group-data-[state=error]/form:block text text-base">
-      <HeadTag class="text-md font-medium mbe-[0.8em]">
+      <HeadTag class="text-lg font-medium mbe-[0.8em]">
         <Icon name="tabler:alert-triangle" size="1lh" class="text-error me-[0.25em]"/>
         {errorHeadingText}
       </HeadTag>
@@ -126,7 +126,7 @@ const actionUrl = getActionPath(actions[handlerAction]);
 
     {/* Success message display. */}
     <div class="hidden group-data-[state=success]/form:block text text-base">
-      <HeadTag class="text-md font-medium mbe-[0.8em]">
+      <HeadTag class="text-lg font-medium mbe-[0.8em]">
         <Icon name="tabler:circle-check" size="1lh" class="text-success me-[0.25em]"/>
         {successHeadingText}
       </HeadTag>

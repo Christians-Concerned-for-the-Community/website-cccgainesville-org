@@ -1,89 +1,152 @@
 /* TODO: Use CSS to generate these values from a given setup (start size, end size, scaling) */
 
-@theme inline {
-  /* Override default Tailwind font sizes with a sliding scale from utopia.fyi.
-   *
-   * This is based around a font that varies from 16pt @ 360px screen width, to
-   * 18pt @ 1200px screen width.
-   *
-   * Note that Tailwind's default font size and weight (set by Preflight) is:
-   *  size: --text-base
-   *  weight: --font-normal (400)
-   *
-   * These utilities can be used as normal: text-lg, text-base, etc.
-   *
-   * @link https://utopia.fyi/type/calculator?c=360,16,1.2,1200,18,1.25,10,2,&s=0.75,1.5|2|3|4|6,s-l&g=s,l,xl,12
-   */
-  --text-xs:   clamp(0.6944rem, 0.6835rem + 0.0487vw, 0.72rem);
-  --text-sm:   clamp(0.8333rem, 0.8048rem + 0.127vw, 0.9rem);
-  --text-base: clamp(1rem, 0.9464rem + 0.2381vw, 1.125rem);
-  --text-md:   clamp(1.1rem, 1.029rem + 0.3155vw, 1.2657rem);
-  --text-lg:   clamp(1.2rem, 1.1116rem + 0.3929vw, 1.4063rem);
-  --text-xl:   clamp(1.44rem, 1.3038rem + 0.6054vw, 1.7578rem);
-  --text-2xl:  clamp(1.728rem, 1.5269rem + 0.8938vw, 2.1973rem);
-  --text-3xl:  clamp(2.0736rem, 1.7852rem + 1.2819vw, 2.7466rem);
-  --text-4xl:  clamp(2.4883rem, 2.0834rem + 1.7998vw, 3.4332rem);
-  --text-5xl:  clamp(2.986rem, 2.4265rem + 2.4868vw, 4.2915rem);
-  --text-6xl:  clamp(3.5832rem, 2.8198rem + 3.3928vw, 5.3644rem);
-  --text-7xl:  clamp(4.2998rem, 3.2688rem + 4.5823vw, 6.7055rem);
-  --text-8xl:  clamp(5.1598rem, 3.7789rem + 6.1374vw, 8.3819rem);
-  --text-9xl:  clamp(6.1917rem, 4.355rem + 8.1631vw, 10.4774rem);
+@layer theme { :root {
+  /* 
+    Use fluid layout calculations from utopia.fyi to generate our font and spacing
+    systems.
 
-  /* Relative spacing scale from utopia.fyi (adapts to viewport width).
-   *
-   * Note that these vars do not replace the default number system used by Tailwind
-   * utilities for spacing, those remain fixed because they can't be customized
-   * to do a full adaptive scale.
-   * 
-   * For example, "py-8" means:
-   *    padding, y-dir, 8 * (--spacing)
-   *
-   * ...where "--spacing" defaults to 0.25 rem. The scale is always linear and fixed,
-   * you can only change the multiplier by setting --spacing to something else.
-   *
-   * Instead, to use this sliding scale, this creates named spacing variants
-   * (md, 2xs, etc) instead of numbers. You use these in the same places you
-   * would usually use the numbers, like padding, margin, or width classes.
-   *
-   * For example, you'd use "py-md" to create vertical padding that varies
-   * from "py-6.75" to "py-7.5" as the viewport gets wider.
-   *
-   * @link https://utopia.fyi/space/calculator?c=360,18,1.2,1200,20,1.25,10,2,&s=0.75|0.5|0.25,1.5|2|3|4|6,&g=s,l,xl,12
-   */
-  /* Space 3xs: 1.25 → 1.25 */
-  --spacing-3xs: clamp(0.3125rem, 0.3125rem + 0vw, 0.3125rem);
-  /* Space 2xs: 2.25 → 2.5 */
-  --spacing-2xs: clamp(0.5625rem, 0.5357rem + 0.119vw, 0.625rem);
-  /* Space xs: 3.5 → 3.75 */
-  --spacing-xs: clamp(0.875rem, 0.8482rem + 0.119vw, 0.9375rem);
-  /* Space sm: 4.5 → 5 */
-  --spacing-sm: clamp(1.125rem, 1.0714rem + 0.2381vw, 1.25rem);
-  /* Space md: 6.75 → 7.5 */
-  --spacing-md: clamp(1.6875rem, 1.6071rem + 0.3571vw, 1.875rem);
-  /* Space lg: 9 → 10 */
-  --spacing-lg: clamp(2.25rem, 2.1429rem + 0.4762vw, 2.5rem);
-  /* Space xl: 13.5 → 15 */
-  --spacing-xl: clamp(3.375rem, 3.2143rem + 0.7143vw, 3.75rem);
-  /* Space 2xl: 18 → 20 */
-  --spacing-2xl: clamp(4.5rem, 4.2857rem + 0.9524vw, 5rem);
-  /* Space 3xl: 27 → 30 */
-  --spacing-3xl: clamp(6.75rem, 6.4286rem + 1.4286vw, 7.5rem);
+    Based on these blog posts:
+      https://utopia.fyi/blog/css-modular-scales
+      https://utopia.fyi/blog/clamp/
+    
+    There are also postcss and scss libs that do this, but we don't want to require
+    extra dependencies. Can be used for reference, though. See here for core logic:
+      https://github.com/trys/utopia-core
 
-  /* One-up pairs */
-  /* Space 3xs-2xs: 1.25 → 2.5 */
-  --spacing-3xs-2xs: clamp(0.3125rem, 0.1786rem + 0.5952vw, 0.625rem);
-  /* Space 2xs-xs: 2.25 → 3.75 */
-  --spacing-2xs-xs: clamp(0.5625rem, 0.4018rem + 0.7143vw, 0.9375rem);
-  /* Space xs-sm: 3.5 → 5 */
-  --spacing-xs-sm: clamp(0.875rem, 0.7143rem + 0.7143vw, 1.25rem);
-  /* Space sm-md: 4.5 → 7.5 */
-  --spacing-sm-md: clamp(1.125rem, 0.8036rem + 1.4286vw, 1.875rem);
-  /* Space md-lg: 6.75 → 10 */
-  --spacing-md-lg: clamp(1.6875rem, 1.3393rem + 1.5476vw, 2.5rem);
-  /* Space lg-xl: 9 → 15 */
-  --spacing-lg-xl: clamp(2.25rem, 1.6071rem + 2.8571vw, 3.75rem);
-  /* Space xl-2xl: 13.5 → 20 */
-  --spacing-xl-2xl: clamp(3.375rem, 2.6786rem + 3.0952vw, 5rem);
-  /* Space 2xl-3xl: 18 → 30 */
-  --spacing-2xl-3xl: clamp(4.5rem, 3.2143rem + 5.7143vw, 7.5rem);
+    Only change I made was to add an extra step between base and first power for the
+    font sizes, using 0.5 power (sqrt). I kept finding a need for a value between
+    the first two steps in the scale they produced.
+
+    Config vars, with default values.
+     --f-max-w-px: 1440;  // max screen width in px
+     --f-min-w-px: 320;   // min screen width in px
+     --f-max-font-px: 18; // max font size in px
+     --f-min-font-px: 16; // min font size in px
+     --f-min-rat: 1.2;    // min growth ratio (unitless)
+     --f-max-rat: 1.25;   // max growth ratio (unitless)
+  */
+  --f-min-rat: 1.2;
+  --f-max-rat: 1.25;
+  
+  /* Convert config vars from px to rem (leave unitless for now). */
+  --f-max-w: calc(var(--f-max-w-px, 1200) / 16);
+  --f-min-w: calc(var(--f-min-w-px, 320) / 16);
+  --f-max-font: calc(var(--f-max-font-px, 18) / 16);
+  --f-min-font: calc(var(--f-min-font-px, 16) / 16);
+
+  /* Precalculate some common params for the clamps below. */
+  --f-minus: calc(-1 * var(--f-min-w));
+  --f-w: calc(var(--f-max-w) - var(--f-min-w));
+
+  /* Font step sizes. Min/max flip for negative exponents. */
+  --f-n2-min: calc(var(--f-min-font) * pow(var(--f-max-rat), -2));
+  --f-n2-max: calc(var(--f-max-font) * pow(var(--f-min-rat), -2));
+
+  --f-n1-min: calc(var(--f-min-font) / var(--f-max-rat)); /* -1 power */
+  --f-n1-max: calc(var(--f-max-font) / var(--f-min-rat));
+
+  --f-0-min:  var(--f-min-font); /* 0 power */
+  --f-0-max:  var(--f-max-font);
+  
+  --f-1-min:  calc(var(--f-min-font) * sqrt(var(--f-min-rat)));
+  --f-1-max:  calc(var(--f-max-font) * sqrt(var(--f-max-rat)));
+
+  --f-2-min:  calc(var(--f-min-font) * var(--f-min-rat)); /* 1 power */
+  --f-2-max:  calc(var(--f-max-font) * var(--f-max-rat));
+
+  --f-3-min:  calc(var(--f-min-font) * pow(var(--f-min-rat), 2));
+  --f-3-max:  calc(var(--f-max-font) * pow(var(--f-max-rat), 2));
+
+  --f-4-min:  calc(var(--f-min-font) * pow(var(--f-min-rat), 3));
+  --f-4-max:  calc(var(--f-max-font) * pow(var(--f-max-rat), 3));
+
+  --f-5-min:  calc(var(--f-min-font) * pow(var(--f-min-rat), 4));
+  --f-5-max:  calc(var(--f-max-font) * pow(var(--f-max-rat), 4));
+
+  --f-6-min:  calc(var(--f-min-font) * pow(var(--f-min-rat), 5));
+  --f-6-max:  calc(var(--f-max-font) * pow(var(--f-max-rat), 5));
+
+  --f-7-min:  calc(var(--f-min-font) * pow(var(--f-min-rat), 6));
+  --f-7-max:  calc(var(--f-max-font) * pow(var(--f-max-rat), 6));
+
+  --f-8-min:  calc(var(--f-min-font) * pow(var(--f-min-rat), 7));
+  --f-8-max:  calc(var(--f-max-font) * pow(var(--f-max-rat), 7));
+
+  --f-9-min:  calc(var(--f-min-font) * pow(var(--f-min-rat), 8));
+  --f-9-max:  calc(var(--f-max-font) * pow(var(--f-max-rat), 8));
+
+  --f-10-min: calc(var(--f-min-font) * pow(var(--f-min-rat), 9));
+  --f-10-max: calc(var(--f-max-font) * pow(var(--f-max-rat), 9));
+
+
+  /* Space step sizes. */
+  --fs-n3-min: calc(var(--f-min-font) * 0.25);
+  --fs-n3-max: calc(var(--f-max-font) * 0.25);
+
+  --fs-n2-min: calc(var(--f-min-font) * 0.5);
+  --fs-n2-max: calc(var(--f-max-font) * 0.5);
+  
+  --fs-n1-min: calc(var(--f-min-font) * 0.75);
+  --fs-n1-max: calc(var(--f-max-font) * 0.75);
+
+  --fs-0-min: calc(var(--f-min-font));
+  --fs-0-max: calc(var(--f-max-font));
+
+  --fs-1-min: calc(var(--f-min-font) * 1.5);
+  --fs-1-max: calc(var(--f-max-font) * 1.5);
+
+  --fs-2-min: calc(var(--f-min-font) * 2);
+  --fs-2-max: calc(var(--f-max-font) * 2);
+
+  --fs-3-min: calc(var(--f-min-font) * 3);
+  --fs-3-max: calc(var(--f-max-font) * 3);
+
+  --fs-4-min: calc(var(--f-min-font) * 4);
+  --fs-4-max: calc(var(--f-max-font) * 4);
+
+  --fs-5-min: calc(var(--f-min-font) * 6);
+  --fs-5-max: calc(var(--f-max-font) * 6);
+}}
+
+
+/* Clamp each step, assign it to the appropriate Tailwind CSS theme vars.
+ *
+ *
+ * The "spacing" values can be used wherever you'd normally put a length value.
+ *
+ * For example, to set padding, you can do "p-sm".
+ */
+@theme {
+  --text-xs:   clamp(var(--f-n2-min) * 1rem, ((var(--f-minus) * ((var(--f-n2-max) - var(--f-n2-min)) / var(--f-w)) + var(--f-n2-min)) * 1rem) + ((var(--f-n2-max) - 1) / var(--f-w) * 100vi), var(--f-n2-max) * 1rem);
+  --text-sm:   clamp(var(--f-n1-min) * 1rem, ((var(--f-minus) * ((var(--f-n1-max) - var(--f-n1-min)) / var(--f-w)) + var(--f-n1-min)) * 1rem) + ((var(--f-n1-max) - 1) / var(--f-w) * 100vi), var(--f-n1-max) * 1rem);
+  --text-base: clamp(var( --f-0-min) * 1rem, ((var(--f-minus) * ((var( --f-0-max) - var( --f-0-min)) / var(--f-w)) + var( --f-0-min)) * 1rem) + ((var( --f-0-max) - 1) / var(--f-w) * 100vi), var( --f-0-max) * 1rem);
+  --text-lg:   clamp(var( --f-1-min) * 1rem, ((var(--f-minus) * ((var( --f-1-max) - var( --f-1-min)) / var(--f-w)) + var( --f-1-min)) * 1rem) + ((var( --f-1-max) - 1) / var(--f-w) * 100vi), var( --f-1-max) * 1rem);
+  --text-xl:   clamp(var( --f-2-min) * 1rem, ((var(--f-minus) * ((var( --f-2-max) - var( --f-2-min)) / var(--f-w)) + var( --f-2-min)) * 1rem) + ((var( --f-2-max) - 1) / var(--f-w) * 100vi), var( --f-2-max) * 1rem);
+  --text-2xl:  clamp(var( --f-3-min) * 1rem, ((var(--f-minus) * ((var( --f-3-max) - var( --f-3-min)) / var(--f-w)) + var( --f-3-min)) * 1rem) + ((var( --f-3-max) - 1) / var(--f-w) * 100vi), var( --f-3-max) * 1rem);
+  --text-3xl:  clamp(var( --f-4-min) * 1rem, ((var(--f-minus) * ((var( --f-4-max) - var( --f-4-min)) / var(--f-w)) + var( --f-4-min)) * 1rem) + ((var( --f-4-max) - 1) / var(--f-w) * 100vi), var( --f-4-max) * 1rem);
+  --text-4xl:  clamp(var( --f-5-min) * 1rem, ((var(--f-minus) * ((var( --f-5-max) - var( --f-5-min)) / var(--f-w)) + var( --f-5-min)) * 1rem) + ((var( --f-5-max) - 1) / var(--f-w) * 100vi), var( --f-5-max) * 1rem);
+  --text-5xl:  clamp(var( --f-6-min) * 1rem, ((var(--f-minus) * ((var( --f-6-max) - var( --f-6-min)) / var(--f-w)) + var( --f-6-min)) * 1rem) + ((var( --f-6-max) - 1) / var(--f-w) * 100vi), var( --f-6-max) * 1rem);
+  --text-6xl:  clamp(var( --f-7-min) * 1rem, ((var(--f-minus) * ((var( --f-7-max) - var( --f-7-min)) / var(--f-w)) + var( --f-7-min)) * 1rem) + ((var( --f-7-max) - 1) / var(--f-w) * 100vi), var( --f-7-max) * 1rem);
+  --text-7xl:  clamp(var( --f-8-min) * 1rem, ((var(--f-minus) * ((var( --f-8-max) - var( --f-8-min)) / var(--f-w)) + var( --f-8-min)) * 1rem) + ((var( --f-8-max) - 1) / var(--f-w) * 100vi), var( --f-8-max) * 1rem);
+  --text-8xl:  clamp(var( --f-9-min) * 1rem, ((var(--f-minus) * ((var( --f-9-max) - var( --f-9-min)) / var(--f-w)) + var( --f-9-min)) * 1rem) + ((var( --f-9-max) - 1) / var(--f-w) * 100vi), var( --f-9-max) * 1rem);
+  --text-9xl:  clamp(var(--f-10-min) * 1rem, ((var(--f-minus) * ((var(--f-10-max) - var(--f-10-min)) / var(--f-w)) + var(--f-10-min)) * 1rem) + ((var(--f-10-max) - 1) / var(--f-w) * 100vi), var(--f-10-max) * 1rem);
+
+  --spacing-3xs: clamp(var(--fs-n3-min) * 1rem, ((var(--f-minus) * ((var(--fs-n3-max) - var(--fs-n3-min)) / var(--f-w)) + var(--fs-n3-min)) * 1rem) + ((var(--fs-n3-max) - 1) / var(--f-w) * 100vi), var(--fs-n3-max) * 1rem);
+  --spacing-2xs: clamp(var(--fs-n2-min) * 1rem, ((var(--f-minus) * ((var(--fs-n2-max) - var(--fs-n2-min)) / var(--f-w)) + var(--fs-n2-min)) * 1rem) + ((var(--fs-n2-max) - 1) / var(--f-w) * 100vi), var(--fs-n2-max) * 1rem);
+  --spacing-xs:  clamp(var(--fs-n1-min) * 1rem, ((var(--f-minus) * ((var(--fs-n1-max) - var(--fs-n1-min)) / var(--f-w)) + var(--fs-n1-min)) * 1rem) + ((var(--fs-n1-max) - 1) / var(--f-w) * 100vi), var(--fs-n1-max) * 1rem);
+  --spacing-sm:  clamp(var( --fs-0-min) * 1rem, ((var(--f-minus) * ((var( --fs-0-max) - var( --fs-0-min)) / var(--f-w)) + var( --fs-0-min)) * 1rem) + ((var( --fs-0-max) - 1) / var(--f-w) * 100vi), var( --fs-0-max) * 1rem);
+  --spacing-md:  clamp(var( --fs-1-min) * 1rem, ((var(--f-minus) * ((var( --fs-1-max) - var( --fs-1-min)) / var(--f-w)) + var( --fs-1-min)) * 1rem) + ((var( --fs-1-max) - 1) / var(--f-w) * 100vi), var( --fs-1-max) * 1rem);
+  --spacing-lg:  clamp(var( --fs-2-min) * 1rem, ((var(--f-minus) * ((var( --fs-2-max) - var( --fs-2-min)) / var(--f-w)) + var( --fs-2-min)) * 1rem) + ((var( --fs-2-max) - 1) / var(--f-w) * 100vi), var( --fs-2-max) * 1rem);
+  --spacing-xl:  clamp(var( --fs-3-min) * 1rem, ((var(--f-minus) * ((var( --fs-3-max) - var( --fs-3-min)) / var(--f-w)) + var( --fs-3-min)) * 1rem) + ((var( --fs-3-max) - 1) / var(--f-w) * 100vi), var( --fs-3-max) * 1rem);
+  --spacing-2xl: clamp(var( --fs-4-min) * 1rem, ((var(--f-minus) * ((var( --fs-4-max) - var( --fs-4-min)) / var(--f-w)) + var( --fs-4-min)) * 1rem) + ((var( --fs-4-max) - 1) / var(--f-w) * 100vi), var( --fs-4-max) * 1rem);
+  --spacing-3xl: clamp(var( --fs-5-min) * 1rem, ((var(--f-minus) * ((var( --fs-5-max) - var( --fs-5-min)) / var(--f-w)) + var( --fs-5-min)) * 1rem) + ((var( --fs-5-max) - 1) / var(--f-w) * 100vi), var( --fs-5-max) * 1rem);
+
+  --spacing-3xs-2xs: clamp(var(--fs-n3-min) * 1rem, ((var(--f-minus) * ((var(--fs-n2-max) - var(--fs-n3-min)) / var(--f-w)) + var(--fs-n3-min)) * 1rem) + ((var(--fs-n2-max) - 1) / var(--f-w) * 100vi), var(--fs-n2-max) * 1rem);
+  --spacing-2xs-xs:  clamp(var(--fs-n2-min) * 1rem, ((var(--f-minus) * ((var(--fs-n1-max) - var(--fs-n2-min)) / var(--f-w)) + var(--fs-n2-min)) * 1rem) + ((var(--fs-n1-max) - 1) / var(--f-w) * 100vi), var(--fs-n1-max) * 1rem);
+  --spacing-xs-sm:   clamp(var(--fs-n1-min) * 1rem, ((var(--f-minus) * ((var( --fs-0-max) - var(--fs-n1-min)) / var(--f-w)) + var(--fs-n1-min)) * 1rem) + ((var( --fs-0-max) - 1) / var(--f-w) * 100vi), var( --fs-0-max) * 1rem);
+  --spacing-sm-md:   clamp(var( --fs-0-min) * 1rem, ((var(--f-minus) * ((var( --fs-1-max) - var( --fs-0-min)) / var(--f-w)) + var( --fs-0-min)) * 1rem) + ((var( --fs-1-max) - 1) / var(--f-w) * 100vi), var( --fs-1-max) * 1rem);
+  --spacing-md-lg:   clamp(var( --fs-1-min) * 1rem, ((var(--f-minus) * ((var( --fs-2-max) - var( --fs-1-min)) / var(--f-w)) + var( --fs-1-min)) * 1rem) + ((var( --fs-2-max) - 1) / var(--f-w) * 100vi), var( --fs-2-max) * 1rem);
+  --spacing-lg-xl:   clamp(var( --fs-2-min) * 1rem, ((var(--f-minus) * ((var( --fs-3-max) - var( --fs-2-min)) / var(--f-w)) + var( --fs-2-min)) * 1rem) + ((var( --fs-3-max) - 1) / var(--f-w) * 100vi), var( --fs-3-max) * 1rem);
+  --spacing-xl-2xl:  clamp(var( --fs-3-min) * 1rem, ((var(--f-minus) * ((var( --fs-4-max) - var( --fs-3-min)) / var(--f-w)) + var( --fs-3-min)) * 1rem) + ((var( --fs-4-max) - 1) / var(--f-w) * 100vi), var( --fs-4-max) * 1rem);
+  --spacing-2xl-3xl: clamp(var( --fs-4-min) * 1rem, ((var(--f-minus) * ((var( --fs-5-max) - var( --fs-4-min)) / var(--f-w)) + var( --fs-4-min)) * 1rem) + ((var( --fs-5-max) - 1) / var(--f-w) * 100vi), var( --fs-5-max) * 1rem);
 }
