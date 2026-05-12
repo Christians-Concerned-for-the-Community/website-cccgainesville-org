@@ -182,7 +182,7 @@
 @custom-variant exopen (
    &:is([open], :popover-open, :open),
    &:is(:where(.group):has(*:is(&[aria-expanded="true"])) *)
-)
+);
 
 /* Breakpoints for different heights on mobile.
  * Sometimes, mobile varies much more by height than width, so being able
