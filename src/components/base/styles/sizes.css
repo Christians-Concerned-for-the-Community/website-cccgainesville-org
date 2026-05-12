@@ -1,30 +1,30 @@
-/* TODO: Use CSS to generate these values from a given setup (start size, end size, scaling) */
+/* 
+  Use fluid design calculations from utopia.fyi to generate our font and spacing
+  systems.
+
+  Based on these blog posts:
+    https://utopia.fyi/blog/css-modular-scales
+    https://utopia.fyi/blog/clamp/
+  
+  There are also postcss and scss libs provided by utopia that do this, but we
+  don't want to require extra dependencies. Can be used for reference, though.
+  See here for core logic:
+    https://github.com/trys/utopia-core
+
+  Only change I made was to add an extra step between base and first power for the
+  font sizes, using 0.5 power (sqrt). I kept feeling the need for a size between
+  the first two steps in the scale Utopia produced.
+
+  Config vars, with default values.
+    --f-max-w-px: 1440;  // max screen width in px
+    --f-min-w-px: 320;   // min screen width in px
+    --f-max-font-px: 18; // max font size in px
+    --f-min-font-px: 16; // min font size in px
+    --f-min-rat: 1.2;    // min growth ratio (unitless)
+    --f-max-rat: 1.25;   // max growth ratio (unitless)
+*/
 
 @layer theme { :root {
-  /* 
-    Use fluid layout calculations from utopia.fyi to generate our font and spacing
-    systems.
-
-    Based on these blog posts:
-      https://utopia.fyi/blog/css-modular-scales
-      https://utopia.fyi/blog/clamp/
-    
-    There are also postcss and scss libs that do this, but we don't want to require
-    extra dependencies. Can be used for reference, though. See here for core logic:
-      https://github.com/trys/utopia-core
-
-    Only change I made was to add an extra step between base and first power for the
-    font sizes, using 0.5 power (sqrt). I kept finding a need for a value between
-    the first two steps in the scale they produced.
-
-    Config vars, with default values.
-     --f-max-w-px: 1440;  // max screen width in px
-     --f-min-w-px: 320;   // min screen width in px
-     --f-max-font-px: 18; // max font size in px
-     --f-min-font-px: 16; // min font size in px
-     --f-min-rat: 1.2;    // min growth ratio (unitless)
-     --f-max-rat: 1.25;   // max growth ratio (unitless)
-  */
   --f-min-rat: 1.2;
   --f-max-rat: 1.25;
   
@@ -89,23 +89,23 @@
   --fs-n1-min: calc(var(--f-min-font) * 0.75);
   --fs-n1-max: calc(var(--f-max-font) * 0.75);
 
-  --fs-0-min: calc(var(--f-min-font));
-  --fs-0-max: calc(var(--f-max-font));
+  --fs-0-min:  calc(var(--f-min-font));
+  --fs-0-max:  calc(var(--f-max-font));
 
-  --fs-1-min: calc(var(--f-min-font) * 1.5);
-  --fs-1-max: calc(var(--f-max-font) * 1.5);
+  --fs-1-min:  calc(var(--f-min-font) * 1.5);
+  --fs-1-max:  calc(var(--f-max-font) * 1.5);
 
-  --fs-2-min: calc(var(--f-min-font) * 2);
-  --fs-2-max: calc(var(--f-max-font) * 2);
+  --fs-2-min:  calc(var(--f-min-font) * 2);
+  --fs-2-max:  calc(var(--f-max-font) * 2);
 
-  --fs-3-min: calc(var(--f-min-font) * 3);
-  --fs-3-max: calc(var(--f-max-font) * 3);
+  --fs-3-min:  calc(var(--f-min-font) * 3);
+  --fs-3-max:  calc(var(--f-max-font) * 3);
 
-  --fs-4-min: calc(var(--f-min-font) * 4);
-  --fs-4-max: calc(var(--f-max-font) * 4);
+  --fs-4-min:  calc(var(--f-min-font) * 4);
+  --fs-4-max:  calc(var(--f-max-font) * 4);
 
-  --fs-5-min: calc(var(--f-min-font) * 6);
-  --fs-5-max: calc(var(--f-max-font) * 6);
+  --fs-5-min:  calc(var(--f-min-font) * 6);
+  --fs-5-max:  calc(var(--f-max-font) * 6);
 }}
 
 

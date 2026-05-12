@@ -11,6 +11,7 @@
   whether or not to use them based on specificity.
  */
 
+@import "./styles/sizes.css";
 @import "./styles/colors.css";
 @import "./styles/typography.css";
 @import "./styles/animations.css";

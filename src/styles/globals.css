@@ -3,9 +3,6 @@
 
 @import "@base/base.css";
 
-@import "./typography.css";
-
-
 @layer base {
   :root {
     /* Max width of main content on site.
