@@ -74,8 +74,7 @@ const content = label? "hasText" : "iconOnly";
 const offIfStateDefined = "hidden not-group-data-state/button:inline";
 
 const iconClassName = twMerge(
-  label? "h-[1.8em]" : "h-[2.2em]",
-  "w-auto pointer-events-none",
+  "h-lh w-auto pointer-events-none",
   offIfStateDefined,
   iconClass
 );
@@ -83,14 +82,14 @@ const iconClassName = twMerge(
 export const button = tv({
   base: [
     "group/button inline-flex items-center justify-center font-medium whitespace-nowrap",
-    "h-[3em] gap-[1ch] rounded-sm shadow-xs border-solid border-[0.15em]",
+    "h-[1.5lh] gap-[1ch] rounded-sm shadow-xs border-solid border-[0.15em]",
     "transition-[color,background-color] duration-200"
   ],
   variants: {
     /* Don't try to set this yourself, this variable is hardcoded above. */
     content: {
-      hasText: "px-[0.6em]",
-      iconOnly: "px-[0.4em]",
+      hasText: "px-[0.75lh]",
+      iconOnly: "px-[0.25lh]",
     },
     variant: {
       /* Default button: swap the site-default background/foreground */

@@ -191,24 +191,26 @@ const mobileIconTray = darkModeToggle || icons?.length;
         Mobile nav menu that opens when menu button is clicked.
       */
     }
-    <div class="flex sm:hidden shrink items-center max-2xs:text-base">
-      <Modal location="right" label="Menu" animation="raise-boop" icon="tabler:menu-2">
-        <h2 class="text-2xl font-medium absolute top-sm left-sm">
+    <div class="flex sm:hidden shrink items-center text-xl max-2xs:text-lg">
+      <Modal location="right" label="Menu" icon="tabler:menu-2"
+        animation="raise-boop" buttonClass="h-[2lh]"
+      >
+        <h2 class="text-2xl sm-tall:text-4xl font-medium absolute top-sm left-sm">
           {mobileTitle}
         </h2>
         <ul class:list={[
-          "grow flex flex-col",
-          "mx-sm mb-sm mt-[calc(var(--spacing-md)+var(--spacing-sm))]"
+          "grow flex flex-col text-xl sm-tall:text-3xl",
+          "mx-sm mb-sm mt-lg sm-tall:mt-xl"
         ]}>
           {/* List of nav links. */}
           <div class:list={[
-            "flex flex-col justify-center grow text-lg sm-tall:text-2xl",
+            "flex flex-col justify-center grow",
             "[&_a]:py-xs sm-tall:[&_a]:py-sm",
-            "mt-xs pt-xs border-t-2 border-border"
+            "mt-xs py-md border-t-2 border-border"
           ]}>
             {mobileLinks.map((link) => (
-            <li>
-              <Link href={link.href} variant="nav" class="pl-sm w-full">
+            <li class="h-full">
+              <Link href={link.href} variant="nav" class="pl-sm w-full h-full">
                 {link.label}
               </Link>
             </li>
@@ -217,7 +219,7 @@ const mobileIconTray = darkModeToggle || icons?.length;
 
           {/* Icon tray */}
           {mobileIconTray && (
-          <div class="flex justify-around text-base mt-xs pt-xs border-t-2 border-border [&>li]:flex [&>li]:place-items-center">
+          <div class="flex justify-around pt-xs border-t-2 border-border [&>li]:flex [&>li]:place-items-center">
             {/* Add social icons to the icon tray. */}
             {icons?.map((item) => (
             <li>

@@ -196,8 +196,8 @@
  *   Samsung Galaxy S8+: 360w x 740h
  *   Samsung Galaxy S20 Ultra: 412w x 915h
  */
-/* sm-tall: height >= 750 px, width < 640 px */
-@custom-variant sm-tall (@media (height >= 46.875rem) and (width < 40rem));
+/* sm-tall: height >= 640 px, width < 640 px */
+@custom-variant sm-tall (@media (height >= 40rem) and (width < 40rem));
 
 
 /* ---------------- */
