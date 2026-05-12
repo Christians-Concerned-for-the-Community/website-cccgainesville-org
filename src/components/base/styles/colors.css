@@ -1,6 +1,16 @@
 /* Color vars, default colors, and box shadows. */
 
 @layer theme {
+  /*
+    Set default values for brand color config variables.
+    (Make sure you override these to get your own look).
+  */
+  :root {
+    --brand-primary:   #D4A373;
+    --brand-secondary: #355E3B;
+    --brand-neutral:   #70633e;
+  }
+
   /* default text and background colors */
   html {
     color: var(--color-foreground);
@@ -33,7 +43,7 @@
  *    text-special-100
  *    ... etc.
  */
-@theme inline {
+@theme {
     
   --color-bw:
     light-dark(var(--color-black), var(--color-white));
