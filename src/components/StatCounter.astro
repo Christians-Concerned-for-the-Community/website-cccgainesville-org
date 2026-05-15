@@ -25,7 +25,7 @@ const {
 
 const actionUrl = getActionPath(actions[action]);
 
-Astro.csp?.insertDirective(`connect-src self`);
+Astro.csp?.insertDirective("connect-src 'self'");
 ---
 
 {/*
