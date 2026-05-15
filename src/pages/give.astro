@@ -2,10 +2,9 @@
 import PageLayout from '@/layouts/PageLayout.astro'
 import GiveLively from '@/components/GiveLively.astro'
 import Feat from '@/assets/give-feat.jpg'
+import { uniqueId } from '@base/utils/ids';
 
-
-// see middleware.ts for the "id" function.
-const labelId = Astro.locals.id("give-lively-label");
+const labelId = uniqueId(Astro.url, "give-lively-label");
 ---
 
 <PageLayout title="Give" subtitle="Help us serve our community." featuredImage={Feat}

@@ -29,6 +29,7 @@ import type { HTMLAttributes } from "astro/types";
 import { tv, type VariantProps } from "tailwind-variants";
 import { twMerge } from 'tailwind-merge'
 import Button from "./Button.astro";
+import { uniqueId } from "./utils/ids.ts";
 
 type Props =
   Omit<HTMLAttributes<"ul">, "id"> &
@@ -83,8 +84,7 @@ export const disclosure = tv({
   },
 })
 
-// see middleware.ts for the "id" function.
-const disclosureId = Astro.locals.id("base-nav-disclosure");
+const disclosureId = uniqueId(Astro.url, "base-nav-disclosure");
 
 const {
   class: className,

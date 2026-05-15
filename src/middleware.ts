@@ -14,43 +14,6 @@ export const onRequest = defineMiddleware(async (context, next) => {
     return await next();
   }
 
-  /* Unique ID generator that works in both static and SSR modes.
-   *
-   * This is useful for components that need to specify a unique ID internally
-   * (like a disclosure and its trigger button), but might also be used multiple
-   * times on the same page.
-   * 
-   * Use this by calling Astro.locals.id('<component name>') inside your component.
-   * 
-   * See: https://andrewmara.com/blog/generate-unique-ids-per-request-in-astro
-   */
-  context.locals.id = (() => {
-    const map = new Map<string, number>(); // prefix -> number of times used so far
-    return (prefix: string) => {
-      const count = (map.get(prefix) ?? 0) + 1;
-      map.set(prefix, count);
-      return (count === 1)? `${prefix}` : `${prefix}-${count}`;
-    }
-  })();
-
-  /* Returns true if this is the first time this function has been called with
-   * the given name during this page request.
-   *
-   * This is useful if you have a component that needs to do something different
-   * during it's first rendering on the page.
-   */
-  context.locals.first = (() => {
-    const names = new Set<string>();
-    return (name: string) => {
-      if (names.has(name)) {
-        return false;
-      }
-      names.add(name);
-      return true;
-    }
-  })();
-
-
   /*
     Give Lively's donation widget contains inline style elements that we don't
     have hashes for. Enable unsafe-inline style behavior just for the giving

@@ -29,16 +29,12 @@ Astro.csp?.insertDirective("connect-src 'self'");
 ---
 
 {/*
-  Only reason for this div is to let us pass the sitekey into the script.
+  Only reason for this div is to let us pass the endpoint's action URL into the script.
 
-  Because of that, we only need to add the div to the page once.
-
-  We use "base-cart-update" for the ID because we don't want to use names
+  We use "base-cart-update" for the id class because we don't want to use names
   that might get flagged by an ad-blocker.
 */}
-{ Astro.locals.first("StatCounter") && (
-<div hidden id="base-cart-update" data-action={actionUrl}/>
-)}
+<div hidden class="base-cart-update" data-action={actionUrl}/>
 
 <script>
 import type { StatCounterRequest } from "./StatCounter.astro";
@@ -47,7 +43,7 @@ import type { StatCounterRequest } from "./StatCounter.astro";
   const loc = w.location;
 
 	// Retrieve the action url we're targeting.
-  const endpoint = d.getElementById('base-cart-update')?.dataset?.action;
+  const endpoint = d.querySelector<HTMLElement>('.base-cart-update')?.dataset?.action;
   
   // Helpers: delay running a func until certain conditions are met.
   const doWhenIdle = (func: ()=>void) => {

@@ -33,15 +33,8 @@ interface Props {};
 const {} = Astro.props;
 ---
 
-{/*
-  Only reason for this div is to let us pass the sitekey into the script.
-
-  Because of that, we only need to add the div to the page once.
-*/}
-{ Astro.locals.first("RecaptchaScore") && (
-<div hidden id="base-recaptchascore"
-  data-sitekey={process.env.PUBLIC_CAPTCHA_KEY || ""}/>
-)}
+{/* Only reason for this div is to let us pass the sitekey into the script. */}
+<div hidden class="base-recaptchascore" data-sitekey={process.env.PUBLIC_CAPTCHA_KEY || ""}/>
 
 <script>
 {
@@ -67,7 +60,7 @@ const {} = Astro.props;
     }
   }
 
-  const captcha = document.getElementById("base-recaptchascore");
+  const captcha = document.querySelector<HTMLElement>(".base-recaptchascore");
   const sitekey = captcha?.dataset.sitekey;
   if (sitekey) {
     const script = document.createElement('script');

@@ -19,6 +19,7 @@
  */
 
 import type { HTMLAttributes } from "astro/types";
+import { uniqueId } from "../utils/ids";
 
 // Add the required CSP directives for this captcha, but only on the pages where
 // this captcha is actually being used.
@@ -33,7 +34,7 @@ const {
   ...rest
 } = Astro.props;
 
-const captchaId = Astro.locals.id("form-captcha");
+const captchaId = uniqueId(Astro.url, "form-captcha");
 ---
 
 <div class:list={["frc-captcha", className]} id={captchaId}

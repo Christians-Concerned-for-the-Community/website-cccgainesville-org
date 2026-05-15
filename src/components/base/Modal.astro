@@ -4,9 +4,9 @@ import { tv, type VariantProps } from "tailwind-variants";
 import { twMerge } from 'tailwind-merge'
 
 import Button from "./Button.astro";
+import { uniqueId } from "./utils/ids";
 
-// see middleware.ts for the "id" function.
-const modalId = Astro.locals.id("base-modal");
+const modalId = uniqueId(Astro.url, "base-modal");
 
 type Props =
  Omit<HTMLAttributes<"dialog">, "closedby"> &
