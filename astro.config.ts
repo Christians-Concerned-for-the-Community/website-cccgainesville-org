@@ -85,6 +85,17 @@ export default defineConfig({
          */
         strictDynamic: true,
       },
+      styleDirective: {
+        /*
+          Astro is adding style="object-position: center" to img tags as part
+          of responsive image handling, but isn't generating a hash for it
+          automatically with CSP. Add it ourselves.
+
+          TODO: remove this once the bug is fixed, see: https://github.com/withastro/astro/issues/16656
+        */
+        resources: ["'self'", "'unsafe-hashes'"],
+        hashes: ['sha256-0740ZBP3M2FiEkXbUWsIqxUsdOBsp+qkWY2dR0rl5T4='],
+      },
       directives: [
         // disable insecure legacy embeds like Flash and Java
         "object-src 'none'",
