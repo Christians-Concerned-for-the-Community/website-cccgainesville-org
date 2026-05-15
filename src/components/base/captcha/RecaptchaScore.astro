@@ -114,9 +114,12 @@ const {} = Astro.props;
       }
     };
 
-    document.addEventListener("DOMContentLoaded", () => {
-      document.head.appendChild(script);
-    });
+    const addScript = () => document.head.appendChild(script);
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", addScript);
+    } else {
+      addScript();
+    }
   }
 }
 </script>
