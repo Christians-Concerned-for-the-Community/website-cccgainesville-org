@@ -8,6 +8,8 @@ import {
 } from '@base/captcha.ts'
 import Header from '@/components/Header.astro'
 import Footer from '@/components/Footer.astro'
+import StatCounter from '@/components/StatCounter.astro';
+import {actionName as goatCounter} from '@/actions/goatCounter';
 
 const orgName = "Christians Concerned for the Community";
 
@@ -131,5 +133,7 @@ const {
       </section>
       )}
     </Footer>
+
+    <StatCounter action={goatCounter}/>
   </body>
 </html>

@@ -3,9 +3,11 @@
  */
 
 import { ActionError } from "astro:actions";
-import type { CaptchaImpl } from "./captcha-types.ts";
 import { getSecret } from "astro:env/server";
 import crypto from 'node:crypto';
+
+import type { CaptchaImpl } from "./captcha-types.ts";
+import { headersGetIp } from "../utils/headers.ts";
 
 export const impl: CaptchaImpl = {
   preconnects: [{href:"https://challenges.cloudflare.com"}],
@@ -31,10 +33,7 @@ export const impl: CaptchaImpl = {
     // the response wasn't received due to some network issue.
     const idemKey = crypto.randomUUID();
 
-    const ip =
-      context.request.headers.get("CF-Connecting-IP") ||
-      context.request.headers.get("X-Forwarded-For") ||
-      "unknown";
+    const ip = headersGetIp(context) || "unknown";
 
     let res = {responseOk: false, success: false};
     const maxAttempts = 3;

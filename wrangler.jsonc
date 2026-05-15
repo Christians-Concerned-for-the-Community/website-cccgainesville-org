@@ -16,6 +16,7 @@
 	},
 
 	"vars": {
+		"PUBLIC_GOATCOUNTER_ENDPOINT": "https://staging-cccgainesville.goatcounter.com",
 		//* // Turnstile (Cloudflare)
 		"PUBLIC_CAPTCHA_NAME": "Turnstile",
 		"PUBLIC_CAPTCHA_KEY": "0x4AAAAAAAc02UX-EFdbhc0N",
@@ -46,6 +47,7 @@
 		"development": {
 			"name": "website-cccgainesville-org-dev",
 			"vars": {
+				"PUBLIC_GOATCOUNTER_ENDPOINT": "https://staging-cccgainesville.goatcounter.com",
 				//* // Turnstile
 				// dummy keys from here: https://developers.cloudflare.com/turnstile/troubleshooting/testing/
 				"PUBLIC_CAPTCHA_NAME": "Turnstile",
@@ -74,6 +76,7 @@
 				"zone_name": "cccgainesville.org"
 			},
 			"vars": {
+				"PUBLIC_GOATCOUNTER_ENDPOINT": "https://cccgainesville.goatcounter.com",
 				//* // Turnstile (Cloudflare)
 				"PUBLIC_CAPTCHA_NAME": "Turnstile",
 				"PUBLIC_CAPTCHA_KEY": "0x4AAAAAAAc02UX-EFdbhc0N",

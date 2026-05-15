@@ -1,5 +1,6 @@
 import type { ActionAPIContext } from "astro:actions";
 import { getSecret } from "astro:env/server";
+import { headersGetIp, headersGetJa4 } from "../utils/headers.ts";
 
 // Arguments needed to create an assessment. Also returned as part of result.
 // We're only specifying a subset of the fields here.
@@ -95,41 +96,13 @@ export const recaptchaValidate = async (
       request.event.userAgent = agent;
     }
     
-    const ip =
-      // Cloudflare
-      hdrs.get("CF-Connecting-IP") ||
-      // AWS Cloudfront
-      hdrs.get("CloudFront-Viewer-Address")?.replace(/:(\d+)$/,"") ||
-      // Azure Front Door
-      hdrs.get("X-Azure-ClientIP") ||
-      // Fastly
-      hdrs.get("Fastly-Client-IP") ||
-      // Bunny.net, Nginx
-      hdrs.get("X-Real-IP") ||
-      // Generic
-      hdrs.get("true-client-ip") ||
-      hdrs.get("X-Forwarded-For") ||
-      // The IP that directly made the request (if not proxied)
-      context.clientAddress;
+    const ip = headersGetIp(context);
     if (ip) {
       request.event.userIpAddress = ip;
     }
 
     // Use ja4 fingerprints, if we find one in a header.
-    const ja4 =
-      // Cloudflare (only available for Enterprise with Bot Management)
-      (context.request?.cf?.botManagement as any)?.ja4 ||
-      hdrs.get("cf-ja4") ||
-      // AWS Cloudfront
-      hdrs.get("CloudFront-Viewer-JA4-Fingerprint") ||
-      // Azure Front Door
-      hdrs.get("X-Azure-JA4-Fingerprint") ||
-      // Bunny.net
-      hdrs.get("CDN-JA4") ||
-      // Generic
-      hdrs.get('X-JA4') ||
-      hdrs.get('X-JA4-Fingerprint');
-
+    const ja4 = headersGetJa4(context);
     if (ja4) {
       request.event.ja4 = ja4;
     }

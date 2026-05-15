@@ -1,0 +1,114 @@
+---
+import { z } from 'astro/zod';
+import {actions, getActionPath} from "astro:actions";
+
+export const statCounterSchema = z.object({
+  path: z.string(),
+  title: z.string().optional(),
+  referrer: z.string().optional(),
+  query: z.string().optional(),
+  screenSize: z.string().optional()
+});
+export type StatCounterRequest = z.infer<typeof statCounterSchema>;
+
+
+interface Props {
+  /**
+   * The action to send analytics data to.
+   */
+  action: string,
+};
+
+const {
+  action,
+} = Astro.props;
+
+const actionUrl = getActionPath(actions[action]);
+
+Astro.csp?.insertDirective(`connect-src self`);
+---
+
+{/*
+  Only reason for this div is to let us pass the sitekey into the script.
+
+  Because of that, we only need to add the div to the page once.
+
+  We use "base-cart-update" for the ID because we don't want to use names
+  that might get flagged by an ad-blocker.
+*/}
+{ Astro.locals.first("StatCounter") && (
+<div hidden id="base-cart-update" data-action={actionUrl}/>
+)}
+
+<script>
+import type { StatCounterRequest } from "./StatCounter.astro";
+{
+  const w = window, d = document;
+  const loc = w.location;
+
+	// Retrieve the action url we're targeting.
+  const endpoint = d.getElementById('base-cart-update')?.dataset?.action;
+  
+  // Helpers: delay running a func until certain conditions are met.
+  const doWhenIdle = (func: ()=>void) => {
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(func);
+    } else {
+      func();
+    }
+  }
+  const doWhenVisible = (func: ()=>void) => {
+    if (d.visibilityState === 'visible') {
+      func();
+    } else {
+      const waitForVis = () => {
+        if (d.visibilityState === 'visible') {
+          d.removeEventListener('visibilitychange', waitForVis);
+          func();
+        }
+      };
+      d.addEventListener('visibilitychange', waitForVis)
+    }
+  }
+
+	// Helper: count a hit immediately.
+	const count = () => {
+    // Filtering.
+    if (
+      !endpoint
+      // skip count if running locally
+			|| ['localhost', '127.0.0.1', '[::1]'].includes(loc.hostname)
+      || loc.protocol === 'file:'
+      // bot detection - filter out legit crawlers that aren't trying to hide
+      // what they are, to reduce traffic to the server.
+      || navigator.webdriver
+      || navigator.userAgent.includes('HeadlessChrome')
+    ) {
+      console.log("skipping analytics, local dev or bot"); //DEBUG_161
+      return;
+    }
+
+    // Assemble request data and send it to the handler.
+    const req: StatCounterRequest = {
+      path: loc.pathname,
+      title: d.title,
+      referrer: d.referrer,
+      query: loc.search,
+      screenSize: w.screen.width.toString(),
+    };
+    const fd = new FormData();
+    for (const [key, value] of Object.entries(req)) {
+      fd.append(key, value);
+    }
+    
+    navigator.sendBeacon(endpoint, fd);
+	}
+
+  // Attempt to wait for an idle period, then kick everything off once the page is visible.
+  if (endpoint) {
+    doWhenIdle(()=>{doWhenVisible(count)});
+  } else {
+    console.warn("SC: no endpoint found");
+  }
+}
+</script>

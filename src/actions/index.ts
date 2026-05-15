@@ -1,11 +1,13 @@
 import { basename, extname } from "node:path";
 
-import { formTester } from "./formTester";
+import { formTester } from "./formTester.ts";
+import { goatCounter } from "./goatCounter.ts";
 
 
 // Put actions in here.
 export const server: Record<string, any> = {
-  ...formTester
+  ...formTester,
+  ...goatCounter
 }
 
 
