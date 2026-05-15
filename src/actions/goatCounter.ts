@@ -83,7 +83,7 @@ type Request = {
      * For compatibility it also accepts the size as "width,height,scaling", but
      * the height and scaling are not used and this format is deprecated.
      */
-    size?: number;
+    size?: string;
 
     /**
      * Time this pageview should be recorded at, as an ISO timestamp.
@@ -171,12 +171,12 @@ export const goatCounter = {
     handler: async(input, context) => {
       const hdrs = context.request.headers;
 
-      const width = Number(input.screenSize ||
+      const width = input.screenSize ||
         hdrs.get("Sec-CH-Viewport-Width") ||
         hdrs.get("Viewport-Width") ||
         hdrs.get("Width") ||
         undefined
-      );
+      ;
 
       const request: Request = {
         hits: [{
@@ -188,7 +188,7 @@ export const goatCounter = {
           location: headersGetCountry(context) || undefined,
           ref: input.referrer || hdrs.get("Referer") || undefined,
           title: input.title,
-          size: Number.isFinite(width)? width : undefined,
+          size: width,
         }]
       };
 
@@ -201,7 +201,8 @@ export const goatCounter = {
 
       const endpoint = process.env.PUBLIC_GOATCOUNTER_ENDPOINT;
       if (!endpoint) {
-        throw new Error("endpoint missing, forgot to set PUBLIC_GOATCOUNTER_ENDPOINT?");
+        console.error("endpoint missing, forgot to set PUBLIC_GOATCOUNTER_ENDPOINT?");
+        return;
       }
       const endpointUrl = new URL(endpoint);
       endpointUrl.protocol = "https:";
@@ -209,13 +210,14 @@ export const goatCounter = {
       
       const secret = getSecret("SECRET_GOATCOUNTER_KEY");
       if (!secret) {
-        throw new Error("secret missing, forgot to set SECRET_GOATCOUNTER_KEY?");
+        console.error("secret missing, forgot to set SECRET_GOATCOUNTER_KEY?");
+        return;
       }
 
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 10000);
       try {
-        await fetch(endpointUrl.href, {
+        const response = await fetch(endpointUrl.href, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -224,6 +226,7 @@ export const goatCounter = {
           body: JSON.stringify(request),
           signal: controller.signal,
         });
+        if (!response.ok) { console.error(`Server response:\n${JSON.stringify(await response.text(), null, 2)}`); }
       } catch(e) {}
       clearTimeout(timeoutId);
     }
