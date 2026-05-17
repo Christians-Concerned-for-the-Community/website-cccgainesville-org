@@ -78,7 +78,7 @@
 
   /* UI color settings (for both light and dark modes). */
   --color-background:
-    light-dark(var(--color-neutral-50),    var(--color-neutral-900));
+    light-dark(var(--color-gray-100),    var(--color-neutral-900));
   --color-foreground:
     light-dark(var(--color-neutral-800),   var(--color-gray-200));
   --color-popover: /* background */
@@ -119,7 +119,11 @@
     light-dark(var(--color-neutral-900), var(--color-gray-100));
   --color-outline:
     light-dark(var(--color-neutral-400), var(--color-neutral-500));
-  
+
+  --color-focus-inner:
+    light-dark(var(--color-primary-500), var(--color-primary-300));
+  --color-focus-outer:
+    light-dark(var(--color-primary-100), var(--color-primary-400));
 
   --color-banner: /* background */
     light-dark(var(--color-neutral-800), var(--color-neutral-850));

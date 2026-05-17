@@ -44,18 +44,57 @@
     Default styling for keyboard-focused elements.
    */
   :root {
-    --focus-outline: 0.125rem dashed light-dark(#000, #FFF);
-    --focus-outline-offset: 0.125rem;
-
-    --focus-shadow: none;
-
+    --focus-inner: 0.125rem solid var(--color-focus-inner);
+    --focus-outer: 0 0 0.75rem 0.25rem --alpha(var(--color-focus-outer) / 85%);
     --focus-radius: var(--radius-lg);
+    --focus-duration: 200ms;
+    @media (prefers-reduced-motion: reduce) {
+      --focus-duration: 0ms; 
+    }
   }
   *:not(select):focus-visible, .select:has(:focus-visible) {
-    outline: var(--focus-outline);
-    outline-offset: var(--focus-outline-offset);
-    box-shadow: var(--focus-shadow);
     border-radius: var(--focus-radius);
+
+    /* Fallback - if anchor positioning not available, use classic non-animated focus. */
+    @supports not (position-anchor: --test) {
+      outline: var(--focus-inner);
+      box-shadow: var(--focus-outer);
+    }
+
+    /* If CSS anchor positioning is supported, use an animated floating focus, to
+       make focus changes easier to track visually.
+
+       See: https://polypane.app/blog/css-only-floating-focus-with-anchor-positioning/
+     */
+    @supports (position-anchor: --test) {
+      outline: none;
+      anchor-name: --focus-anchor;
+    }
+  }
+  /* Define the animated flying focus itself. */
+  @supports (position-anchor: --test) {
+    :is(
+      html:not(dialog):not([popover]),
+      dialog[open],
+      [popover]:popover-open
+    )::after {
+      content: '';
+      position: fixed;
+      position-anchor: --focus-anchor;
+      position-visibility: anchors-valid;
+
+      inset: anchor(inside);
+      margin: -0.375rem;
+
+      border: var(--focus-inner);
+      box-shadow: var(--focus-outer);
+
+      background: transparent;
+      border-radius: var(--focus-radius);
+      pointer-events: none;
+      z-index: 2147483647;
+      transition: inset var(--focus-duration) linear;
+    }
   }
 
   /*
