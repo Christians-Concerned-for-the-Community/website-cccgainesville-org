@@ -1,0 +1,48 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+/**
+ * Skip Link
+ * 
+ * A hidden jump link pointing to just below the page's header, that becomes
+ * visible when focused by pressing the "tab" key.
+ * 
+ * To be useful, the Skip Link must be the first focusable element on the page.
+ */
+type Props = HTMLAttributes<"a"> & {
+  /**
+   * Id of element to skip to when clicked.
+   */
+  targetId: string;
+}
+
+const {
+  class: className,
+  targetId,
+  ...rest
+} = Astro.props;
+
+const href = targetId.startsWith('#')? targetId : '#' + targetId;
+---
+<a href={href} class:list={[
+    "not-focus-visible:sr-only",
+    className
+]}>
+  <slot>Skip to main content</slot>
+</a>
+
+<style>
+@layer base {
+  *:focus-visible {
+    position: absolute;
+    top: var(--spacing-sm);
+    left: var(--spacing-sm);
+    z-index: 50;
+
+    padding: var(--spacing-sm);
+
+    color: var(--color-bw);
+    background-color: var(--color-wb);
+  }
+}
+</style>
