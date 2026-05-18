@@ -28,6 +28,13 @@ export default defineConfig({
 
   integrations: [
     sitemap({
+      filter: (page) => {
+        const pathname = (new URL(page)).pathname;
+        const exclude = [
+          /^\/admin\//, // omit any path from sitemap that lies under admin/
+        ];
+        return !exclude.some(regex => regex.test(pathname));
+      },
       namespaces: {
         news: false,
         xhtml: false,
