@@ -1,0 +1,23 @@
+---
+import { getSecret } from "astro:env/server";
+import PageLayout from "@/layouts/PageLayout.astro"
+
+const endpoint = process.env.PUBLIC_GOATCOUNTER_ENDPOINT;
+
+/*
+  Note: having to put this token in the url isn't particularly secure, but:
+    (a) our summary analytics data isn't all that sensitive anyway
+    (b) this token is different than our api key, it's only used for viewing the online dashboard
+    (c) we've got everything on the admin/ path locked down behing a Google auth using Cloudflare
+        One Access Controls - see https://developers.cloudflare.com/cloudflare-one/access-controls/
+*/
+const token = getSecret("SECRET_GOATCOUNTER_VIEWTOKEN");
+
+Astro.csp?.insertDirective(`frame-src ${endpoint}`);
+---
+
+<PageLayout title="Website Traffic" subtitle="provided by GoatCounter">
+
+  <iframe class="w-full h-full" src=`${endpoint}?access-token=${token}`/>
+
+</PageLayout>

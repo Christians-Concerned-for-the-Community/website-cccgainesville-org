@@ -4,7 +4,7 @@
  */
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
-	"compatibility_date": "2026-05-01",
+	"compatibility_date": "2026-05-18",
 	"compatibility_flags": ["nodejs_compat"],
 	"name": "website-cccgainesville-org-staging",
 	"main": "@astrojs/cloudflare/entrypoints/server",
@@ -12,7 +12,10 @@
 	"assets": {
 		// prevent random requests from running workers
 		"not_found_handling": "404-page",
-		"run_worker_first": ["/_actions/*"], // only execute workers for Astro Actions
+		"run_worker_first": [
+			"/_actions/*",  // execute workers for Astro Actions endpoints
+			"/admin/editor/","/admin/editor", // execute worker for server-rendered admin editor
+		], 
 	},
 
 	"vars": {

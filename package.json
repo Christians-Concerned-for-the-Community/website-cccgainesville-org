@@ -30,6 +30,7 @@
   "dependencies": {
     "@astrojs/cloudflare": "^13.5.1",
     "@astrojs/sitemap": "^3.7.2",
+    "@sveltia/cms": "^0.161.1",
     "@tabler/icons": "^3.44.0",
     "@tailwindcss/vite": "^4.3.0",
     "astro": "^6.3.3",

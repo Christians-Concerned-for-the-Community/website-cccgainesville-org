@@ -41,6 +41,30 @@ export const onRequest = defineMiddleware(async (context, next) => {
       status: 200,
       headers: response.headers,
     });
+  } else if (context.url.pathname === "/admin/editor" || context.url.pathname.startsWith("/admin/editor/")) {
+    const response = await next();
+
+    // Completely override Astro's CSP settings for this server-rendered route.
+    const directives = [
+      // basic csp settings:
+      "object-src 'none'",
+      "base-uri 'none'",
+      "upgrade-insecure-requests",
+      "default-src 'none'",
+
+      // sveltia-specific stuff:
+      // see: https://sveltiacms.app/en/docs/security#setting-up-content-security-policy
+      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+      "font-src 'self' https://fonts.gstatic.com",
+      "img-src 'self' blob: data: https://*.githubusercontent.com",
+      "media-src blob:",
+      "frame-src blob:",
+      "script-src 'self' https://unpkg.com",
+      "connect-src blob: data: https://unpkg.com https://api.github.com https://*.githubstatus.com",
+    ];
+    response.headers.set('Content-Security-Policy', directives.join(";") + ";");
+
+    return response;
   }
 
   return await next();
