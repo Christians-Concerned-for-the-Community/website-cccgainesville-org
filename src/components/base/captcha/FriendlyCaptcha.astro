@@ -23,6 +23,7 @@ import { uniqueId } from "../utils/ids";
 
 // Add the required CSP directives for this captcha, but only on the pages where
 // this captcha is actually being used.
+Astro.csp?.insertScriptResource("'strict-dynamic'");
 Astro.csp?.insertDirective("frame-src *.frcapi.com");
 
 interface Props extends HTMLAttributes<"div"> {

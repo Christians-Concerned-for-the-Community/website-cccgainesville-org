@@ -25,6 +25,7 @@
 
 // Add the required CSP directives for this captcha, but only on the pages where
 // this captcha is actually being used.
+Astro.csp?.insertScriptResource("'strict-dynamic'");
 Astro.csp?.insertDirective("connect-src https://www.google.com/recaptcha/");
 Astro.csp?.insertDirective("frame-src https://www.google.com/recaptcha/");
 

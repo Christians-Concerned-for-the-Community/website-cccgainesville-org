@@ -79,19 +79,6 @@ export default defineConfig({
    */
   security: {
     csp: {
-      scriptDirective: {
-        /*
-          Trust any scripts that were loaded by trusted scripts, without
-          requiring them to be hashed. This makes it much easier to maintain
-          third-party scripts - you just load them dynamically inside a parent
-          script that's part of this project.
-
-          Otherwise, you'd have to maintain hashes for all third-party resources,
-          and update them as they were maintained, which isn't really feasible -
-          stuff would be breaking all the time.
-         */
-        strictDynamic: true,
-      },
       styleDirective: {
         /*
           Astro is adding style="object-position: center" to img tags as part

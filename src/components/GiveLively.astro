@@ -8,6 +8,7 @@ import Spinner from '@base/Spinner.astro';
 
 // Add the required CSP directives for Give Lively, but only on pages where
 // the donation widget is actually present.
+Astro.csp?.insertScriptResource("'strict-dynamic'");
 Astro.csp?.insertDirective("connect-src https://secure.givelively.org");
 Astro.csp?.insertDirective("frame-src https://secure.givelively.org");
 Astro.csp?.insertDirective("font-src https://fonts.gstatic.com");
