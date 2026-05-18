@@ -42,7 +42,13 @@ export interface Props extends HTMLAttributes<"main"> {
    * Always hide this page from search engines, even on production builds.
    * @default false
    */
-  alwaysHide?: boolean
+  alwaysHide?: boolean;
+
+  /**
+   * Collect website traffic statistics for visits to this page.
+   * @default true
+   */
+  collectStats?: boolean;
 
   /**
    * Performance profile. Certain pages can benefit from additional optimizations,
@@ -58,6 +64,7 @@ const {
   description = 'CCC is a Christian charity based in Gainesville, FL that provides used furniture and builds wheelchair ramps for our neighbors in Alachua County.',
   author = orgName,
   alwaysHide = false,
+  collectStats = true,
   profile,
   class: className,
 } = Astro.props
@@ -134,6 +141,8 @@ const {
       )}
     </Footer>
 
+    {collectStats && (
     <StatCounter action={goatCounter}/>
+    )}
   </body>
 </html>
