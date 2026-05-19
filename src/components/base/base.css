@@ -80,7 +80,7 @@
       }
     }
   }
-  /* Define the animated flying focus itself. */
+  /* Define the flying focus itself. */
   @supports (position-anchor: --test) {
     html:not(.safari) {
       &::after,
