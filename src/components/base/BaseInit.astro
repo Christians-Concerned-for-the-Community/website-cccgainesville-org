@@ -49,6 +49,8 @@ const title = (pageTitle? `${pageTitle} - ` : "") + siteTitle;
 <script>
 {
   const cl = document.documentElement.classList;
+
+  // Darkmode handling.
   const colorTheme = localStorage.getItem("colorTheme");
   cl.toggle("dark",
     colorTheme?
@@ -57,7 +59,15 @@ const title = (pageTitle? `${pageTitle} - ` : "") + siteTitle;
       window.matchMedia("(prefers-color-scheme: dark)").matches
   );
 
+  // Mark that javascript is available.
   cl.add("js");
+
+  // Add a hint for if we're on Safari's engine (the new IE).
+  // On iOS, this also matches all the other browsers that are forced to use Apple's
+  // webkit engine.
+  if (/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) {
+    cl.add("safari");
+  }
 }
 </script>
 

@@ -127,6 +127,15 @@ const closeDefault = "base-modal-close absolute top-xs right-sm text-sm";
   <dialog id={modalId} closedby="any"
     class={dialogVariants({ location, class: className })} {...rest}
   >
+    {/*
+      This is a workaround to fix a 4 year old bug in Safari, where it triggers
+      :focus-visible on modal open when the keyboard was not used to trigger
+      the modal button. Setting pointer-events to none on the button's svg does
+      not work around this issue.
+
+      Webkit bug: https://bugs.webkit.org/show_bug.cgi?id=247416
+    */}
+    <div tabindex=-1 autofocus class="not-safari:hidden"/>
 
     <slot />
 
