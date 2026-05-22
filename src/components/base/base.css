@@ -83,9 +83,9 @@
   /* Define the flying focus itself. */
   @supports (position-anchor: --test) {
     html:not(.safari) {
-      &::after,
-      dialog[open]::after,
-      & [popover]:popover-open::after {
+      &:has(:focus-visible)::after,
+      dialog:has(:focus-visible)::after,
+      & [popover]:has(:focus-visible)::after {
         content: '';
         position: fixed;
         position-anchor: --focus-anchor;
@@ -100,15 +100,6 @@
         border-radius: var(--focus-radius);
         pointer-events: none;
         z-index: 2147483647;
-        opacity: 1;
-      }
-
-      &:not(:focus-within) {
-        &::after,
-        dialog[open]::after,
-        & [popover]:popover-open::after {
-          opacity: 0;
-        }
       }
     }
   }
