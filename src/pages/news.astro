@@ -6,24 +6,37 @@ import PageLayout from '@/layouts/PageLayout.astro';
 
 import feat from '@/assets/media/news-feat.jpg';
 import newsletters from '@/assets/newsletters.json';
+
+newsletters.forEach(entry => {
+  entry.date = new Date(entry.date).toLocaleDateString('en-US', {
+    month:"long",
+    day:"numeric",
+    year:"numeric"
+  });
+});
 ---
 
 <PageLayout title="News" subtitle="Updates from CCC's director." featuredImage={feat}>
   <ul class="flex flex-col items-center gap-2xl w-fit mx-auto">
   {newsletters.map(({date, summary, articleUrl, imageUrl}) => (
     <li class:list={[
-      "flex flex-col sm:flex-row w-fit items-start gap-md sm:gap-lg rounded-b-sm shadow-md",
+      "flex flex-col sm:flex-row w-fit items-start gap-sm sm:gap-lg rounded-b-sm shadow-md",
       "border-foreground border-t-2 border-l-6",
       "dark:border-muted dark:border-2"
     ]}>
       <div class="flex flex-col items-start p-sm max-w-[60ch] sm:w-[min(60ch,70vw)]">
         <h2 class="text-2xl mb-lh">
           <Link href={articleUrl}>
-            {new Date(date).toLocaleDateString('en-US', {month:"long",day:"numeric",year:"numeric"})}
-            <Icon name="tabler-filled:circle-arrow-right" size="1lh" class="ml-[0.5ch]"/>
+            Newsletter - {date}
           </Link>
         </h2>
         <p>{summary}</p>
+        <p aria-hidden="true">
+          <Link href={articleUrl} tabindex=-1>
+            Read the full article
+            <Icon name="tabler-filled:circle-arrow-right" size="1lh" class="ml-[0.5ch]"/>
+          </Link>
+        </p>
       </div>
       <Image src={imageUrl} alt="" aria-hidden=true inferSize={true}
         loading="lazy" decoding="async"
