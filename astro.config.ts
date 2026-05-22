@@ -52,6 +52,8 @@ export default defineConfig({
   image: {
     // Enable responsive images:
     layout: 'constrained',
+    // Authorize pulling all remote images into the build, as long as they're served over https:
+    remotePatterns: [{ protocol: "https" }],
   },
 
   vite: {

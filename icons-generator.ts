@@ -55,6 +55,7 @@ const icons = [
   ['tabler', 'external-link'],
   ['tabler', 'alert-triangle'],
   ['tabler', 'circle-check'],
+  ['tabler-filled', 'circle-arrow-right'],
 ];
 
 
