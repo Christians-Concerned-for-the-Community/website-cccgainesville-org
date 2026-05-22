@@ -1,0 +1,34 @@
+name: rebase-prod
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  rebase:
+    runs-on: [ ubuntu-latest ]
+
+    concurrency:
+      group: "rebase-${{ inputs.branch }}"
+      cancel-in-progress: false
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          ref: ${{ inputs.branch }}
+
+      - name: Rebase ${{ inputs.branch }}
+        uses: martincostello/rebaser@v3
+        id: rebase
+
+      - name: Push changes
+        if : ${{ steps.rebase.outputs.result == 'success' }}
+        run: git push --force-with-lease origin ${{ inputs.branch }}
