@@ -46,30 +46,6 @@
 	},
 
 	"env": {
-		// If we're running a local dev build, use captcha test keys.
-		"development": {
-			"name": "website-cccgainesville-org-dev",
-			"vars": {
-				"PUBLIC_GOATCOUNTER_ENDPOINT": "https://staging-cccgainesville.goatcounter.com",
-				//* // Turnstile
-				// dummy keys from here: https://developers.cloudflare.com/turnstile/troubleshooting/testing/
-				"PUBLIC_CAPTCHA_NAME": "Turnstile",
-				"PUBLIC_CAPTCHA_KEY": "1x00000000000000000000AA", //always succeeds
-				//"PUBLIC_CAPTCHA_KEY": "2x00000000000000000000AB", //always fails
-				//"PUBLIC_CAPTCHA_KEY": "3x00000000000000000000FF", //forces interactive challenge
-				//*/
-				/* // RecaptchaScore - dummy keys we defined in our cloud project
-				"PUBLIC_CAPTCHA_NAME": "RecaptchaScore",
-				"PUBLIC_CAPTCHA_ENDPOINT": "recaptcha-enterprise-endpoint", //gcloud project id
-				"PUBLIC_CAPTCHA_KEY": "6LcGcNEsAAAAADxi4bF3w7vpNIURwNwDWKtiMfyt", // 0.7 - success
-				//"PUBLIC_CAPTCHA_KEY": "6LcjftEsAAAAADicV50u0BfTiKJ0WeztuwFFXkDM", // 0.1 - failure
-				//*/
-				/* // FriendlyCaptcha
-				"PUBLIC_CAPTCHA_NAME": "FriendlyCaptcha",
-				"PUBLIC_CAPTCHA_KEY": "FCMLQFNHQOES71QN",
-				//*/
-			},
-		},
 		// If we're running a production build, host it at the real URL.
 		"production": {
 			"name": "website-cccgainesville-org-prod",

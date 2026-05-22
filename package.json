@@ -7,12 +7,13 @@
     "baseline widely available"
   ],
   "scripts": {
-    "dev": "CLOUDFLARE_ENV=development astro dev",
-    "build": "wrangler types && astro build",
-    "preview": "CLOUDFLARE_ENV=development sh -c 'wrangler types && astro build && astro preview'",
     "astro": "astro",
+    "dev": "astro dev",
+    "preview": "wrangler types && astro build && astro preview",
+    "build": "wrangler types && astro build",
+    "build-production": "CLOUDFLARE_ENV=production sh -c 'wrangler types && astro build'",
     "deploy": "wrangler deploy --env=''",
-    "deploy-production": "wrangler deploy --env='production'",
+    "deploy-production": "CLOUDFLARE_ENV=production wrangler deploy",
     "generate-types": "wrangler types",
     "postinstall": "pnpm up --depth=Infinity --no-save caniuse-lite baseline-browser-mapping"
   },
@@ -30,7 +31,7 @@
   "dependencies": {
     "@astrojs/cloudflare": "^13.5.4",
     "@astrojs/sitemap": "^3.7.2",
-    "@sveltia/cms": "^0.161.1",
+    "@sveltia/cms": "^0.162.3",
     "@tabler/icons": "^3.44.0",
     "@tailwindcss/vite": "^4.3.0",
     "astro": "^6.3.7",

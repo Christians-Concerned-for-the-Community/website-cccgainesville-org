@@ -18,7 +18,10 @@ const blist = browserslistToEsbuild();
 //       (we do this for staging builds)
 export default defineConfig({
   compressHTML: true,
-  site: 'https://staging.cccgainesville.org',
+  site: (process.env.CLOUDFLARE_ENV === "production")?
+    "https://new.cccgainesville.org"
+    :
+    "https://staging.cccgainesville.org",
 
   output: 'static',
 
