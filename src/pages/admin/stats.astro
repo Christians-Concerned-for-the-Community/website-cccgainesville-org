@@ -12,7 +12,7 @@ const endpoint = process.env.PUBLIC_GOATCOUNTER_ENDPOINT;
   Note: having to put this token in the url isn't particularly secure, but:
     (a) our summary analytics data isn't all that sensitive anyway
     (b) this token is different than our api key, it's only used for viewing the online dashboard
-    (c) we've got everything on the admin/ path locked down behing a Google auth using Cloudflare
+    (c) we've got everything on the admin/ path locked down behind Google auth using Cloudflare
         One Access Controls - see https://developers.cloudflare.com/cloudflare-one/access-controls/
 */
 const token = getSecret("SECRET_GOATCOUNTER_VIEWTOKEN");
