@@ -11,10 +11,10 @@ export default defineConfig([
   // Ignore patterns
   {
     ignores: [
-      'dist/**',
-      'node_modules/**',
-      '.astro/**',
-      '**/*.d.ts', // Ignore generated TypeScript declaration files
+      "dist/**",
+      "node_modules/**",
+      ".astro/**",
+      "**/*.d.ts", // Ignore generated TypeScript declaration files
     ],
   },
 
@@ -36,7 +36,7 @@ export default defineConfig([
   astro.configs.recommended,
   astro.configs["jsx-a11y-strict"],
   {
-    files: ['**/*.astro'],
+    files: ["**/*.astro"],
     languageOptions: {
       parser: astroParser,
       parserOptions: {

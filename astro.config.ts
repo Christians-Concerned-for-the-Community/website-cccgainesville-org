@@ -1,5 +1,5 @@
 import tailwindcss from "@tailwindcss/vite";
-import browserslistToEsbuild from 'browserslist-to-esbuild'
+import browserslistToEsbuild from "browserslist-to-esbuild";
 import { defineConfig } from "astro/config";
 import { fileURLToPath } from "url";
 
@@ -7,7 +7,7 @@ import sitemap from "@astrojs/sitemap";
 import cloudflare from "@astrojs/cloudflare";
 
 const abspath = (path: string) => {
-  return fileURLToPath(new URL(path, import.meta.url))
+  return fileURLToPath(new URL(path, import.meta.url));
 };
 
 const blist = browserslistToEsbuild();
@@ -18,43 +18,43 @@ const blist = browserslistToEsbuild();
 //       (we do this for staging builds)
 export default defineConfig({
   compressHTML: true,
-  site: (process.env.CLOUDFLARE_ENV === "production")?
-    "https://new.cccgainesville.org"
-    :
-    "https://staging.cccgainesville.org",
+  site:
+    process.env.CLOUDFLARE_ENV === "production"
+      ? "https://new.cccgainesville.org"
+      : "https://staging.cccgainesville.org",
 
   output: 'static',
 
   adapter: cloudflare({
-    imageService: 'compile' //'cloudflare-binding' // haven't been able to get this to work for local previews
+    imageService: "compile", //'cloudflare-binding' // haven't been able to get this to work for local previews
   }),
 
   integrations: [
     sitemap({
       filter: (page) => {
-        const pathname = (new URL(page)).pathname;
+        const pathname = new URL(page).pathname;
         const exclude = [
           /^\/admin\//, // omit any path from sitemap that lies under admin/
         ];
-        return !exclude.some(regex => regex.test(pathname));
+        return !exclude.some((regex) => regex.test(pathname));
       },
       namespaces: {
         news: false,
         xhtml: false,
         video: false,
-      }
+      },
     }),
   ],
 
   markdown: {
     // Use Prism for syntax highlighting instead of Shiki, which doesn't currently
     // work under Astro's strict CSP support.
-    syntaxHighlight: 'prism',
+    syntaxHighlight: "prism",
   },
 
   image: {
     // Enable responsive images:
-    layout: 'constrained',
+    layout: "constrained",
     // Authorize pulling all remote images into the build, as long as they're served over https:
     remotePatterns: [{ protocol: "https" }],
   },
@@ -67,9 +67,9 @@ export default defineConfig({
     },
     resolve: {
       alias: {
-        '@':       abspath('./src'),
-        '@public': abspath('./public'),
-        '@base':   abspath('./src/components/base'),
+        "@": abspath("./src"),
+        "@public": abspath("./public"),
+        "@base": abspath("./src/components/base"),
       },
     },
   },
@@ -98,4 +98,4 @@ export default defineConfig({
       ],
     },
   },
-})
+});
