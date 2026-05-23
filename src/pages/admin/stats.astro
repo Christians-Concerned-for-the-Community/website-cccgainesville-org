@@ -2,6 +2,10 @@
 import { getSecret } from "astro:env/server";
 import PageLayout from "@/layouts/PageLayout.astro"
 
+// Server-render the stats page, because we don't have access to secrets during
+// prerendering of static files.
+export const prerender = false;
+
 const endpoint = process.env.PUBLIC_GOATCOUNTER_ENDPOINT;
 
 /*
