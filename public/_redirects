@@ -18,7 +18,6 @@
 # Redirects for pages that have different names on our new site, than on our old Wordpress site.
 /donate     /give       301
 /contact-us /contact    301
-/about      /our-values 301
 /about/docs /documents  301
 
 # Convenience redirects (short URL's for various other pages)

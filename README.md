@@ -14,9 +14,9 @@
  * [Services](src/pages/services.astro)
  * [Give](src/pages/give.astro)
  * [Contact](src/pages/contact.astro)
- * [News](src/pages/news.astro)
  * [Volunteer](src/pages/volunteer.astro)
- * [Our Values](src/pages/our-values.astro)
+ * [News](src/pages/news.astro)
+ * [About Us](src/pages/about.astro)
  * [Documents](src/pages/documents.astro)
 
 ## Other Commonly-Edited Files
