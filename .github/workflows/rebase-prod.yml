@@ -28,7 +28,9 @@ jobs:
       - name: Rebase ${{ github.ref_name }} on ${{ inputs.branch }}
         uses: martincostello/rebaser@v3
         id: rebase
+        with:
+          branch: ${{ inputs.branch }}
 
       - name: Push changes
         if : ${{ steps.rebase.outputs.result == 'success' }}
-        run: git push --force-with-lease origin ${{ github.ref_name }}
+        run: git push origin ${{ github.ref_name }} --force-with-lease
