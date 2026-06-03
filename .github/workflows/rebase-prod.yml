@@ -22,15 +22,12 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v6
-        with:
-          ref: ${{ github.ref_name }}
-          fetch-depth: 0
 
       - name: Rebase ${{ github.ref_name }} on ${{ inputs.branch }}
         run: |
             git config --global user.name "github-actions[bot]"
             git config --global user.email "github-actions[bot]@users.noreply.github.com"
-            git fetch origin ${{ inputs.branch }} --unshallow
+            git fetch origin ${{ inputs.branch }} ${{ github.ref_name }} --unshallow
             git checkout ${{ github.ref_name }}
             git pull --rebase origin ${{ inputs.branch }}
             git push origin ${{ github.ref_name }} --force-with-lease --force-if-includes
