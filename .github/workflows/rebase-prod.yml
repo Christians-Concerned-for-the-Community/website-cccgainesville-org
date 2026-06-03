@@ -20,17 +20,17 @@ jobs:
       cancel-in-progress: false
 
     steps:
-      - name: Checkout code
+      - name: Checkout repo
         uses: actions/checkout@v6
         with:
+          ref: ${{ github.ref_name }}
           fetch-depth: 0
 
       - name: Rebase ${{ github.ref_name }} on ${{ inputs.branch }}
-        uses: martincostello/rebaser@v3
-        id: rebase
-        with:
-          branch: ${{ inputs.branch }}
-
-      - name: Push changes
-        if : ${{ steps.rebase.outputs.result == 'success' }}
-        run: git push origin ${{ github.ref_name }} --force-with-lease
+        run: |
+            git config --global user.name "github-actions[bot]"
+            git config --global user.email "github-actions[bot]@users.noreply.github.com"
+            git fetch origin ${{ inputs.branch }} --unshallow
+            git checkout ${{ github.ref_name }}
+            git pull --rebase origin ${{ inputs.branch }}
+            git push origin ${{ github.ref_name }} --force-with-lease --force-if-includes
