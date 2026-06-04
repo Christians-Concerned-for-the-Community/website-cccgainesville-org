@@ -17,6 +17,8 @@ const endpoint = process.env.PUBLIC_GOATCOUNTER_ENDPOINT;
 */
 const token = getSecret("SECRET_GOATCOUNTER_VIEWTOKEN");
 
+//return Astro.redirect(`${endpoint}?access-token=${token}`);
+
 Astro.csp?.insertDirective(`frame-src ${endpoint}`);
 ---
 
