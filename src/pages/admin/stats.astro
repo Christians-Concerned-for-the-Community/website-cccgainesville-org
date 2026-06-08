@@ -1,21 +1,38 @@
 ---
-import { getSecret } from "astro:env/server";
-import PageLayout from "@/layouts/PageLayout.astro"
+/**
+ * This dashboard was vendored in from here: https://github.com/abhishekhsingh/goatcounter-dashboard
+ *
+ * It was lightly modified to allow substituting in the endpoint (baseURL) and token (apiKey) using
+ * data attributes on the document root, so the user doesn't have to log in.
+ *
+ * This file subs the endpoint and token in by doing a regex replace on a couple placeholders we added
+ * to the original HTML file.
+ */
 
-// Server-render the stats page, because we don't have access to secrets during
-// prerendering of static files.
+import { getSecret } from "astro:env/server";
+
+// Server-render the stats page, so we can access server-side secrets.
+// Note: access to this path will be behind Google Auth using Cloudflare One Access, so it's okay
+//       that this secret winds up visible to the client.
 export const prerender = false;
 
-const endpoint = process.env.PUBLIC_GOATCOUNTER_ENDPOINT;
+// Get endpoint and token values.
+let endpoint = process.env.PUBLIC_GOATCOUNTER_ENDPOINT;
+if (!endpoint.endsWith("/")) {
+  endpoint += "/";
+}
+const token = getSecret("SECRET_GOATCOUNTER_VIEWTOKEN") || "";
 
-/*
-  Note: having to put this token in the url isn't very secure, but:
-    (a) our summary analytics data isn't all that sensitive anyway
-    (b) this token is different than our api key, it's only used for viewing the online dashboard
-    (c) we've got everything on the admin/ path locked down behind Google auth using Cloudflare
-        One Access Controls - see https://developers.cloudflare.com/cloudflare-one/access-controls/
-*/
-const token = getSecret("SECRET_GOATCOUNTER_VIEWTOKEN");
+// Get the HTML of the dashboard, replace our placeholders with the actual endpoint and token.
+// Note: each placeholder only appears once, very near to the top of the file, so it's more efficient
+//       to chain two single replaces than to do a global replace with a regex.
+import htmlString from '/src/assets/gc-dashboard.html?raw';
+const replacedHtmlString = htmlString
+  .replace("{{{ENDPOINT}}}", endpoint)
+  .replace("{{{TOKEN}}}", token);
 
-return Astro.redirect(`${endpoint}?access-token=${token}`);
+// Tell CDN to cache the response, and only re-render the page once every five minutes at most.
+// This puts an upper limit on the number of times per day we'll actually have to generate this page.
+Astro.response.headers.set('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=30');
 ---
+<Fragment set:html={replacedHtmlString} />

@@ -4,7 +4,7 @@ import { defineMiddleware } from 'astro:middleware'
  * begins. This happens for both static pages (pre-rendering) and dynamic pages
  * (server-side rendering - SSR).
  *
- * Values stored in [context.locals] are available to use inside the .astro files 
+ * Values stored in [context.locals] are available to use inside the .astro files
  * that define the page, through the [Astro.locals] object.
  */
 export const onRequest = defineMiddleware(async (context, next) => {
@@ -36,7 +36,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
     const updatedHtml = html.replace(
       /(<meta\s+[^>]+"content-security-policy"[^>]+style-src )([^;]*)/i,
       `$1${newStyleSrc}`);
-    
+
     return new Response(updatedHtml, {
       status: 200,
       headers: response.headers,
@@ -61,6 +61,27 @@ export const onRequest = defineMiddleware(async (context, next) => {
       "frame-src blob:",
       "script-src 'self' https://unpkg.com",
       "connect-src blob: data: https://unpkg.com https://api.github.com https://*.githubstatus.com",
+    ];
+    response.headers.set('Content-Security-Policy', directives.join(";") + ";");
+
+    return response;
+  } else if (context.url.pathname === "/admin/stats" || context.url.pathname.startsWith("/admin/stats/")) {
+    const response = await next();
+
+    // Completely override Astro's CSP settings for this server-rendered route.
+    const directives = [
+      // basic csp settings:
+      "object-src 'none'",
+      "base-uri 'none'",
+      "upgrade-insecure-requests",
+      "default-src 'none'",
+      "img-src 'self'",
+
+      // specific settings for the goatcounter dashboard:
+      "connect-src 'self' https://unpkg.com https://*.goatcounter.com",
+      "font-src 'self' https://fonts.gstatic.com",
+      "script-src 'self' 'unsafe-inline' https://unpkg.com",
+      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     ];
     response.headers.set('Content-Security-Policy', directives.join(";") + ";");
 
