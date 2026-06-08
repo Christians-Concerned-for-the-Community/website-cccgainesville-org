@@ -2471,7 +2471,33 @@
     // DASHBOARD
     // ============================================================
     function Dashboard({ config, onDisconnect, theme, toggleTheme, demoMode = false }) {
-      const [preset, setPreset] = useState('7d');
+      const params = new URLSearchParams(window.location.search);
+      let defaultRange = '30d';
+      switch (params.get('range') || params.get('daterange') || params.get('date_range') || params.get('date-range')) {
+        case 'today':
+        case 'day':
+        case 'daily':
+        case '1d':
+          defaultRange = 'today';
+          break;
+        case 'week':
+        case 'weekly':
+        case '7d':
+          defaultRange = '7d';
+          break;
+        case 'month':
+        case 'monthly':
+        case '30d':
+          defaultRange = '30d';
+          break;
+        case 'quarter':
+        case 'quarterly':
+        case '90d':
+          defaultRange = '90d';
+          break;
+      }
+
+      const [preset, setPreset] = useState(defaultRange);
       const [customStart, setCustomStart] = useState('');
       const [customEnd, setCustomEnd] = useState('');
       const [data, setData] = useState({});
