@@ -1,6 +1,7 @@
 ---
 import Button from '@base/Button.astro';
 import DarkModeToggle from '@base/DarkModeToggle.astro';
+import Icon from '@base/Icon.astro';
 import type { NavIcon } from '@base/Nav.astro';
 
 import socials from '@/assets/socials.json'
@@ -20,7 +21,7 @@ const navIcons = socials as NavIcon[];
     "px-md gap-x-[3ch] gap-y-[0.8em]"
   ]}>
     <p class="sm:text-center">
-      &copy; {currentYear} ❤️ Christians Concerned for the Community
+      &copy; {currentYear} <Icon name="local:ccc-logo" size="1lh" class="mx-2xs"/> Christians Concerned for the Community
     </p>
     <div class="hidden sm:flex items-center gap-sm">
       {navIcons.map((item) => (
