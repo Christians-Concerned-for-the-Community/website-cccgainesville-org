@@ -1,4 +1,5 @@
 ---
+import type { GetStaticPaths } from "astro";
 import type { HTMLAttributes, ComponentProps } from "astro/types";
 import {actions, getActionPath} from "astro:actions";
 import { twMerge } from 'tailwind-merge';
@@ -19,15 +20,15 @@ Astro.csp?.insertDirective("connect-src 'self'");
 type Props = HTMLAttributes<"form"> & {
   /**
    * Properties to style the submit button.
-   * 
+   *
    * Be cautious about changing the button label to something other than
    * "submit". Non-sighted users may be confused by non-standard submit
    * button labels, because they don't perceive the visual cues (color and
    * placement within the form) that help sighted users understand what the
    * button really does.
-   * 
+   *
    * See: https://plousia.com/blog/accessible-wording-form-submit-buttons
-   * 
+   *
    * @default {label: "submit"}
    */
   submitButton?: Omit<ComponentProps<typeof Button>, "type">;
@@ -39,35 +40,35 @@ type Props = HTMLAttributes<"form"> & {
 
   /**
    * Tag to use for the heading in the message box at the top of the form.
-   * 
+   *
    * @default "h3"
    */
   messageHeadingTag?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "div",
 
   /**
    * Heading text for the error summary.
-   * 
+   *
    * @default "Oops, let's fix these errors first:"
    */
   errorHeadingText?: string,
 
   /**
    * Heading text for the success message.
-   * 
+   *
    * @default "Successfully submitted!"
    */
   successHeadingText?: string,
 
   /**
    * Text to display in submit button during form initialization.
-   * 
+   *
    * @default "Loading"
    */
   loadingText?: string,
 
   /**
    * Text to display in submit button during submission.
-   * 
+   *
    * @default "Processing"
    */
   processingText?: string,
@@ -158,7 +159,7 @@ const actionUrl = getActionPath(actions[handlerAction]);
 </form>
 
 <script>
-{ 
+{
   document.querySelectorAll<HTMLFormElement>(".base-form").forEach((form) => {
     const msgContainer = form.querySelector<HTMLElement>('section');
     const errList = msgContainer?.querySelector<HTMLUListElement>('ul');
@@ -233,7 +234,7 @@ const actionUrl = getActionPath(actions[handlerAction]);
         // don't call response.json() directly, will throw error if body is empty
         const text = await response.text();
         const result = text? JSON.parse(text) : {};
-        
+
         for (const el of fields) {
           const errDest = el.dataset.err? document.getElementById(el.dataset.err) : undefined;
           const errText = el.dataset.name? (result.fields?.[el.dataset.name]?.join(", ")) : undefined;
@@ -244,7 +245,7 @@ const actionUrl = getActionPath(actions[handlerAction]);
 
         if (!response.ok && errs.length == 0) {
           addErr(result.message?
-            result.message 
+            result.message
             :
             "Network error, please try again later"
           );
@@ -284,19 +285,20 @@ const actionUrl = getActionPath(actions[handlerAction]);
     scroll-margin-top: 2lh;
   }
 
-  input,textarea,.select {
+  input:not(.base-focus-container *),textarea:not(.base-focus-container *),.base-focus-container {
     border: 1px solid var(--color-border-strong);
     border-radius: var(--radius-md);
     transition: 120ms box-shadow ease-in-out;
     width: 100%;
     cursor: inherit;
-    &:not(.select) {
-      padding: 0.35em 1em;
-    }
-    
+
     &:hover, &:focus-visible, &:has(:focus-visible) {
       box-shadow: 0 0 0 1px var(--color-secondary-accent);
     }
+  }
+
+  input,textarea {
+    padding: 0.35em 1em;
   }
 
   /* For honeypot. */
@@ -333,7 +335,7 @@ const actionUrl = getActionPath(actions[handlerAction]);
       }
     }
   }
-  .select {
+  .base-focus-container:has(select) {
     position: relative;
 
     &:not(:has([multiple])) {
@@ -394,7 +396,7 @@ const actionUrl = getActionPath(actions[handlerAction]);
         transform: scale(1);
       }
     }
-  
+
     &[type="checkbox"] {
       border-radius: var(--radius-sm);
       &::before {
@@ -404,7 +406,7 @@ const actionUrl = getActionPath(actions[handlerAction]);
     }
 
     &[type="radio"] {
-      border-radius: 50%; 
+      border-radius: 50%;
       &::before {
         border-radius: 50%;
       }

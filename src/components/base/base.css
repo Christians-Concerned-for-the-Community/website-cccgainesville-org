@@ -42,13 +42,16 @@
 
   /*
     Default styling for keyboard-focused elements.
+
+    Defining the "base-focus-container" class on an element that contains the focused element,
+    will make the focus box surround the whole container instead of just the focused element.
    */
   :root {
     --focus-inner: 0.125rem solid var(--color-focus-inner);
     --focus-outer: 0 0 0.75rem 0.25rem --alpha(var(--color-focus-outer) / 85%);
     --focus-radius: var(--radius-lg);
   }
-  *:not(select):focus-visible, .select:has(:focus-visible) {
+  :not(.base-focus-container) *:focus-visible, .base-focus-container:has(:focus-visible) {
     border-radius: var(--focus-radius);
 
     /* Fallback
@@ -272,7 +275,7 @@
   --radius-4xl: 2.5rem; /* 40 px */
 
   /* Additional custom breakpoints.
-   * 
+   *
    * These can be used as modifiers just like the built-in breakpoints:
    *
    * Note: smallest width we need to support is 320px.
@@ -280,7 +283,7 @@
    * Example:
    *   max-w-50 xs:max-w-60 md:max-w-100
    */
-  --breakpoint-3xs: 21rem; /* 21rem = 336 px */ 
+  --breakpoint-3xs: 21rem; /* 21rem = 336 px */
   --breakpoint-2xs: 25rem; /* 25rem = 400 px */
   --breakpoint-xs:  31.25rem; /* 31.25rem = 500 px */
 

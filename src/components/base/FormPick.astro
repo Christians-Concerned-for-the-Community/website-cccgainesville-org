@@ -1,10 +1,10 @@
 ---
 /**
  * FormPick.astro
- * 
+ *
  * A form field for picking one or multiple options from a list of choices.
- * 
- * 
+ *
+ *
  * TODO: implement checkbox/radio version of this, too, put it behind an option.
  */
 import type { HTMLAttributes } from "astro/types";
@@ -29,12 +29,12 @@ type Props = Omit<
 
   /**
    * An object mapping option values to display labels.
-   * 
+   *
    * For example, if we want the user to see the options "Honda Accord"
    * and "Toyota Camry", and we want to submit the values "car_honda" and
    * "car_toyota" in the form data when each option is selected, we'd
    * set options as follows:
-   * 
+   *
    * {
    *  car_honda: "Honda Accord",
    *  car_toyota: "Toyota Camry"
@@ -44,7 +44,7 @@ type Props = Omit<
 
   /**
    * Is this field required for a succcessful form submission?
-   * 
+   *
    * @default false
    */
   required?: boolean,
@@ -127,7 +127,7 @@ if (startWith) {
 
 {/*
   We nest the error message and input field inside the label for a couple of reasons:
-    
+
   * Nesting causes the error message to be included in the label's clickable area.
   This is helpful because we're showing the error messages above the field, right
   below the label text, so that they don't get blocked by autocomplete boxes, and
@@ -135,7 +135,7 @@ if (startWith) {
 
   * Nesting the field as well makes it easier to avoid accidentally introducing
   clickable area gaps through margins and such.
-  
+
   * Finally, if we nest everything, we can use the label element as the overall
   layout container for the field, too. This avoids having to add a wrapper div.
 
@@ -167,7 +167,7 @@ if (startWith) {
   </div>
 
   {/* Select box. */}
-  <div class={twMerge("select text-current/90 text-base", fieldClass)}>
+  <div class={twMerge("base-focus-container text-current/90 text-base", fieldClass)}>
     <select id={inputId} name={name} data-name={name} multiple={multipleVal} required={required}
       aria-describedby={errId} data-err={errId}
       class="base-form-field",
