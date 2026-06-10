@@ -44,18 +44,18 @@
 @theme inline {
   --ease-fast: cubic-bezier(0.165, 0.84, 0.44, 1);
 
-  --animate-raise: raise 200ms var(--ease-fast) forwards;
+  --animate-base-raise: base-raise 200ms var(--ease-fast) forwards;
 
-  --animate-boop: boop 500ms var(--ease-fast) forwards;
+  --animate-base-boop: base-boop 500ms var(--ease-fast) forwards;
 
-  --animate-rotate: rotate 500ms var(--ease-fast) forwards;
+  --animate-base-rotate: base-rotate 500ms var(--ease-fast) forwards;
 
-  @keyframes raise {
+  @keyframes base-raise {
     0% { translate: 0 0; }
     100% { translate: 0 -0.1875rem}
   }
 
-  @keyframes boop {
+  @keyframes base-boop {
     0% {
       transform: scale(1) rotate(0deg);
     }
@@ -71,9 +71,9 @@
     100% {
       transform: scale(1) rotate(0deg);
     }
-  }  
+  }
 
-  @keyframes rotate {
+  @keyframes base-rotate {
     0% {
       transform: rotate(0deg);
     }
