@@ -36,7 +36,7 @@ type Props =
 
   /**
    * Icon to use for close button.
-   * 
+   *
    * @default: tabler:x
    */
   closeIcon?: string;
@@ -60,7 +60,7 @@ const {
 
 const dialogVariants = tv({
   base: [
-    "overflow-y-auto [scrollbar-gutter:auto]",
+    "overflow-y-auto scrollbar-gutter-auto",
     "bg-background shadow-lg max-w-cw-md transition-discrete p-0 m-0",
     "open:flex not-open:hidden",
     "open:animate-in open:duration-500",
@@ -76,11 +76,11 @@ const dialogVariants = tv({
       center: ["rounded-lg"],
       right: ["rounded-l-lg",
         "not-open:motion-safe:slide-out-to-right open:motion-safe:slide-in-from-right",
-        "inset-y-0 right-0 left-auto h-full max-h-[100dvh] w-3/4 sm:max-w-cw-sm",
+        "inset-y-0 right-0 left-auto h-full max-h-dvh w-3/4 sm:max-w-cw-sm",
       ],
       left: ["rounded-r-lg",
         "not-open:motion-safe:slide-out-to-left open:motion-safe:slide-in-from-left",
-        "inset-y-0 right-auto left-0 h-full max-h-[100dvh] w-3/4 sm:max-w-cw-sm",
+        "inset-y-0 right-auto left-0 h-full max-h-dvh w-3/4 sm:max-w-cw-sm",
       ],
       top: ["rounded-b-lg",
         "not-open:motion-safe:slide-out-to-top open:motion-safe:slide-in-from-top",
@@ -118,7 +118,7 @@ const closeDefault = "base-modal-close absolute top-xs right-sm text-sm";
     * a mouse click or touch. This is incorrect behavior - it should
     * be setting the focus, but it shouldn't be displaying a focus ring
     * unless the user triggered the dialog via keyboard.
-    * 
+    *
     * See here for mention of bug:
     * https://github.com/radix-ui/primitives/issues/2953
     * https://bugs.webkit.org/show_bug.cgi?id=247416
