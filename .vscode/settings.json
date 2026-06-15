@@ -6,4 +6,10 @@
         "*.css": "tailwindcss"
     },
     "editor.tabSize": 2,
+    "tailwindCSS.experimental.classRegex": [
+        "\\w*[cC]lass\\s*=\\s*\"([^\"]*)\"",
+        "\\w*[cC]lass\\s*=\\s*'([^']*)'",
+        ["tv\\({([^]*?)}\\)", "[\"'`]([^\"'`]*)[\"'`]"],
+        ["(?:twMerge|twJoin)\\(([^;]*)[\\);]", "[`'\"`]([^'\"`;]*)[`'\"`]"],
+    ],
 }

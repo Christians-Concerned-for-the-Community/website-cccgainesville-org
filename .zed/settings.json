@@ -18,7 +18,7 @@
             "\\w*[cC]lass\\s*=\\s*\"([^\"]*)\"",
             "\\w*[cC]lass\\s*=\\s*'([^']*)'",
             ["tv\\({([^]*?)}\\)", "[\"'`]([^\"'`]*)[\"'`]"],
-            ["(?:twMerge|twJoin)\\(([^;]*)[\\);]", "[`'\"`]([^'\"`;]*)[`'\"`]"],
+            ["(?:twMerge|twJoin)\\(([^;]*)[\\);]", "[`'\"`]([^'\"`;]*)[`'\"`]"]
           ]
         }
       }
@@ -28,12 +28,19 @@
     "enabled": true
   },
   "languages": {
-    "Astro": {
+    "TSX": {
       "language_servers": [
-        "astro-analyzer",
-        "tailwindcss-language-server",
+        "typescript-language-server",
+        "!vtsls",
         "..."
-      ],
+      ]
+    },
+    "TypeScript": {
+      "language_servers": [
+        "typescript-language-server",
+        "!vtsls",
+        "..."
+      ]
     },
     "CSS": {
       "language_servers": [
