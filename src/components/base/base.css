@@ -49,11 +49,10 @@
   :root {
     --focus-inner: 0.125rem solid var(--color-focus-inner);
     --focus-outer: 0 0 0.75rem 0.25rem --alpha(var(--color-focus-outer) / 85%);
-    --focus-radius: var(--radius-lg);
+    --focus-radius: var(--radius-sm);
   }
-  :not(.base-focus-container) *:focus-visible, .base-focus-container:has(:focus-visible) {
-    border-radius: var(--focus-radius);
-
+  :focus-visible:not(.base-focus-container *), /* I have focus visible and I'm not within a focus container, OR */
+  .base-focus-container:has(:focus-visible) {  /* I'm a focus container and my descendant has focus-visible */
     /* Fallback
        If anchor positioning not available, use classic outline focus instead.
      */

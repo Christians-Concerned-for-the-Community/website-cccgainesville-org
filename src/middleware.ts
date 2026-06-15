@@ -14,34 +14,12 @@ export const onRequest = defineMiddleware(async (context, next) => {
     return await next();
   }
 
-  /*
-    Give Lively's donation widget contains inline style elements that we don't
-    have hashes for. Enable unsafe-inline style behavior just for the giving
-    page, so we can still use it.
+  const isPath = (path: string) : boolean => {
+    return context.url.pathname === path ||
+           context.url.pathname.startsWith(path + "/");
+  }
 
-    TODO: can we get Give Lively to fix this?
-  */
-  if (context.url.pathname === "/give/") {
-    const response = await next();
-    const html = await response.text();
-
-    // Replace contents of style-src, to allow inline styles without hashes.
-    const newStyleSrc = [
-      "'self'",
-      "'unsafe-inline'",
-      "https://secure.givelively.org",
-      "https://fonts.googleapis.com"
-    ].join(' ');
-
-    const updatedHtml = html.replace(
-      /(<meta\s+[^>]+"content-security-policy"[^>]+style-src )([^;]*)/i,
-      `$1${newStyleSrc}`);
-
-    return new Response(updatedHtml, {
-      status: 200,
-      headers: response.headers,
-    });
-  } else if (context.url.pathname === "/admin/editor" || context.url.pathname.startsWith("/admin/editor/")) {
+  if (isPath("/admin/editor")) {
     const response = await next();
 
     // Completely override Astro's CSP settings for this server-rendered route.
@@ -65,7 +43,8 @@ export const onRequest = defineMiddleware(async (context, next) => {
     response.headers.set('Content-Security-Policy', directives.join(";") + ";");
 
     return response;
-  } else if (context.url.pathname === "/admin/stats" || context.url.pathname.startsWith("/admin/stats/")) {
+
+  } else if (isPath("/admin/stats")) {
     const response = await next();
 
     // Completely override Astro's CSP settings for this server-rendered route.

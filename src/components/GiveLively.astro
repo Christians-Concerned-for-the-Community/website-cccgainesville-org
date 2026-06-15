@@ -1,98 +1,513 @@
 ---
-import { twMerge } from "tailwind-merge";
 import { type HTMLAttributes } from "astro/types";
 
-import Button from "@base/Button.astro";
-import Icon from "@base/Icon.astro";
-import Spinner from "@base/Spinner.astro";
+import { uniqueId } from "@base/utils/ids";
 
 // Add the required CSP directives for Give Lively, but only on pages where
 // the donation widget is actually present.
-Astro.csp?.insertScriptResource("'strict-dynamic'");
-Astro.csp?.insertDirective("connect-src https://secure.givelively.org");
 Astro.csp?.insertDirective("frame-src https://secure.givelively.org");
-Astro.csp?.insertDirective("font-src https://fonts.gstatic.com");
-Astro.csp?.insertStyleResource("https://secure.givelively.org");
-Astro.csp?.insertStyleResource("https://fonts.googleapis.com");
 
-export interface Props extends HTMLAttributes<"div"> {
-  labelId: string,
+export interface Props extends HTMLAttributes<"form"> {
+  slug?: string,
+  locale?: string, // locale to use for formatting strings, defaults to system locale
+  currencyCode?: string,
 };
 
 const {
-  labelId,
+  slug = "christians-concerned-for-the-community-inc",
+  locale = new Intl.DateTimeFormat().resolvedOptions().locale,
+  currencyCode = "USD",
   class: className,
   ...rest
 } = Astro.props;
 
+const currencySymbol = Intl.NumberFormat(locale, {style:"currency", currency:currencyCode})
+  .formatToParts(0)
+  .find(part => part.type === "currency")?.value || "$";
+
+const frequencies = ["One-Time", "Monthly"];
+const amounts = ["25", "50", "100", "250"];
+
+const frequencyIds = frequencies.map(freq => uniqueId(Astro.url, `gl-frequency-${freq.toLowerCase()}`));
+
+const amountIds = amounts.map(amount => uniqueId(Astro.url, `gl-amount-${amount}`));
+const otherAmountId = uniqueId(Astro.url, "gl-amount-other");
+const otherAmountEntryId = uniqueId(Astro.url, "gl-amount-custom");
+
 ---
 
-<div data-state="initial" class={twMerge("base-gl-container group",
-  "flex grow items-center justify-center",
-  "min-w-76 w-full max-w-86 h-94 p-1 3xs:p-2xs 2xs:p-sm",
-  className
-  )}
+<form novalidate data-currency={currencyCode} data-locale={locale} data-slug={slug}
+  class:list={["gl-simple-donation-widget", className]}
   {...rest}
 >
-  {/* Only show button and error message on error, or if javascript is disabled. */}
-  <div class:list={[
-    "hidden not-js:flex group-data-[state=error]:flex flex-col gap-md px-xs",
-    // Wait a little while before showing the element (prevents flashes as JS gets things set up)
-    "transition-opacity delay-200 duration-0",
-    "starting:opacity-0 opacity-100",
-  ]}>
-    <div class="flex items-center justify-center gap-xs mx-xs">
-      <Icon name="tabler:alert-triangle" size="4em" class="text-warning"/>
-      <p class="text-justify">Could not load donation form. To donate, click the button below.</p>
-    </div>
-    <Button class="text-xl w-auto h-auto"
-      icon="local:donate"
-      iconClass="w-full h-auto"
-      alt="Donate to CCC at Give Lively"
-      href="https://secure.givelively.org/donate/christians-concerned-for-the-community-inc"
-      variant="ghost"
-      animation="raise"
-    />
-  </div>
-  <Spinner
-    class="hidden js:group-data-[state=initial]:block size-2xl text-foreground"
-    hidden
-  />
-  <div id="give-lively-widget" role="form" aria-labelledby={labelId}
-    class="gl-simple-donation-widget hidden js:group-data-[state=ok]:block"
-  />
-</div>
+  {/* Gift Frequency */}
+  <fieldset class="base-focus-container">
+    <legend class="sr-only">Gift Frequency</legend>
+    { frequencies.map((freq, idx) => (
+    <label for={frequencyIds[idx]}>
+      <input type="radio" id={frequencyIds[idx]} name="frequency" value={freq.toLowerCase()} checked={idx === 0}/>
+      {freq}
+    </label>
+    ))}
+  </fieldset>
 
-{/* Give Lively Fundraising Widget, URL of script to embed was obtained from here:
-    https://secure.givelively.org/nonprofits/christians-concerned-for-the-community-inc/simple-donation-widget
-*/}
+  {/* Gift Amount */}
+  <fieldset class="base-focus-container">
+    <legend class="sr-only">Gift Amount</legend>
+    { amounts.map((amount, idx) => (
+    <label for={amountIds[idx]}>
+      <input type="radio" id={amountIds[idx]} name="amount" value={amount}/>
+      <span aria-hidden="true">{currencySymbol}</span>{amount} <span class="sr-only">{currencyCode}</span>
+    </label>
+    ))}
+
+    <label for={otherAmountId}>
+      <input type="radio" id={otherAmountId} name="amount" value="other"/>
+      <span>Custom Amount</span>
+    </label>
+  </fieldset>
+
+  <label for={otherAmountEntryId} class="gl-other-entry">
+    <div class="base-focus-container">
+      <span aria-hidden="true">{currencySymbol}</span>
+      <input type="text" id={otherAmountEntryId} inputmode="numeric" name="otherAmount"/>
+      <span aria-hidden="true">{currencyCode}</span>
+    </div>
+    <span class="sr-only">Custom donation amount in whole {currencyCode}</span>
+  </label>
+
+  {/* Donate Button and Modal */}
+  <div class="gl-submit">
+    <svg aria-hidden="true" width="1lh" height="1lh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 9v4" />
+      <path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0" />
+      <path d="M12 16h.01" />
+    </svg>
+    <span class="gl-error" aria-live="polite"/>
+    <button type="submit">Donate<span/></button>
+  </div>
+
+  <dialog class="gl-payment-modal" closedby="any">
+    <iframe allow="payment" src="about:blank"></iframe>
+  </dialog>
+</form>
+
+
+<style is:global>
+@layer components { form.gl-simple-donation-widget {
+  /* Default settings, can be overriden by project settings. */
+  --gl-color-fg: light-dark(#4A4A4A, #FFF);
+  --gl-color-bg: light-dark(#FFF, #164046);
+  --gl-color-accent: light-dark(#0CA1B3, #00CBBC);
+  --gl-color-error: light-dark(#9f0712, #ff6467);
+  --gl-radius: 0.5rem;
+  --gl-spacing-2xs: 0.25em;
+  --gl-spacing-xs: 0.5em;
+  --gl-spacing-sm: 1em;
+  --gl-spacing-md: 1.5em;
+  --gl-duration: 120ms;
+  @media (prefers-reduced-motion: reduce) {
+    --gl-duration: 0ms;
+  }
+  --gl-button-shadow: 0px 4px 4px -2px oklch(from var(--gl-color-accent) l c h / 0.2);
+  --gl-section-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --gl-color-checked: oklch(from var(--gl-color-accent) l c h / 0.05);
+
+  max-width: 40ch;
+  width: 100%;
+  font-family: Avenir, Montserrat, Corbel, 'URW Gothic', source-sans-pro, sans-serif; /* Geometric Humanist - modernfontstacks.com */
+  font-size: 1.05em;
+  color: var(--gl-color-fg);
+  background-color: var(--gl-color-bg);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--gl-spacing-sm);
+
+  border-radius: var(--gl-radius);
+  border: 2px solid var(--gl-color-accent);
+  box-shadow: var(--gl-section-shadow);
+
+  label {
+    cursor: pointer;
+  }
+
+  fieldset {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: start;
+    width: 100%;
+    gap: var(--gl-spacing-xs);
+
+    &:first-of-type {
+      margin-block-end: var(--gl-spacing-md);
+    }
+
+    label {
+      flex-grow: 1;
+      padding: var(--gl-spacing-xs) var(--gl-spacing-xs);
+      text-align: center;
+      border: 1px solid var(--gl-color-accent);
+      border-radius: var(--gl-radius);
+      user-select: none; /* make text unselectable by user (since it functions as a button) */
+
+      transition: var(--gl-duration) box-shadow background-color ease-in-out;
+      box-shadow: var(--gl-button-shadow);
+      background-color: var(--gl-color-bg);
+      &:has(:checked) {
+        box-shadow: 0 0 0 2px var(--gl-color-accent);
+        font-weight: 500;
+      }
+      &:hover, &:has(:checked) {
+        background-color: var(--gl-color-checked);
+      }
+
+      &:has([value="other"]) {
+        width: 100%; /* Make sure custom amount option is always on its own line. */
+        &:has(:checked) {
+          padding-block-end: 0;
+          /* When checked, remove bottom border so we can combine seamlessly with the amount input field. */
+          box-shadow:
+            0 -2px 0 0 var(--gl-color-accent),
+            -2px 0 0 0 var(--gl-color-accent),
+            2px 0 0 0 var(--gl-color-accent);
+          border-end-end-radius: 0;
+          border-end-start-radius: 0;
+          border-block-end-color: transparent;
+          span::after {
+            content: ":";
+          }
+        }
+      }
+
+      /* Hide the radio buttons, only show the label. */
+      input {
+        appearance: none;
+      }
+    }
+  }
+
+  label.gl-other-entry {
+    display: none;
+    align-items: center;
+    width: 100%;
+    background-color: var(--gl-color-checked);
+    border: 1px solid var(--gl-color-accent);
+    box-shadow:
+      0 2px 0 0 var(--gl-color-accent),
+      -2px 0 0 0 var(--gl-color-accent),
+      2px 0 0 0 var(--gl-color-accent);
+
+    /* Remove the top border so it blends seamlessly with the custom amount button. */
+    border-radius: var(--gl-radius);
+    border-start-end-radius: 0;
+    border-start-start-radius: 0;
+    border-block-start-color: transparent;
+
+    /* Border around currency spans and the input box itself. */
+    & > div:first-of-type {
+      display: inline-flex;
+      align-items: center;
+      margin: var(--gl-spacing-xs) var(--gl-spacing-sm);
+      border: 1px solid var(--gl-color-accent);
+      transition: var(--gl-duration) box-shadow ease-in-out;
+      width: 100%;
+      padding: 0.35em 1em;
+      gap: 0.35em;
+
+      span {
+        color: oklch(from currentColor l c h / 0.8);
+      }
+    }
+
+    input {
+      width: 100%;
+      appearance: none;
+      border: none;
+      box-shadow: none;
+      outline: none;
+      font-weight: 500;
+    }
+  }
+  &:has(input[value="other"]:checked) label.gl-other-entry {
+    display: inline-flex;
+  }
+
+  div.gl-submit {
+    margin-block-start: var(--gl-spacing-md);
+    width: 100%;
+    text-align: center;
+
+    svg, span.gl-error {
+      font-size: 0.9em;
+      color: var(--gl-color-error);
+    }
+
+    svg {
+      display: inline;
+      pointer-events: none;
+      margin-block-end: 0.25em;
+      &:has(+ :empty) {
+        display: none;
+      }
+    }
+
+    button {
+      font-size: 1.05em;
+      width: 100%;
+      font-weight: 500;
+      color: var(--gl-color-bg);
+      border: none;
+      padding: var(--gl-spacing-xs) var(--gl-spacing-sm);
+      border-radius: 9999px;
+      cursor: pointer;
+
+      transition: var(--gl-duration) background-color ease-in-out;
+      background-color: var(--gl-color-fg);
+      &:hover, &:focus-visible {
+        background-color: color-mix(in oklch, var(--gl-color-fg), light-dark(#000,#fff) 20%);
+      }
+    }
+  }
+
+  dialog.gl-payment-modal {
+    --fade-duration: calc(var(--gl-duration) * 4);
+
+    top: 50%;
+    left: 50%;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+    scrollbar-gutter: auto;
+    height: 100%;
+    max-height: 94dvh;
+    width: 100%;
+    max-width: min(94dvw, 500px);
+    padding: 0;
+    margin: 0;
+    border-radius: var(--gl-radius);
+    box-shadow: var(--gl-section-shadow);
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* Animate dialog entrance/exit. */
+    transition:
+      transform var(--fade-duration) ease-out,
+      opacity var(--fade-duration) ease-in,
+      display var(--fade-duration) allow-discrete,
+      overlay var(--fade-duration) allow-discrete;
+
+    &::backdrop {
+      transition:
+        background-color var(--fade-duration) ease-in,
+        backdrop-filter var(--fade-duration) ease-in,
+        display var(--fade-duration) allow-discrete,
+        overlay var(--fade-duration) allow-discrete;
+    }
+
+    &:not([open]) { /*step 3: on the way out */
+      opacity: 0;
+      transform: translate(-50%, -35%);
+      &::backdrop {
+        background-color: transparent;
+        backdrop-filter: blur(0px);
+      }
+    }
+    &[open] { /*step 2: open */
+      opacity: 1;
+      transform: translate(-50%, -50%);
+      &::backdrop {
+        background-color: rgb(0 0 0 / 60%);
+        backdrop-filter: blur(8px);
+      }
+    }
+    @starting-style { &[open] { /*step 1: on the way in */
+      opacity: 0;
+      transform: translate(-50%, -65%);
+      &::backdrop {
+        background-color: transparent;
+        backdrop-filter: blur(0px);
+      }
+    }}
+  }
+}}
+</style>
+
+
 <script>
 {
-  const containers = document.querySelectorAll<HTMLElement>(".base-gl-container");
-  const setState = (state: "error" | "ok") => {
-    containers.forEach((el) => {el.dataset.state = state});
-  };
+  const MIN_DONATION = 5;
+  const MAX_DONATION = 100000;
+  const DED_NAME = "gl-ded-name";
+  const DED_EMAIL = "gl-ded-email";
+  const DED_KEY = "gl-ded-key";
 
-  const gl=document.createElement("script");
-  gl.src=
-    "https://secure.givelively.org/widgets/simple_donation/christians-concerned-for-the-community-inc.js"
-    +"?show_suggested_amount_buttons=true"
-    +"&show_in_honor_of=false"
-    +"&address_required=false"
-    +"&has_required_custom_question=null"
-    +"&suggested_donation_amounts[]=25"
-    +"&suggested_donation_amounts[]=50"
-    +"&suggested_donation_amounts[]=100"
-    +"&suggested_donation_amounts[]=250";
+  const supports_closedby = (document.createElement("dialog") as any).closedBy === "none";
 
-  // Initial state: show spinner (if javascript enabled).
+  document.querySelectorAll<HTMLFormElement>(".gl-simple-donation-widget").forEach((form) => {
+    const customInput = form.querySelector<HTMLInputElement>(".gl-other-entry input");
+    const paymentModal = form.querySelector<HTMLDialogElement>("dialog.gl-payment-modal");
+    const iframe = paymentModal?.querySelector<HTMLIFrameElement>("iframe");
+    const errBox = form.querySelector<HTMLElement>(".gl-error");
+    const buttonSuffix = form.querySelector<HTMLElement>(".gl-submit button span");
 
-  // Success: show donation widget.
-  gl.onload = () => { setState("ok") };
+    const iframeUrl = new URL(`https://secure.givelively.org/donate/${form.dataset.slug}`);
+    const thisUrl = new URL(document.URL);
 
-  // Failure: show donate button.
-  gl.onerror = () => { setState("error"); };
+    // Helper utils.
+    const numberFormatter = new Intl.NumberFormat(form.dataset.locale);
+    const currencyFormatter = new Intl.NumberFormat(form.dataset.locale, {
+      style: "currency",
+      currency: form.dataset.currency,
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    });
+    const getAmountDigits = (formData: FormData): [string | null, boolean] => {
+      const amountStr = formData.get("amount");
+      if (amountStr === "other") {
+        return [formData.get("otherAmount") as string | null, true];
+      }
+      return [amountStr as string | null, false];
+    }
+    const digitsToNumber = (str: string | null | undefined): number => {
+      return Number(str?.replace(/\D/g, ""));
+    }
 
-  document.head.appendChild(gl);
+    // Polyfill to mimic <dialog closedBy="any"> behavior on unsupported browsers.
+    if (!supports_closedby) {
+      paymentModal?.addEventListener('click', (e) => {
+        const edges = paymentModal.getBoundingClientRect();
+        if (e.clientX < edges.left || e.clientX > edges.right ||
+            e.clientY < edges.top  || e.clientY > edges.bottom) {
+          e.preventDefault();
+          paymentModal.close();
+        }
+      });
+    }
+
+    // When custom amount option is selected:
+    form.querySelector('input[value="other"]')?.addEventListener("change", (e) => {
+      if ((e.target as HTMLInputElement).checked) {
+        // Focus the custom input element.
+        customInput?.focus();
+      }
+    });
+
+    // When any fields in the form are modified:
+    form.addEventListener('input', () => {
+      // Update button text based on currently selected donation amount and frequency.
+      const formData = new FormData(form);
+      const [amountStr] = getAmountDigits(formData);
+
+      const msgs: string[] = [];
+      if (amountStr) {
+        msgs.push(" " + currencyFormatter.format(digitsToNumber(amountStr)));
+        if (formData.get("frequency") === "monthly") {
+          msgs.push(" Monthly");
+        }
+      }
+      buttonSuffix?.replaceChildren(...msgs);
+    });
+
+    // When the custom amount is edited:
+    customInput?.addEventListener('input', () => {
+      // Reformat number for current locale.
+      if (customInput.value) {
+        customInput.value = numberFormatter.format(digitsToNumber(customInput.value));
+      }
+    });
+    customInput?.addEventListener('beforeinput', (e) => {
+      // Prevent user from manually entering any non-digit characters.
+      if (e.data && /\D/g.test(e.data)) {
+        e.preventDefault();
+      }
+    });
+
+    // When the iframe sends out a message:
+    window.addEventListener('message', (ev: MessageEvent) => {
+      if (ev.origin !== iframeUrl.origin || !ev.data) return;
+
+      console.log(`Message received from ${ev.origin}:`, ev.data); //DEBUG_161
+
+      // Reset the form if the user's donation succeeded.
+      if (ev.data.includes("gl_checkout_complete")) {
+        form.reset();
+        buttonSuffix?.replaceChildren();
+      }
+
+      // Close the modal window if the user asked the iframe to close.
+      if (ev.data === "close_modal" && paymentModal?.open) {
+        paymentModal?.close();
+      }
+    });
+
+    // When donation modal is closed:
+    paymentModal?.addEventListener('close', () => {
+      // Clear out the iframe.
+      iframe?.setAttribute('src', 'about:blank');
+    });
+
+    // When donate button is pressed:
+    form.addEventListener('submit', async (ev) => {
+      ev.preventDefault();
+      errBox?.replaceChildren(); //clear the error box
+
+      // Get user selections from form.
+      const formData = new FormData(form);
+
+      const frequency = formData.get("frequency") as string | null;
+
+      const [amountStr, isCustom] = getAmountDigits(formData);
+      const amount = digitsToNumber(amountStr) || 0;
+
+      // Validate user selections.
+      let errMsg;
+      if (!frequency) {
+        errMsg = "Select a giving frequency.";
+      } else if (!isCustom && amount == 0) {
+        errMsg = "Select a donation amount.";
+      } else if (amount < MIN_DONATION) {
+        errMsg = `Enter a donation of ${currencyFormatter.format(MIN_DONATION)} or more.`;
+      } else if (amount > MAX_DONATION) {
+        errMsg = `Enter a donation of ${currencyFormatter.format(MAX_DONATION)} or less.`;
+      }
+      if (errMsg) {
+        errBox?.replaceChildren(errMsg);
+        return;
+      }
+
+      // Construct query params to pass to the iframe.
+      const params = new URLSearchParams({
+        recurring: String(frequency === "monthly"),
+        override_amount: amountStr || "",
+        dedication_name: localStorage.getItem(DED_NAME) || "",
+        dedication_email: localStorage.getItem(DED_EMAIL) || "",
+        dedication_type: localStorage.getItem(DED_KEY) || "", // InMemoryOfDedication or InHonorOfDedication
+        widget_type: "simple_donation",
+        widget_url: thisUrl.origin + thisUrl.pathname,
+        isWixEmbedded: "false",
+      });
+      if (document.referrer) {
+        params.set("referrer_url", document.referrer);
+      }
+      const utm_source = new URLSearchParams(thisUrl.search).get("utm_source") || form.dataset.utm_source;
+      if (utm_source) {
+        params.set("utm_source", utm_source);
+      }
+
+      // Set the iframe URL. Show modal window immediately.
+      iframeUrl.search = params.toString();
+      iframe?.setAttribute("src", iframeUrl.toString());
+      paymentModal?.showModal();
+    });
+  });
 }
 </script>
