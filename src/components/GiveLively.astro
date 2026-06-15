@@ -41,7 +41,7 @@ const otherAmountEntryId = uniqueId(Astro.url, "gl-amount-custom");
   {...rest}
 >
   {/* Gift Frequency */}
-  <fieldset class="base-focus-container">
+  <fieldset class="gl-focus-container">
     <legend class="sr-only">Gift Frequency</legend>
     { frequencies.map((freq, idx) => (
     <label for={frequencyIds[idx]}>
@@ -52,7 +52,7 @@ const otherAmountEntryId = uniqueId(Astro.url, "gl-amount-custom");
   </fieldset>
 
   {/* Gift Amount */}
-  <fieldset class="base-focus-container">
+  <fieldset class="gl-focus-container">
     <legend class="sr-only">Gift Amount</legend>
     { amounts.map((amount, idx) => (
     <label for={amountIds[idx]}>
@@ -68,7 +68,7 @@ const otherAmountEntryId = uniqueId(Astro.url, "gl-amount-custom");
   </fieldset>
 
   <label for={otherAmountEntryId} class="gl-other-entry">
-    <div class="base-focus-container">
+    <div class="gl-focus-container">
       <span aria-hidden="true">{currencySymbol}</span>
       <input type="text" id={otherAmountEntryId} inputmode="numeric" name="otherAmount"/>
       <span aria-hidden="true">{currencyCode}</span>
@@ -101,6 +101,7 @@ const otherAmountEntryId = uniqueId(Astro.url, "gl-amount-custom");
   --gl-color-bg: light-dark(#FFF, #164046);
   --gl-color-accent: light-dark(#0CA1B3, #00CBBC);
   --gl-color-error: light-dark(#9f0712, #ff6467);
+  --gl-color-focus: light-dark(#F2853A, #F9C727);
   --gl-radius: 0.5rem;
   --gl-spacing-2xs: 0.25em;
   --gl-spacing-xs: 0.5em;
@@ -130,6 +131,25 @@ const otherAmountEntryId = uniqueId(Astro.url, "gl-amount-custom");
   border-radius: var(--gl-radius);
   border: 2px solid var(--gl-color-accent);
   box-shadow: var(--gl-section-shadow);
+
+  .sr-only { /* the standard visibly-hidden/sr-only class from Tailwind CSS. */
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border-width: 0;
+  }
+
+  /* focus-ring handling. */
+  :focus-visible:not(.gl-focus-container *), /* I have focus-visible and I'm not within a focus container, OR */
+  .gl-focus-container:has(:focus-visible) {  /* I'm a focus container and my descendant has focus-visible */
+    outline: 0.1875rem solid var(--gl-color-focus);
+    outline-offset: 0.25rem;
+  }
 
   label {
     cursor: pointer;
