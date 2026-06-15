@@ -133,6 +133,25 @@ const otherAmountEntryId = uniqueId(Astro.url, "gl-amount-custom");
 
   label {
     cursor: pointer;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid var(--gl-color-accent);
+    border-radius: var(--gl-radius);
+  }
+
+  input {
+    appearance: none;
+    border: none;
+    box-shadow: none;
+    outline: none;
+
+    /* Hide the radio buttons completely, only show the label that wraps them. */
+    &[type="radio"] {
+      padding: none;
+      margin: none;
+      width: 0;
+      height: 0;
+    }
   }
 
   fieldset {
@@ -148,11 +167,10 @@ const otherAmountEntryId = uniqueId(Astro.url, "gl-amount-custom");
     }
 
     label {
+      display: flex;
       flex-grow: 1;
       padding: var(--gl-spacing-xs) var(--gl-spacing-xs);
       text-align: center;
-      border: 1px solid var(--gl-color-accent);
-      border-radius: var(--gl-radius);
       user-select: none; /* make text unselectable by user (since it functions as a button) */
 
       transition: var(--gl-duration) box-shadow background-color ease-in-out;
@@ -183,27 +201,19 @@ const otherAmountEntryId = uniqueId(Astro.url, "gl-amount-custom");
           }
         }
       }
-
-      /* Hide the radio buttons, only show the label. */
-      input {
-        appearance: none;
-      }
     }
   }
 
   label.gl-other-entry {
     display: none;
-    align-items: center;
     width: 100%;
     background-color: var(--gl-color-checked);
-    border: 1px solid var(--gl-color-accent);
     box-shadow:
       0 2px 0 0 var(--gl-color-accent),
       -2px 0 0 0 var(--gl-color-accent),
       2px 0 0 0 var(--gl-color-accent);
 
     /* Remove the top border so it blends seamlessly with the custom amount button. */
-    border-radius: var(--gl-radius);
     border-start-end-radius: 0;
     border-start-start-radius: 0;
     border-block-start-color: transparent;
@@ -226,10 +236,6 @@ const otherAmountEntryId = uniqueId(Astro.url, "gl-amount-custom");
 
     input {
       width: 100%;
-      appearance: none;
-      border: none;
-      box-shadow: none;
-      outline: none;
       font-weight: 500;
     }
   }
@@ -275,7 +281,7 @@ const otherAmountEntryId = uniqueId(Astro.url, "gl-amount-custom");
   }
 
   dialog.gl-payment-modal {
-    --fade-duration: calc(var(--gl-duration) * 4);
+    --fade-duration: calc(var(--gl-duration) * 3);
 
     top: 50%;
     left: 50%;
@@ -393,14 +399,6 @@ const otherAmountEntryId = uniqueId(Astro.url, "gl-amount-custom");
       });
     }
 
-    // When custom amount option is selected:
-    form.querySelector('input[value="other"]')?.addEventListener("change", (e) => {
-      if ((e.target as HTMLInputElement).checked) {
-        // Focus the custom input element.
-        customInput?.focus();
-      }
-    });
-
     // When any fields in the form are modified:
     form.addEventListener('input', () => {
       // Update button text based on currently selected donation amount and frequency.
@@ -432,19 +430,25 @@ const otherAmountEntryId = uniqueId(Astro.url, "gl-amount-custom");
     });
 
     // When the iframe sends out a message:
-    window.addEventListener('message', (ev: MessageEvent) => {
-      if (ev.origin !== iframeUrl.origin || !ev.data) return;
+    window.addEventListener('message', (e: MessageEvent) => {
+      if (e.origin !== iframeUrl.origin || !e.data) return;
 
-      console.log(`Message received from ${ev.origin}:`, ev.data); //DEBUG_161
+      console.log(`Message received from ${e.origin} as ${typeof e.data}:`, e.data); //DEBUG_161
+
+      const message = ((typeof e.data === "object")?
+        (e.data?.message || JSON.stringify(e.data))
+        :
+        String(e.data)
+      ).toLowerCase();
 
       // Reset the form if the user's donation succeeded.
-      if (ev.data.includes("gl_checkout_complete")) {
+      if (message.includes("gl_checkout_complete")) {
         form.reset();
         buttonSuffix?.replaceChildren();
       }
 
       // Close the modal window if the user asked the iframe to close.
-      if (ev.data === "close_modal" && paymentModal?.open) {
+      if (message === "close_modal" && paymentModal?.open) {
         paymentModal?.close();
       }
     });
@@ -498,7 +502,7 @@ const otherAmountEntryId = uniqueId(Astro.url, "gl-amount-custom");
       if (document.referrer) {
         params.set("referrer_url", document.referrer);
       }
-      const utm_source = new URLSearchParams(thisUrl.search).get("utm_source") || form.dataset.utm_source;
+      const utm_source = new URLSearchParams(thisUrl.search).get("utm_source");
       if (utm_source) {
         params.set("utm_source", utm_source);
       }
