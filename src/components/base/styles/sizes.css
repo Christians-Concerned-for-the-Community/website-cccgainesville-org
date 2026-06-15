@@ -131,6 +131,9 @@
   --text-8xl:  clamp(var( --f-9-min) * 1rem, ((var(--f-minus) * ((var( --f-9-max) - var( --f-9-min)) / var(--f-w)) + var( --f-9-min)) * 1rem) + ((var( --f-9-max) - 1) / var(--f-w) * 100vi), var( --f-9-max) * 1rem);
   --text-9xl:  clamp(var(--f-10-min) * 1rem, ((var(--f-minus) * ((var(--f-10-max) - var(--f-10-min)) / var(--f-w)) + var(--f-10-min)) * 1rem) + ((var(--f-10-max) - 1) / var(--f-w) * 100vi), var(--f-10-max) * 1rem);
 
+  --text-base-lg:  clamp(var( --f-0-min) * 1rem, ((var(--f-minus) * ((var( --f-1-max) - var( --f-0-min)) / var(--f-w)) + var( --f-0-min)) * 1rem) + ((var( --f-1-max) - 1) / var(--f-w) * 100vi), var( --f-1-max) * 1rem);
+  --text-base-2xl: clamp(var( --f-0-min) * 1rem, ((var(--f-minus) * ((var( --f-3-max) - var( --f-0-min)) / var(--f-w)) + var( --f-0-min)) * 1rem) + ((var( --f-3-max) - 1) / var(--f-w) * 100vi), var( --f-3-max) * 1rem);
+
   --spacing-3xs: clamp(var(--fs-n3-min) * 1rem, ((var(--f-minus) * ((var(--fs-n3-max) - var(--fs-n3-min)) / var(--f-w)) + var(--fs-n3-min)) * 1rem) + ((var(--fs-n3-max) - 1) / var(--f-w) * 100vi), var(--fs-n3-max) * 1rem);
   --spacing-2xs: clamp(var(--fs-n2-min) * 1rem, ((var(--f-minus) * ((var(--fs-n2-max) - var(--fs-n2-min)) / var(--f-w)) + var(--fs-n2-min)) * 1rem) + ((var(--fs-n2-max) - 1) / var(--f-w) * 100vi), var(--fs-n2-max) * 1rem);
   --spacing-xs:  clamp(var(--fs-n1-min) * 1rem, ((var(--f-minus) * ((var(--fs-n1-max) - var(--fs-n1-min)) / var(--f-w)) + var(--fs-n1-min)) * 1rem) + ((var(--fs-n1-max) - 1) / var(--f-w) * 100vi), var(--fs-n1-max) * 1rem);
