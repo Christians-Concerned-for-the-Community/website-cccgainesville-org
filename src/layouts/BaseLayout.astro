@@ -83,26 +83,9 @@ const {
     {/* preload our main font, so that it's not chained after the main CSS file */}
     <link rel="preload" as="font" type="font/woff2" href={fontPath} crossorigin="anonymous" />
 
-    {/* profile-specific preloads 
-
-        TODO: this is still too many preload/preconnect instructions.
-              Go through them and test to see which ones actually help.
-      */}
+    {/* profile-specific preloads */}
     {profile?.includes('givelively') && (
       <link rel="preconnect" href="https://secure.givelively.com">
-      <link rel="preconnect" href="https://use.fontawesome.com">
-      <link rel="preconnect" href="https://m.stripe.com">
-      <link rel="preconnect" href="https://js.stripe.com">
-      <link rel="preconnect" href="https://apis.google.com">
-      <link rel="preconnect" href="https://maps.googleapis.com">
-      <link rel="preconnect" href="https://fonts.googleapis.com">
-      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-      <link rel="preconnect" href="https://use.typekit.net">
-      <link rel="preconnect" href="https://o353201.ingest.us.sentry.io">
-      <link rel="preconnect" href="https://js.datadome.co">
-      <link rel="preconnect" href="https://api-js.datadome.co">
-      <link rel="preconnect" href="https://js.captcha-display.com">
-      <link rel="preconnect" href="https://static.hotjar.com">
     )}
     {(captchaImpl.everyPage || profile?.includes('captcha')) && captchaImpl.preconnects?.map((precon) => (
       <link rel="preconnect" href={precon.href} crossorigin={precon.crossorigin}>

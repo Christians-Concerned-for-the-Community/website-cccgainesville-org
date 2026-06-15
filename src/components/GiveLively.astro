@@ -280,7 +280,13 @@ const otherAmountEntryId = uniqueId(Astro.url, "gl-amount-custom");
     }
   }
 
-  dialog.gl-payment-modal {
+  iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+
+  dialog {
     --fade-duration: calc(var(--gl-duration) * 3);
 
     top: 50%;
@@ -297,12 +303,6 @@ const otherAmountEntryId = uniqueId(Astro.url, "gl-amount-custom");
     margin: 0;
     border-radius: var(--gl-radius);
     box-shadow: var(--gl-section-shadow);
-
-    iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
 
     /* Animate dialog entrance/exit. */
     transition:
@@ -431,9 +431,7 @@ const otherAmountEntryId = uniqueId(Astro.url, "gl-amount-custom");
 
     // When the iframe sends out a message:
     window.addEventListener('message', (e: MessageEvent) => {
-      if (e.origin !== iframeUrl.origin || !e.data) return;
-
-      console.log(`Message received from ${e.origin} as ${typeof e.data}:`, e.data); //DEBUG_161
+      if (e.origin !== iframeUrl.origin) return;
 
       const message = ((typeof e.data === "object")?
         (e.data?.message || JSON.stringify(e.data))
