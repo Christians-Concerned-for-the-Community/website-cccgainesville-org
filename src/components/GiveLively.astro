@@ -369,9 +369,8 @@ const dedEmailDescription = uniqueId(Astro.url, "gl-ded-email-desc");
      */
     label {
       display: flex;
-      flex: 1 1 0; /* don't shrink to fit text, grow to fill available space along row */
+      flex: 1 0 fit-content; /* don't shrink to fit text, grow to fill available space along row */
       padding: var(--gl-spacing-xs);
-      text-align: center;
       user-select: none; /* make text unselectable by user (since it functions as a button) */
 
       transition: var(--gl-duration) box-shadow background-color ease-in-out;
@@ -387,9 +386,7 @@ const dedEmailDescription = uniqueId(Astro.url, "gl-ded-email-desc");
 
       /* Specific styling for the "Custom Amount" radio button. */
       &:has([value="other"]) {
-        /* Make sure the custom button is always on its own line. */
-        width: 100%;
-        flex-basis: auto;
+        flex-basis: 100%; /* Force custom button onto its own line. */
 
         &:has(:checked) {
           padding-block-end: 0;
@@ -411,7 +408,7 @@ const dedEmailDescription = uniqueId(Astro.url, "gl-ded-email-desc");
       padding: var(--gl-spacing-xs) var(--gl-spacing-sm);
 
       /* If the custom amount input box is right after an amount selection fieldset,
-      * style its border so that it looks like part of the custom amount radio button.
+      * style it so that it looks like part of the selected custom amount radio button.
       */
       background-color: var(--gl-color-checked);
       
@@ -423,6 +420,7 @@ const dedEmailDescription = uniqueId(Astro.url, "gl-ded-email-desc");
       border-start-end-radius: 0;
       border-start-start-radius: 0;
       border-block-start-color: transparent;
+
       display: none;
     }
     &:has(input[value="other"]:checked) + label.gl-other-entry {
@@ -704,7 +702,7 @@ const dedEmailDescription = uniqueId(Astro.url, "gl-ded-email-desc");
       // Reset the form if the user's donation succeeded.
       if (message.includes("gl_checkout_complete")) {
         form.reset();
-        updateSubmitButton();
+        updateSubmitButton(); // needed because events aren't fired when form values are changed programmatically.
       }
 
       // Close the modal window if the user asked the iframe to close.
@@ -740,7 +738,7 @@ const dedEmailDescription = uniqueId(Astro.url, "gl-ded-email-desc");
       } else if (amount > MAX_DONATION) {
         errMsg = `Enter a donation of ${currencyFormatter.format(MAX_DONATION)} or less.`;
       }
-      updateError(errMsg, (isCustom? customInput : amountSet));
+      updateError(errMsg, (isCustom? customInput : amountSet)); // clears err state if errMsg is falsy
       if (errMsg) {
         return;
       }
