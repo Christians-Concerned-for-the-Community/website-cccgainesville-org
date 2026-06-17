@@ -93,18 +93,18 @@ export const link = tv({
   base: [
     "inline-flex gap-[0.25ch] items-center",
     "underline underline-offset-[0.25em]",
-    "duration-200 ease-fast",
+    "duration-150 ease-fast hocus:text-shadow-bold-sm",
   ],
   variants: {
     variant: {
       text: [
-        "transition-[color,text-decoration-thickness,text-underline-offset]",
+        "transition-[color,text-decoration-thickness,text-underline-offset,text-shadow]",
         "text-link hocus:text-link-hover active:bg-current/10",
-        "decoration-from-font hocus:decoration-[1px]",
+        "decoration-from-font hocus:decoration-1",
         "hocus:underline-offset-[0.125em]",
       ],
       nav: [
-        "transition-[background-color,text-decoration-color]",
+        "transition-[background-color,text-decoration-color,text-shadow]",
         "active:bg-muted-dark",
         "decoration-transparent hocus:decoration-inherit",
       ],

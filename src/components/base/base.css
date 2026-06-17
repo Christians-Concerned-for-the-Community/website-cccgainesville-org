@@ -261,6 +261,16 @@
 /* ---------------- */
 /* Theme variables. */
 @theme inline {
+  /* Text shadows that let us approximate bold font weights, without changing
+   * the word width.
+   * 
+   * This is useful when you want to apply bold on hover or focus - otherwise,
+   * stuff jumps around as you move the mouse.
+   */
+  --text-shadow-bold-sm: 0.1px 0 currentColor, -0.1px 0 currentColor;
+  --text-shadow-bold-md: 0.2px 0 currentColor, -0.2px 0 currentColor;
+  --text-shadow-bold-lg: 0.4px 0 currentColor, -0.4px 0 currentColor;
+
   /* Custom presets for radius sizes (determines roundedness of corners).
    * These start are generally a bit bigger than the Tailwind defaults.
    */
@@ -287,7 +297,7 @@
   --breakpoint-xs:  31.25rem; /* 31.25rem = 500 px */
 
   /* Set spacing values with a 'vw' prefix for all breakpoint sizes. */
-  --spacing-vw-3xs: var(--breakpoint-3xs); /* 25rem = 400 px */
+  --spacing-vw-3xs: var(--breakpoint-3xs); /* 21rem = 336 px */
   --spacing-vw-2xs: var(--breakpoint-2xs); /* 25rem = 400 px */
   --spacing-vw-xs:  var(--breakpoint-xs); /* 31.25rem = 500 px */
   --spacing-vw-sm:  var(--breakpoint-sm); /* 40 rem = 640 px */

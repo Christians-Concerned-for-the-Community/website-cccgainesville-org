@@ -14,7 +14,7 @@
   /* default text and background colors */
   html {
     color: var(--color-foreground);
-    text-shadow: rgba(0, 0, 0, 0.01) 0 0 1px;
+    text-shadow: light-dark(#00000003, #FFFFFF03) 0 0 1px; /* slight smudge on edges of text for smoothness */
     background-color: var(--color-background);
   }
 
