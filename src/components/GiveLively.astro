@@ -8,89 +8,226 @@ import { uniqueId } from "@base/utils/ids";
 Astro.csp?.insertDirective("frame-src https://secure.givelively.org");
 
 export interface Props extends HTMLAttributes<"form"> {
-  slug?: string,
-  locale?: string, // locale to use for formatting strings, defaults to system locale
+  /**
+   * What amounts to suggest to the donor.
+   * 
+   * If not provided, an empty input box will be shown for the donor to type
+   * their amount into.
+   * 
+   * If only one suggested amount is provided, the input box will be preset
+   * to the given amount on load.
+   * 
+   * If more than one suggested amount is provided, an individual radio button
+   * will be shown for each option, as well as a "Custom Amount" option that
+   * shows the input box when clicked.
+   * 
+   * Default: no suggested amounts
+   */
+  suggestedAmounts?: number[],
+
+  /**
+   * Whether or not to let donors dedicate their gifts.
+   * 
+   * This places an extra button above submit that shows the dedication dialog
+   * when clicked.
+   * 
+   * Default: false
+   */
+  doDedication?: boolean,
+
+  /**
+   * The slug that identifies your nonprofit.
+   * 
+   * If you want the donation widget to point at a campaign, the slug will
+   * include that too.
+   * 
+   * For example, an org named "My Nifty Nonprofit, Inc." might have the following
+   * URL when logging into Give Lively:
+   *    secure.givelively/org/nonprofits/my-nifty-profit-inc
+   * 
+   * In this case, you'd want to set the slug to:
+   *    my-nifty-nonprofit-inc
+   */
+  slug: string,
+
+  /**
+   * Locale to use for formatting strings.
+   * 
+   * Default: the locale of the server ("en-US", "de-DE", etc.)
+   */
+  locale?: string,
+
+  /**
+   * Currency code of the currency that donations will be made in.
+   * 
+   * Default: "USD"
+   */
   currencyCode?: string,
 };
 
 const {
-  slug = "christians-concerned-for-the-community-inc",
+  suggestedAmounts,
+  doDedication = false,
+  slug,
   locale = new Intl.DateTimeFormat().resolvedOptions().locale,
   currencyCode = "USD",
   class: className,
   ...rest
 } = Astro.props;
 
-const currencySymbol = Intl.NumberFormat(locale, {style:"currency", currency:currencyCode})
-  .formatToParts(0)
+// Currency formatting stuff.
+const settings: Intl.NumberFormatOptions = {
+  style:"currency",
+  currency:currencyCode,
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 0,
+};
+const currencyFormatter = Intl.NumberFormat(locale, settings);
+const currencyNameFormatter = Intl.NumberFormat(locale, {
+  ...settings,
+  currencyDisplay: "name"
+});
+
+const currencySymbol = currencyFormatter
+  .formatToParts(2)
   .find(part => part.type === "currency")?.value || "$";
+const currencyNamePlural = currencyNameFormatter
+  .formatToParts(2)
+  .find(part => part.type == "currency")?.value || "US dollars";
 
-const frequencies = ["One-Time", "Monthly"];
-const amounts = ["25", "50", "100", "250"];
 
-const frequencyIds = frequencies.map(freq => uniqueId(Astro.url, `gl-frequency-${freq.toLowerCase()}`));
+// Settings and id's for radio buttons and other inputs.
+const frequencyButtons = [
+  { title: "One-Time", value: "one-time", id: uniqueId(Astro.url, "gl-freq-onetime") },
+  { title: "Monthly",  value: "monthly",  id: uniqueId(Astro.url, "gl-freq-monthly") }
+];
 
-const amountIds = amounts.map(amount => uniqueId(Astro.url, `gl-amount-${amount}`));
-const otherAmountId = uniqueId(Astro.url, "gl-amount-other");
-const otherAmountEntryId = uniqueId(Astro.url, "gl-amount-custom");
+const amountButtons = suggestedAmounts?.map(amount => { return {
+  title: currencyFormatter.format(amount),
+  alt: currencyNameFormatter.format(amount),
+  value: String(amount),
+  id: uniqueId(Astro.url, "gl-amt-" + amount),
+}});
+const hasAmountButtons = amountButtons && amountButtons.length > 1;
+const otherAmountId = uniqueId(Astro.url, "gl-amt-other");
+const otherAmountEntryId = uniqueId(Astro.url, "gl-amt-custom");
+
+const dedicationButtons = [
+  { title: "In Honor Of",  value: "InHonorOfDedication",  id: uniqueId(Astro.url, "gl-ded-honor") },
+  { title: "In Memory Of", value: "InMemoryOfDedication", id: uniqueId(Astro.url, "gl-ded-memory") },
+];
+
+const errBoxId = uniqueId(Astro.url, "gl-errbox");
+const warningId = uniqueId(Astro.url, "icon-warning");
+
+const dedNameId = uniqueId(Astro.url, "gl-ded-name");
+const dedEmailId = uniqueId(Astro.url, "gl-ded-email");
+const dedEmailDescription = uniqueId(Astro.url, "gl-ded-email-desc");
 
 ---
 
-<form novalidate data-currency={currencyCode} data-locale={locale} data-slug={slug}
+<form novalidate data-slug={slug} data-locale={locale} data-currency={currencyCode}
   class:list={["gl-simple-donation-widget", className]}
   {...rest}
 >
   {/* Gift Frequency */}
-  <fieldset class="gl-focus-container">
-    <legend class="sr-only">Gift Frequency</legend>
-    { frequencies.map((freq, idx) => (
-    <label for={frequencyIds[idx]}>
-      <input type="radio" id={frequencyIds[idx]} name="frequency" value={freq.toLowerCase()} checked={idx === 0}/>
-      {freq}
+  <fieldset class="gl-focus-container gl-frequency">
+    <legend class="sr-only">Donation Frequency</legend>
+    { frequencyButtons.map((freq, idx) => (
+    <label for={freq.id}>
+      <input type="radio" id={freq.id} name="frequency" value={freq.value} checked={idx === 0} required/>
+      {freq.title}
     </label>
     ))}
   </fieldset>
 
   {/* Gift Amount */}
-  <fieldset class="gl-focus-container">
-    <legend class="sr-only">Gift Amount</legend>
-    { amounts.map((amount, idx) => (
-    <label for={amountIds[idx]}>
-      <input type="radio" id={amountIds[idx]} name="amount" value={amount}/>
-      <span aria-hidden="true">{currencySymbol}</span>{amount} <span class="sr-only">{currencyCode}</span>
+  { hasAmountButtons && (
+  <fieldset class="gl-focus-container gl-amount">
+    <legend class="sr-only">Donation Amount</legend>
+    { amountButtons.map((amt) => (
+    <label for={amt.id}>
+      <input type="radio" id={amt.id} name="amount" value={amt.value} required/>
+      <span aria-hidden="true">{amt.title}</span>
+      <span class="sr-only">{amt.alt}</span>
     </label>
     ))}
 
     <label for={otherAmountId}>
-      <input type="radio" id={otherAmountId} name="amount" value="other"/>
-      <span>Custom Amount</span>
+      <input type="radio" id={otherAmountId} name="amount" value="other" required/>
+      Custom Amount
     </label>
   </fieldset>
+  )}
 
   <label for={otherAmountEntryId} class="gl-other-entry">
+    <span class="gl-other-label-1 sr-only">Custom amount in {currencyNamePlural}:</span>
+    <div class="gl-other-label-2">
+      Donation amount<span class="sr-only"> in {currencyNamePlural}</span>:
+    </div>
     <div class="gl-focus-container">
       <span aria-hidden="true">{currencySymbol}</span>
-      <input type="text" id={otherAmountEntryId} inputmode="numeric" name="otherAmount"/>
+      <input type="text" id={otherAmountEntryId} inputmode="numeric" name="otherAmount" required={!hasAmountButtons}
+        value={(!hasAmountButtons && amountButtons?.[0])? amountButtons[0].value : undefined}
+      />
       <span aria-hidden="true">{currencyCode}</span>
     </div>
-    <span class="sr-only">Custom donation amount in whole {currencyCode}</span>
   </label>
 
   {/* Donate Button and Modal */}
   <div class="gl-submit">
-    <svg aria-hidden="true" width="1lh" height="1lh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-      <path d="M12 9v4" />
-      <path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0" />
-      <path d="M12 16h.01" />
+    <svg aria-hidden="true">
+      <symbol id={warningId} viewBox="0 0 24 24">
+        <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <path d="M12 9v4" />
+          <path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0" />
+          <path d="M12 16h.01" />
+        </g>
+      </symbol>
+      <use href={"#"+warningId}/>
     </svg>
-    <span class="gl-error" aria-live="polite"/>
-    <button type="submit">Donate<span/></button>
+    <span class="gl-error" id={errBoxId} aria-live="polite"/>
+    <button type="submit" class="primary">
+      Donate
+      <span aria-hidden="true"/>
+      <span class="sr-only"/>
+    </button>
   </div>
 
   <dialog class="gl-payment-modal" closedby="any">
     <iframe allow="payment" src="about:blank"></iframe>
   </dialog>
+
+  { /*WIP*/doDedication && (
+  <dialog class="gl-dedication-modal" closedby="any">
+    <form novalidate aria-label="Dedication">
+      <fieldset class="gl-focus-container">
+        <legend class="sr-only">Dedication Type</legend>
+
+        { dedicationButtons.map((ded) => (
+        <label for={ded.id}>
+          <input type="radio" id={ded.id} name="amount" value={ded.value} required/>
+          {ded.title}
+        </label>
+        ))}
+      </fieldset>
+
+      <label for={dedNameId}>
+        Dedicatee's Name
+        <input id={dedNameId} type="text" autocomplete="name" spellcheck="false" autocapitalize="words" autocorrect="off" maxlength="255"/>
+      </label>
+
+      <label for={dedEmailId}>
+        Recipient Email
+        <input id={dedEmailId} aria-describedby={dedEmailDescription} type="email" autocomplete="email" maxlength="255"/>
+        <div aria-hidden="true">
+          <span>Notify someone about your gift. The email will identify you as the donor, but does not specify the amount of your gift.</span>
+        </div>
+      </label>
+    </form>
+  </dialog>
+  )}
 </form>
 
 
@@ -111,9 +248,10 @@ const otherAmountEntryId = uniqueId(Astro.url, "gl-amount-custom");
   @media (prefers-reduced-motion: reduce) {
     --gl-duration: 0ms;
   }
-  --gl-button-shadow: 0px 4px 4px -2px oklch(from var(--gl-color-accent) l c h / 0.2);
-  --gl-section-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --gl-color-checked: oklch(from var(--gl-color-accent) l c h / 0.05);
+  --gl-section-shadow: 0 4px 6px -1px rgba(0 0 0 0.1), 0 2px 4px -2px rgba(0 0 0 0.1));
+
+  --gl-button-shadow: 0px 4px 4px -2px color-mix(in oklch, var(--gl-color-accent), transparent 80%);
+  --gl-color-checked: color-mix(in oklch, var(--gl-color-accent), transparent 95%);
 
   max-width: 40ch;
   width: 100%;
@@ -124,7 +262,7 @@ const otherAmountEntryId = uniqueId(Astro.url, "gl-amount-custom");
 
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
   padding: var(--gl-spacing-sm);
 
@@ -144,11 +282,9 @@ const otherAmountEntryId = uniqueId(Astro.url, "gl-amount-custom");
     border-width: 0;
   }
 
-  /* focus-ring handling. */
-  :focus-visible:not(.gl-focus-container *), /* I have focus-visible and I'm not within a focus container, OR */
-  .gl-focus-container:has(:focus-visible) {  /* I'm a focus container and my descendant has focus-visible */
-    outline: 0.1875rem solid var(--gl-color-focus);
-    outline-offset: 0.25rem;
+  svg {
+    width: 1lh;
+    height: 1lh;
   }
 
   label {
@@ -159,37 +295,82 @@ const otherAmountEntryId = uniqueId(Astro.url, "gl-amount-custom");
     border-radius: var(--gl-radius);
   }
 
+  /* Reset all input styles to undecorated. */
   input {
     appearance: none;
     border: none;
     box-shadow: none;
     outline: none;
+  }
 
-    /* Hide the radio buttons completely, only show the label that wraps them. */
-    &[type="radio"] {
-      padding: none;
-      margin: none;
-      width: 0;
-      height: 0;
+  button {
+    cursor: pointer;
+    width: 100%;
+    transition: var(--gl-duration) background-color ease-in-out;
+    padding-inline: var(--gl-spacing-sm);
+    border-radius: 9999px; /* pill shape */
+    font-size: 1.06em;
+    font-weight: 500;
+
+    & + & { /* space between buttons */
+      margin-block-start: var(--gl-spacing-sm);
+    }
+
+    &.primary {
+      padding-block: var(--gl-spacing-sm);
+      color: var(--gl-color-bg);
+      border: none;
+
+      background-color: var(--gl-color-fg);
+      &:hover, &:focus-visible {
+        background-color: color-mix(in oklch, var(--gl-color-fg), var(--gl-color-bg) 10%);
+      }
+    }
+
+    &.secondary {
+      padding-block: var(--gl-spacing-2xs);
+      color: var(--gl-color-fg);
+      border: 3px solid color-mix(in oklch, var(--gl-color-fg), var(--gl-color-bg) 30%);
+
+      background-color: var(--gl-color-bg);
+      &:hover, &:focus-visible {
+        background-color: var(--gl-color-checked);
+      }
     }
   }
 
+  /* Radio button groups, where each radio button just looks like a regular button */
   fieldset {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: start;
     width: 100%;
-    gap: var(--gl-spacing-xs);
+    gap: var(--gl-spacing-xs); /* space button radio buttons, in both dimensions */
 
-    &:first-of-type {
-      margin-block-end: var(--gl-spacing-md);
+    & + & { /* space between fieldsets */
+      margin-block-start: var(--gl-spacing-md);
     }
 
+    /*
+      Inputs in a fieldset are a radio button group.
+      Hide the radio buttons completely, only show the label that wraps them - the
+      user will be able to click on / keyboard focus the label instead.
+    */
+    input {
+      padding: none;
+      margin: none;
+      width: 0;
+      height: 0;
+    }
+
+    /*
+      Style the labels that wrap each radio button.
+     */
     label {
       display: flex;
-      flex-grow: 1;
-      padding: var(--gl-spacing-xs) var(--gl-spacing-xs);
+      flex: 1 1 0; /* don't shrink to fit text, grow to fill available space along row */
+      padding: var(--gl-spacing-xs);
       text-align: center;
       user-select: none; /* make text unselectable by user (since it functions as a button) */
 
@@ -198,14 +379,18 @@ const otherAmountEntryId = uniqueId(Astro.url, "gl-amount-custom");
       background-color: var(--gl-color-bg);
       &:has(:checked) {
         box-shadow: 0 0 0 2px var(--gl-color-accent);
-        font-weight: 500;
+        text-shadow: 0.1px 0 currentColor, -0.1px 0 currentColor; /* simulate slight bold, without changing letter spacing or position*/
       }
       &:hover, &:has(:checked) {
         background-color: var(--gl-color-checked);
       }
 
+      /* Specific styling for the "Custom Amount" radio button. */
       &:has([value="other"]) {
-        width: 100%; /* Make sure custom amount option is always on its own line. */
+        /* Make sure the custom button is always on its own line. */
+        width: 100%;
+        flex-basis: auto;
+
         &:has(:checked) {
           padding-block-end: 0;
           /* When checked, remove bottom border so we can combine seamlessly with the amount input field. */
@@ -216,51 +401,68 @@ const otherAmountEntryId = uniqueId(Astro.url, "gl-amount-custom");
           border-end-end-radius: 0;
           border-end-start-radius: 0;
           border-block-end-color: transparent;
-          span::after {
-            content: ":";
-          }
         }
       }
     }
   }
 
-  label.gl-other-entry {
-    display: none;
-    width: 100%;
-    background-color: var(--gl-color-checked);
-    box-shadow:
-      0 2px 0 0 var(--gl-color-accent),
-      -2px 0 0 0 var(--gl-color-accent),
-      2px 0 0 0 var(--gl-color-accent);
+  fieldset.gl-amount {
+    & + label.gl-other-entry {
+      padding: var(--gl-spacing-xs) var(--gl-spacing-sm);
 
-    /* Remove the top border so it blends seamlessly with the custom amount button. */
-    border-start-end-radius: 0;
-    border-start-start-radius: 0;
-    border-block-start-color: transparent;
+      /* If the custom amount input box is right after an amount selection fieldset,
+      * style its border so that it looks like part of the custom amount radio button.
+      */
+      background-color: var(--gl-color-checked);
+      
+      box-shadow:
+        0 2px 0 0 var(--gl-color-accent),
+        -2px 0 0 0 var(--gl-color-accent),
+        2px 0 0 0 var(--gl-color-accent);
 
-    /* Border around currency spans and the input box itself. */
-    & > div:first-of-type {
+      border-start-end-radius: 0;
+      border-start-start-radius: 0;
+      border-block-start-color: transparent;
+      display: none;
+    }
+    &:has(input[value="other"]:checked) + label.gl-other-entry {
       display: inline-flex;
+      .gl-other-label-1 { display: inline; } /* turn on "Custom Amount:" sr-only text */
+      .gl-other-label-2 { display: none; }   /* turn off "Donation Amount: text */
+    }
+  }
+  :not(fieldset.gl-amount) + label.gl-other-entry {
+    display: block;
+    margin-block-start: var(--gl-spacing-sm);
+    border: none;
+
+    .gl-other-label-1 { display: none; }  /* turn off "Custom Amount:" sr-only text */
+    .gl-other-label-2 { display: block; } /* turn on "Donation Amount: text */
+  }
+
+  label.gl-other-entry {
+    width: 100%;
+    
+    /* Border around currency spans and the input box itself. */
+    .gl-focus-container {
+      display: flex;
+      background-color: var(--gl-color-bg);
       align-items: center;
-      margin: var(--gl-spacing-xs) var(--gl-spacing-sm);
-      border: 1px solid var(--gl-color-accent);
+      border: 2px solid var(--gl-color-accent);
+      border-radius: var(--gl-radius);
       transition: var(--gl-duration) box-shadow ease-in-out;
       width: 100%;
       padding: 0.35em 1em;
       gap: 0.35em;
 
-      span {
-        color: oklch(from currentColor l c h / 0.8);
+      span { /* gray out the currency prefix and suffix */
+        color: color-mix(in oklch, currentColor, transparent 20%);
       }
     }
 
     input {
       width: 100%;
-      font-weight: 500;
     }
-  }
-  &:has(input[value="other"]:checked) label.gl-other-entry {
-    display: inline-flex;
   }
 
   div.gl-submit {
@@ -274,29 +476,9 @@ const otherAmountEntryId = uniqueId(Astro.url, "gl-amount-custom");
     }
 
     svg {
-      display: inline;
+      display: none;
       pointer-events: none;
       margin-block-end: 0.25em;
-      &:has(+ :empty) {
-        display: none;
-      }
-    }
-
-    button {
-      font-size: 1.05em;
-      width: 100%;
-      font-weight: 500;
-      color: var(--gl-color-bg);
-      border: none;
-      padding: var(--gl-spacing-xs) var(--gl-spacing-sm);
-      border-radius: 9999px;
-      cursor: pointer;
-
-      transition: var(--gl-duration) background-color ease-in-out;
-      background-color: var(--gl-color-fg);
-      &:hover, &:focus-visible {
-        background-color: color-mix(in oklch, var(--gl-color-fg), light-dark(#000,#fff) 20%);
-      }
     }
   }
 
@@ -307,7 +489,7 @@ const otherAmountEntryId = uniqueId(Astro.url, "gl-amount-custom");
   }
 
   dialog {
-    --fade-duration: calc(var(--gl-duration) * 3);
+    --fade-duration: calc(var(--gl-duration) * 2);
 
     top: 50%;
     left: 50%;
@@ -364,6 +546,31 @@ const otherAmountEntryId = uniqueId(Astro.url, "gl-amount-custom");
       }
     }}
   }
+
+  /* display icon in error message box, if there's an error. */
+  &:has([aria-invalid="true"]) {
+    div.gl-submit svg {
+      display: inline;
+    }
+  }
+
+  /* error ring */
+  fieldset[aria-invalid="true"] {
+    outline: 3px solid var(--gl-color-error);
+    outline-offset: 4px;
+  }
+  label.gl-other-entry:has([aria-invalid="true"]) > .gl-focus-container {
+    border-color: var(--gl-color-error);
+    border-width: 3px;
+  }
+}}
+@layer theme { form.gl-simple-donation-widget {
+  /* focus ring - define in theme layer (lowest priority in Tailwind) so it can be overridden easily */
+  :focus-visible:not(.gl-focus-container *), /* I have focus-visible and I'm not within a focus container, OR */
+  .gl-focus-container:has(:focus-visible) {  /* I'm a focus container and a descendant has focus-visible */
+    outline: 0.1875rem solid var(--gl-color-focus);
+    outline-offset: 0.25rem;
+  }
 }}
 </style>
 
@@ -372,77 +579,112 @@ const otherAmountEntryId = uniqueId(Astro.url, "gl-amount-custom");
 {
   const MIN_DONATION = 5;
   const MAX_DONATION = 100000;
-  const DED_NAME = "gl-ded-name";
-  const DED_EMAIL = "gl-ded-email";
-  const DED_KEY = "gl-ded-key";
 
   const supports_closedby = (document.createElement("dialog") as any).closedBy === "none";
 
   document.querySelectorAll<HTMLFormElement>(".gl-simple-donation-widget").forEach((form) => {
     const customInput = form.querySelector<HTMLInputElement>(".gl-other-entry input");
     const paymentModal = form.querySelector<HTMLDialogElement>("dialog.gl-payment-modal");
+    const dedicationModal = form.querySelector<HTMLDialogElement>("dialog.gl-dedication-modal");
     const iframe = paymentModal?.querySelector<HTMLIFrameElement>("iframe");
     const errBox = form.querySelector<HTMLElement>(".gl-error");
-    const buttonSuffix = form.querySelector<HTMLElement>(".gl-submit button span");
+    const buttonSuffix = form.querySelector<HTMLElement>(".gl-submit button span[aria-hidden]");
+    const buttonSuffixAlt = form.querySelector<HTMLElement>(".gl-submit button span.sr-only");
+    const amountSet = form.querySelector<HTMLFieldSetElement>(".gl-amount");
+    if (!customInput || !paymentModal || !iframe || !errBox || !buttonSuffix || !buttonSuffixAlt) {
+      return;
+    }
 
     const iframeUrl = new URL(`https://secure.givelively.org/donate/${form.dataset.slug}`);
     const thisUrl = new URL(document.URL);
 
-    // Helper utils.
-    const numberFormatter = new Intl.NumberFormat(form.dataset.locale);
-    const currencyFormatter = new Intl.NumberFormat(form.dataset.locale, {
+    const locale = form.dataset.locale;
+    const settings: Intl.NumberFormatOptions = {
       style: "currency",
       currency: form.dataset.currency,
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
+    };
+    const currencyFormatter = Intl.NumberFormat(locale, settings);
+    const currencyNameFormatter = Intl.NumberFormat(locale, {
+      ...settings,
+      currencyDisplay: "name"
     });
-    const getAmountDigits = (formData: FormData): [string | null, boolean] => {
-      const amountStr = formData.get("amount");
-      if (amountStr === "other") {
-        return [formData.get("otherAmount") as string | null, true];
-      }
-      return [amountStr as string | null, false];
-    }
-    const digitsToNumber = (str: string | null | undefined): number => {
-      return Number(str?.replace(/\D/g, ""));
-    }
 
-    // Polyfill to mimic <dialog closedBy="any"> behavior on unsupported browsers.
-    if (!supports_closedby) {
-      paymentModal?.addEventListener('click', (e) => {
-        const edges = paymentModal.getBoundingClientRect();
-        if (e.clientX < edges.left || e.clientX > edges.right ||
-            e.clientY < edges.top  || e.clientY > edges.bottom) {
-          e.preventDefault();
-          paymentModal.close();
+    // Helper utils.
+    const updateError = (msg?: string | null, culprit?: HTMLElement | null): void => {
+      /* calling postError() wiath an empty message resets to no-error state. */
+      errBox.replaceChildren(...(msg? [msg] : []));
+      [amountSet, customInput].forEach( elem => {
+        if (elem) {
+          const isErr = msg && elem === culprit;
+          elem.ariaInvalid = isErr? "true" : null;
+          elem.ariaDescribedByElements = isErr? [errBox] : null;
         }
       });
-    }
+    };
 
-    // When any fields in the form are modified:
-    form.addEventListener('input', () => {
-      // Update button text based on currently selected donation amount and frequency.
+    const updateSubmitButton = (): void => {
+      // Update submit button label based on currently selected donation amount and frequency.
       const formData = new FormData(form);
       const [amountStr] = getAmountDigits(formData);
 
-      const msgs: string[] = [];
-      if (amountStr) {
-        msgs.push(" " + currencyFormatter.format(digitsToNumber(amountStr)));
-        if (formData.get("frequency") === "monthly") {
-          msgs.push(" Monthly");
+      const freq = (formData.get("frequency") === "monthly")? " Monthly" : "";
+
+      buttonSuffix.replaceChildren(...(
+        amountStr? [currencyFormatter.format(amountStr as unknown as number) + freq] : []
+      ));
+
+      buttonSuffixAlt.replaceChildren(...(
+        amountStr? [currencyNameFormatter.format(amountStr as unknown as number) + freq] : []
+      ));
+    };
+
+    const getAmountDigits = (formData: FormData): [string | null | undefined, boolean] => {
+      const buttonSelection = formData.get("amount") as string | null;
+      const customInput = formData.get("otherAmount") as string | null;
+      const ret: [string | null | undefined, boolean] = (!amountSet || buttonSelection === "other")?
+        [customInput, true] : [buttonSelection, false];
+      ret[0] = ret[0]?.replace(/\D/g, "");
+      return ret;
+    };
+
+    // Polyfill to mimic <dialog closedBy="any"> behavior on unsupported browsers.
+    if (!supports_closedby) {
+      [paymentModal, dedicationModal].forEach(modal => modal?.addEventListener('click', (e) => {
+        const edges = modal.getBoundingClientRect();
+        if (e.clientX < edges.left || e.clientX > edges.right ||
+            e.clientY < edges.top  || e.clientY > edges.bottom) {
+          e.preventDefault();
+          modal.close();
         }
-      }
-      buttonSuffix?.replaceChildren(...msgs);
-    });
+      }));
+    }
+
+    // Do an initial submit button label update when we first load, in case a default donation amount
+    // was hard-coded in.
+    updateSubmitButton();
+
+    // When any fields in the form are modified: update submit button text to reflect chosen donation amount
+    form.addEventListener('input', () => updateSubmitButton());
+
+    // When the amount button selection is changed: clear all current errors.
+    amountSet?.addEventListener("change", () => updateError());
 
     // When the custom amount is edited:
-    customInput?.addEventListener('input', () => {
-      // Reformat number for current locale.
+    customInput.addEventListener('input', () => {
+      // Reformat number for current locale as currency, but remove the currency symbol (since it's already included in prefix).
       if (customInput.value) {
-        customInput.value = numberFormatter.format(digitsToNumber(customInput.value));
+        const digits = customInput.value.replace(/\D/g, "");
+        customInput.value = digits?
+          currencyFormatter.formatToParts(digits as unknown as number)
+            .flatMap((part) => part.type === "currency"? [] : [part.value]).join("").trim()
+          :
+          ""
+        ;
       }
     });
-    customInput?.addEventListener('beforeinput', (e) => {
+    customInput.addEventListener('beforeinput', (e) => {
       // Prevent user from manually entering any non-digit characters.
       if (e.data && /\D/g.test(e.data)) {
         e.preventDefault();
@@ -451,7 +693,7 @@ const otherAmountEntryId = uniqueId(Astro.url, "gl-amount-custom");
 
     // When the iframe sends out a message:
     window.addEventListener('message', (e: MessageEvent) => {
-      if (e.origin !== iframeUrl.origin) return;
+      if (e.origin !== iframeUrl.origin) return; //make sure messages are coming from givelively's origin, for security
 
       const message = ((typeof e.data === "object")?
         (e.data?.message || JSON.stringify(e.data))
@@ -462,25 +704,24 @@ const otherAmountEntryId = uniqueId(Astro.url, "gl-amount-custom");
       // Reset the form if the user's donation succeeded.
       if (message.includes("gl_checkout_complete")) {
         form.reset();
-        buttonSuffix?.replaceChildren();
+        updateSubmitButton();
       }
 
       // Close the modal window if the user asked the iframe to close.
       if (message === "close_modal" && paymentModal?.open) {
-        paymentModal?.close();
+        paymentModal.close();
       }
     });
 
     // When donation modal is closed:
-    paymentModal?.addEventListener('close', () => {
+    paymentModal.addEventListener('close', () => {
       // Clear out the iframe.
-      iframe?.setAttribute('src', 'about:blank');
+      iframe.setAttribute('src', 'about:blank');
     });
 
     // When donate button is pressed:
     form.addEventListener('submit', async (ev) => {
       ev.preventDefault();
-      errBox?.replaceChildren(); //clear the error box
 
       // Get user selections from form.
       const formData = new FormData(form);
@@ -488,21 +729,19 @@ const otherAmountEntryId = uniqueId(Astro.url, "gl-amount-custom");
       const frequency = formData.get("frequency") as string | null;
 
       const [amountStr, isCustom] = getAmountDigits(formData);
-      const amount = digitsToNumber(amountStr) || 0;
+      const amount = Number(amountStr) || 0;
 
       // Validate user selections.
       let errMsg;
-      if (!frequency) {
-        errMsg = "Select a giving frequency.";
-      } else if (!isCustom && amount == 0) {
+      if (!isCustom && amount == 0) {
         errMsg = "Select a donation amount.";
       } else if (amount < MIN_DONATION) {
         errMsg = `Enter a donation of ${currencyFormatter.format(MIN_DONATION)} or more.`;
       } else if (amount > MAX_DONATION) {
         errMsg = `Enter a donation of ${currencyFormatter.format(MAX_DONATION)} or less.`;
       }
+      updateError(errMsg, (isCustom? customInput : amountSet));
       if (errMsg) {
-        errBox?.replaceChildren(errMsg);
         return;
       }
 
@@ -510,9 +749,9 @@ const otherAmountEntryId = uniqueId(Astro.url, "gl-amount-custom");
       const params = new URLSearchParams({
         recurring: String(frequency === "monthly"),
         override_amount: amountStr || "",
-        dedication_name: localStorage.getItem(DED_NAME) || "",
-        dedication_email: localStorage.getItem(DED_EMAIL) || "",
-        dedication_type: localStorage.getItem(DED_KEY) || "", // InMemoryOfDedication or InHonorOfDedication
+        dedication_name: (formData.get("ded_name") as string | null) || "",
+        dedication_email: (formData.get("ded_email") as string | null) || "",
+        dedication_type: (formData.get("ded_type") as string | null) || "",
         widget_type: "simple_donation",
         widget_url: thisUrl.origin + thisUrl.pathname,
         isWixEmbedded: "false",
@@ -527,8 +766,8 @@ const otherAmountEntryId = uniqueId(Astro.url, "gl-amount-custom");
 
       // Set the iframe URL. Show modal window immediately.
       iframeUrl.search = params.toString();
-      iframe?.setAttribute("src", iframeUrl.toString());
-      paymentModal?.showModal();
+      iframe.setAttribute("src", iframeUrl.toString());
+      paymentModal.showModal();
     });
   });
 }

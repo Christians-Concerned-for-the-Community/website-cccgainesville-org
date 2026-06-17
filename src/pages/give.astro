@@ -10,11 +10,15 @@ import Feat from '@/assets/media/give-feat.jpg'
 >
   <div class="grid grid-cols-1 gap-xl md:gap-2xl md:grid-cols-2">
     {/* Donation Form */}
-    <section class="justify-self-center md:justify-self-end-safe">
+    <section class="flex items-start justify-self-center md:justify-self-end-safe w-full">
       <h2 class="sr-only">Donation Form</h2>
-      <GiveLively class:list={[
-        "font-[inherit] text-base 3xs:text-base-2xl md:text-base grow",
-        "border-0 border-t-3 border-t-foreground rounded-sm shadow-md dark:border-muted dark:border-2",
+      <GiveLively slug="christians-concerned-for-the-community-inc"
+        suggestedAmounts={[25,50,100,250]},
+        doDedication={false},
+        class:list={[
+          "font-[inherit] text-base 3xs:text-base-2xl md:text-base grow",
+          "border-0 border-t-3 border-t-foreground rounded-sm shadow-md",
+          "dark:border-muted dark:border-2",
       ]}/>
     </section>
 
