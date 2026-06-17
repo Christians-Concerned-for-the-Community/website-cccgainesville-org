@@ -373,7 +373,7 @@ const dedEmailDescription = uniqueId(Astro.url, "gl-ded-email-desc");
       padding: var(--gl-spacing-xs);
       user-select: none; /* make text unselectable by user (since it functions as a button) */
 
-      transition: var(--gl-duration) box-shadow background-color ease-in-out;
+      transition: var(--gl-duration) box-shadow background-color text-shadow ease-in-out;
       box-shadow: var(--gl-button-shadow);
       background-color: var(--gl-color-bg);
       &:has(:checked) {
@@ -448,7 +448,6 @@ const dedEmailDescription = uniqueId(Astro.url, "gl-ded-email-desc");
       align-items: center;
       border: 2px solid var(--gl-color-accent);
       border-radius: var(--gl-radius);
-      transition: var(--gl-duration) box-shadow ease-in-out;
       width: 100%;
       padding: 0.35em 1em;
       gap: 0.35em;
@@ -456,10 +455,10 @@ const dedEmailDescription = uniqueId(Astro.url, "gl-ded-email-desc");
       span { /* gray out the currency prefix and suffix */
         color: color-mix(in oklch, currentColor, transparent 20%);
       }
-    }
 
-    input {
-      width: 100%;
+      input {
+        width: 100%;
+      }
     }
   }
 
@@ -496,9 +495,9 @@ const dedEmailDescription = uniqueId(Astro.url, "gl-ded-email-desc");
     overflow-y: auto;
     scrollbar-gutter: auto;
     height: 100%;
-    max-height: 94dvh;
+    max-height: 94svh;
     width: 100%;
-    max-width: min(94dvw, 500px);
+    max-width: min(94svw, 500px);
     padding: 0;
     margin: 0;
     border-radius: var(--gl-radius);
@@ -578,6 +577,8 @@ const dedEmailDescription = uniqueId(Astro.url, "gl-ded-email-desc");
   const MIN_DONATION = 5;
   const MAX_DONATION = 100000;
 
+  // See if we need polyfill to mimic <dialog closedBy="any"> behavior on unsupported browsers.
+  //  Note: Safari is only major one not ready yet - support is still in tech preview as of 2026/06
   const supports_closedby = (document.createElement("dialog") as any).closedBy === "none";
 
   document.querySelectorAll<HTMLFormElement>(".gl-simple-donation-widget").forEach((form) => {
