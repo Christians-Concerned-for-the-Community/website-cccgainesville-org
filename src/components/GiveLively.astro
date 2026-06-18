@@ -209,9 +209,9 @@ if(!hasAmountButtons && amountButtons?.[0]) {
     <span class="gl-ded-button-edit">Edit Dedication</span>
   </button>
 
-  <dialog id={dedModalId} class="gl-dedication-modal" closedby="any">
+  <dialog id={dedModalId} class="gl-ded-modal" closedby="any">
     <button type="button" class="gl-ded-close gl-ghost" commandfor={dedModalId} command="close">
-      <svg aria-hidden="true" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <svg aria-hidden="true" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
         <path d="M18 6l-12 12" /><path d="M6 6l12 12" />
       </svg>
       <span class="sr-only">Close</span>
@@ -223,16 +223,18 @@ if(!hasAmountButtons && amountButtons?.[0]) {
 
         { dedicationButtons.map((ded) => (
         <label for={ded.id}>
-          <input type="radio" id={ded.id} name="amount" value={ded.value} required/>
+          <input type="radio" id={ded.id} name="ded_type" value={ded.value} required/>
           {ded.title}
         </label>
         ))}
       </fieldset>
 
-      <div class="gl-err-group">
+      <div class="gl-err-group gl-ded-name">
         <label for={dedNameId}>
           Dedicatee's Name
-          <input id={dedNameId} type="text" autocomplete="name" spellcheck="false" autocapitalize="words" autocorrect="off" maxlength="255"/>
+          <input type="text" id={dedNameId} name="ded_name" required
+           autocomplete="name" spellcheck="false" autocapitalize="words" autocorrect="off" maxlength="255"
+          />
         </label>
 
         <div class="gl-err">
@@ -241,11 +243,14 @@ if(!hasAmountButtons && amountButtons?.[0]) {
         </div>
       </div>
 
-      <div class="gl-err-group">
+      <div class="gl-err-group gl-ded-email">
         <label for={dedEmailId}>
           Recipient Email
-          <input id={dedEmailId} type="email" autocomplete="email" maxlength="255"/>
-          <span>Notify someone about your gift. The email will identify you as the donor, but does not specify the amount of your gift.</span>
+          <input type="email" id={dedEmailId} name="ded_email" required autocomplete="email" maxlength="255"/>
+          <div>
+            Notify someone about your gift. The email will identify you as the donor, but does not
+            specify the amount of your gift.
+          </div>
         </label>
 
         <div class="gl-err">
@@ -268,6 +273,9 @@ if(!hasAmountButtons && amountButtons?.[0]) {
   </button>
 
   <dialog class="gl-donate-modal" closedby="any">
+    <svg stroke="currentColor" viewBox="0 0 24 24" class="gl-spinner">
+      <g><circle cx="12" cy="12" r="9.5" fill="none" stroke-width="3"/></g>
+    </svg>
     <iframe allow="payment" src="about:blank"></iframe>
   </dialog>
 </form>
@@ -342,6 +350,11 @@ if(!hasAmountButtons && amountButtons?.[0]) {
       & > :is(input,.gl-focus-container) {
         font-weight: 400;
         margin-block-start: var(--gl-spacing-2xs);
+        & ~ div {
+          font-size: 0.85em;
+          font-weight: 300;
+          margin-block-start: var(--gl-spacing-2xs);
+        }
       }
     }
   }
@@ -643,6 +656,34 @@ if(!hasAmountButtons && amountButtons?.[0]) {
         backdrop-filter: blur(0px);
       }
     }}
+
+    /* Style the loading spinner, if any (only used for dialogs that embed an iframe). */
+    &:has(.gl-spinner) {
+      container-type: inline-size;
+    }
+    .gl-spinner {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+
+      width: 25cqmin;
+      height: 25cqmin;
+      color: var(--gl-color-fg);
+
+      /* Rules that create the spinning animation. */
+      g {
+        transform-origin: center;
+        animation: gl-spinner-outer 2s linear infinite;
+        circle {
+          stroke-linecap: round;
+          animation: gl-spinner-inner 1.5s ease-in-out infinite;
+        }
+      }
+    }
+    &:is(:not([open]),[data-loaded]) svg.gl-spinner {
+      display: none;
+    }
   }
 
   /* error ring */
@@ -660,6 +701,25 @@ if(!hasAmountButtons && amountButtons?.[0]) {
     outline-offset: 0.25rem;
   }
 }}
+@keyframes gl-spinner-outer {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@keyframes gl-spinner-inner {
+  0% {
+    stroke-dasharray: 0 150;
+    stroke-dashoffset: 0;
+  }
+  47.5% {
+    stroke-dasharray: 42 150;
+    stroke-dashoffset: -16;
+  }
+  95%,100% {
+    stroke-dasharray: 42 150;
+    stroke-dashoffset: -59;
+  }
+}
 </style>
 
 
@@ -667,13 +727,14 @@ if(!hasAmountButtons && amountButtons?.[0]) {
 {
   const MIN_DONATION = 5;
   const MAX_DONATION = 100000;
+  const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
   // See if we need polyfill to mimic <dialog closedBy="any"> behavior on unsupported browsers.
   //  Note: Safari is only major one not ready yet - support is still in tech preview as of 2026/06
   const supports_closedby = (document.createElement("dialog") as any).closedBy === "none";
 
-  document.querySelectorAll<HTMLFormElement>(".gl-simple-donation-widget").forEach((form) => {
-    const qs = (query: string) => form.querySelector(query) as HTMLElement | null;
+  document.querySelectorAll<HTMLFormElement>(".gl-simple-donation-widget").forEach((donateForm) => {
+    const qs = (query: string) => donateForm.querySelector(query) as HTMLElement | null;
 
     const customInput = qs(".gl-amount > label input") as HTMLInputElement | null;
     const amountSet = qs(".gl-amount fieldset");
@@ -682,22 +743,31 @@ if(!hasAmountButtons && amountButtons?.[0]) {
     const donateSuffix = qs(".gl-donate-button span[aria-hidden]");
     const donateSuffixAlt = qs(".gl-donate-button span.sr-only");
     
-    const dedicationModal = qs(".gl-dedication-modal") as HTMLDialogElement | null;
+    const dedButton = qs(".gl-ded-button");
+    const dedModal = qs(".gl-ded-modal") as HTMLDialogElement | null;
+    const dedForm = qs(".gl-ded-modal form") as HTMLFormElement | null;
 
-    const paymentModal = qs(".gl-donate-modal") as HTMLDialogElement | null;
+    const dedNameInput = qs(".gl-ded-name input");
+    const dedNameErr = qs(".gl-ded-name span[aria-live]");
+    const dedEmailInput = qs(".gl-ded-email input");
+    const dedEmailErr = qs(".gl-ded-email span[aria-live]");
+
+    const donateModal = qs(".gl-donate-modal") as HTMLDialogElement | null;
     const iframe = qs(".gl-donate-modal iframe") as HTMLIFrameElement | null;
 
-    if (!customInput || !amountErr || !donateSuffix || !donateSuffixAlt || !paymentModal || !iframe) {
+    if (!customInput || !amountErr || !donateSuffix || !donateSuffixAlt || !donateModal || !iframe) {
       return;
     }
 
-    const iframeUrl = new URL(`https://secure.givelively.org/donate/${form.dataset.slug}`);
+    let dedData: Record<string, any> | undefined; // submitted data from Dedication modal will be passed in this var.
+
+    const iframeUrl = new URL(`https://secure.givelively.org/donate/${donateForm.dataset.slug}`);
     const thisUrl = new URL(document.URL);
 
-    const locale = form.dataset.locale;
+    const locale = donateForm.dataset.locale;
     const settings: Intl.NumberFormatOptions = {
       style: "currency",
-      currency: form.dataset.currency,
+      currency: donateForm.dataset.currency,
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     };
@@ -708,21 +778,19 @@ if(!hasAmountButtons && amountButtons?.[0]) {
     });
 
     // Helper utils.
-    const updateAmountError = (msg?: string | null, culprit?: HTMLElement | null): void => {
-      /* calling postError() wiath an empty message resets to no-error state. */
-      amountErr.replaceChildren(...(msg? [msg] : []));
-      [amountSet, customInput].forEach( elem => {
-        if (elem) {
-          const isErr = msg && elem === culprit;
-          elem.ariaInvalid = isErr? "true" : null;
-          elem.ariaDescribedByElements = isErr? [amountErr] : null;
-        }
-      });
-    };
+    const updateError = (errDest: HTMLElement, culprit?: HTMLElement | null, msg?: string | null): boolean => {
+      errDest.replaceChildren(...(msg? [msg] : []));
+      if (culprit) {
+        culprit.ariaInvalid = msg? "true" : null;
+        culprit.ariaDescribedByElements = msg? [errDest] : null;
+      }
+      /* Returns true if there was an error message to add, false if the message was empty (everything OK). */
+      return !!msg;
+    }
 
     const updateDonateButton = (): void => {
       // Update donate button label based on currently selected amount and frequency.
-      const formData = new FormData(form);
+      const formData = new FormData(donateForm);
       const [amountStr] = getAmountDigits(formData);
 
       const freq = (formData.get("frequency") === "monthly")? " Monthly" : "";
@@ -747,7 +815,7 @@ if(!hasAmountButtons && amountButtons?.[0]) {
 
     // Polyfill to mimic <dialog closedBy="any"> behavior on unsupported browsers.
     if (!supports_closedby) {
-      [paymentModal, dedicationModal].forEach(modal => modal?.addEventListener('click', (e) => {
+      [donateModal, dedModal].forEach(modal => modal?.addEventListener('click', (e) => {
         const edges = modal.getBoundingClientRect();
         if (e.clientX < edges.left || e.clientX > edges.right ||
             e.clientY < edges.top  || e.clientY > edges.bottom) {
@@ -758,10 +826,14 @@ if(!hasAmountButtons && amountButtons?.[0]) {
     }
 
     // When any fields in the form are modified: update submit button text to reflect chosen donation amount
-    form.addEventListener('input', () => updateDonateButton());
+    donateForm.addEventListener('input', () => updateDonateButton());
 
-    // When the amount button selection is changed: clear all current errors.
-    amountSet?.addEventListener("change", () => updateAmountError());
+    // When the amount button selection is changed:
+    amountSet?.addEventListener("change", () => {
+      // Clear all current amount errors.
+      updateError(amountErr, amountSet);
+      updateError(amountErr, customInput);
+    });
 
     // When the custom amount is edited:
     customInput.addEventListener('input', () => {
@@ -795,32 +867,74 @@ if(!hasAmountButtons && amountButtons?.[0]) {
 
       // Reset the form if the user's donation succeeded.
       if (message.includes("gl_checkout_complete")) {
-        form.reset();
+        donateForm.reset();
         updateDonateButton(); // needed because events aren't fired when form values are changed programmatically.
       }
 
       // Close the modal window if the user asked the iframe to close.
-      if (message === "close_modal" && paymentModal?.open) {
-        paymentModal.close();
+      if (message === "close_modal" && donateModal?.open) {
+        donateModal.close();
+      }
+    });
+
+    // When iframe is successfully loaded:
+    iframe.addEventListener('load', () => {
+      if (iframe.src && iframe.src !== "about:blank") {
+        donateModal.toggleAttribute("data-loaded", true);
       }
     });
 
     // When donation modal is closed:
-    paymentModal.addEventListener('close', () => {
+    donateModal.addEventListener("close", () => {
       // Clear out the iframe.
-      iframe.setAttribute('src', 'about:blank');
+      iframe.setAttribute("src", "about:blank");
+      donateModal.toggleAttribute("data-loaded", false);
     });
 
-    // When donate button is pressed:
-    form.addEventListener('submit', async (ev) => {
-      ev.preventDefault();
+    // When dedication form is submitted:
+    dedForm?.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (!dedButton || !dedNameErr || !dedEmailErr) {
+        return;
+      }
+
+      // Get user selections.
+      const formData = new FormData(dedForm);
+
+      dedData = {
+        type: (formData.get("ded_type") as string | null),
+        name: (formData.get("ded_name") as string | null)?.trim(),
+        email: (formData.get("ded_email") as string | null)?.trim()
+      };
+
+      // Validate user selections.
+      if(
+        updateError(dedNameErr, dedNameInput, dedData.name? "" :
+          "Enter the dedicatee's name (John Smith)"
+        )
+        ||
+        updateError(dedEmailErr, dedEmailInput, !dedData.email || EMAIL_REGEX.test(dedData.email)? "" :
+          "Enter a valid email (jsmith@example.com)"
+        )
+      ) {
+        dedButton.dataset.state = "new";
+        dedData = undefined;
+      } else {
+        dedButton.dataset.state = "edit";
+        dedModal?.close();
+      }
+    });
+
+    // When donate form is submitted:
+    donateForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
 
       // Get user selections from form.
-      const formData = new FormData(form);
+      const donateFormData = new FormData(donateForm);
 
-      const frequency = formData.get("frequency") as string | null;
+      const frequency = donateFormData.get("frequency") as string | null;
 
-      const [amountStr, isCustom] = getAmountDigits(formData);
+      const [amountStr, isCustom] = getAmountDigits(donateFormData);
       const amount = Number(amountStr) || 0;
 
       // Validate user selections.
@@ -832,8 +946,7 @@ if(!hasAmountButtons && amountButtons?.[0]) {
       } else if (amount > MAX_DONATION) {
         errMsg = `Enter a donation of ${currencyFormatter.format(MAX_DONATION)} or less.`;
       }
-      updateAmountError(errMsg, (isCustom? customInput : amountSet)); // clears err state if errMsg is falsy
-      if (errMsg) {
+      if (updateError(amountErr, (isCustom? customInput : amountSet), errMsg)) { // clears err state if errMsg is falsy
         return;
       }
 
@@ -841,9 +954,9 @@ if(!hasAmountButtons && amountButtons?.[0]) {
       const params = new URLSearchParams({
         recurring: String(frequency === "monthly"),
         override_amount: amountStr || "",
-        dedication_name: (formData.get("ded_name") as string | null) || "",
-        dedication_email: (formData.get("ded_email") as string | null) || "",
-        dedication_type: (formData.get("ded_type") as string | null) || "",
+        dedication_name: dedData?.name || "",
+        dedication_email: dedData?.email || "",
+        dedication_type: dedData?.type || "",
         widget_type: "simple_donation",
         widget_url: thisUrl.origin + thisUrl.pathname,
         isWixEmbedded: "false",
@@ -859,7 +972,7 @@ if(!hasAmountButtons && amountButtons?.[0]) {
       // Set the iframe URL. Show modal window immediately.
       iframeUrl.search = params.toString();
       iframe.setAttribute("src", iframeUrl.toString());
-      paymentModal.showModal();
+      donateModal.showModal();
     });
   });
 }
