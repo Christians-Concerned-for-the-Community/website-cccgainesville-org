@@ -117,12 +117,11 @@ const dedicationButtons = [
   { title: "In Memory Of", value: "InMemoryOfDedication", id: uniqueId(Astro.url, "gl-ded-memory") },
 ];
 
-const errBoxId = uniqueId(Astro.url, "gl-errbox");
-const warningId = uniqueId(Astro.url, "icon-warning");
+const alertIconId = uniqueId(Astro.url, "icon-warning");
 
+const dedModalId = uniqueId(Astro.url, "gl-ded-modal");
 const dedNameId = uniqueId(Astro.url, "gl-ded-name");
 const dedEmailId = uniqueId(Astro.url, "gl-ded-email");
-const dedEmailDescription = uniqueId(Astro.url, "gl-ded-email-desc");
 
 ---
 
@@ -131,7 +130,7 @@ const dedEmailDescription = uniqueId(Astro.url, "gl-ded-email-desc");
   {...rest}
 >
   {/* Gift Frequency */}
-  <fieldset class="gl-focus-container gl-frequency">
+  <fieldset class="gl-focus-container">
     <legend class="sr-only">Donation Frequency</legend>
     { frequencyButtons.map((freq, idx) => (
     <label for={freq.id}>
@@ -142,65 +141,75 @@ const dedEmailDescription = uniqueId(Astro.url, "gl-ded-email-desc");
   </fieldset>
 
   {/* Gift Amount */}
-  { hasAmountButtons && (
-  <fieldset class="gl-focus-container gl-amount">
-    <legend class="sr-only">Donation Amount</legend>
-    { amountButtons.map((amt) => (
-    <label for={amt.id}>
-      <input type="radio" id={amt.id} name="amount" value={amt.value} required/>
-      <span aria-hidden="true">{amt.title}</span>
-      <span class="sr-only">{amt.alt}</span>
+  <div class="gl-err-group gl-amount">
+    { hasAmountButtons && (
+    <fieldset class="gl-focus-container">
+      <legend class="sr-only">Donation Amount</legend>
+      { amountButtons.map((amt) => (
+      <label for={amt.id}>
+        <input type="radio" id={amt.id} name="amount" value={amt.value} required/>
+        <span aria-hidden="true">{amt.title}</span>
+        <span class="sr-only">{amt.alt}</span>
+      </label>
+      ))}
+
+      <label for={otherAmountId}>
+        <input type="radio" id={otherAmountId} name="amount" value="other" required/>
+        Custom Amount
+      </label>
+    </fieldset>
+    )}
+
+    <label for={otherAmountEntryId} class="gl-other-entry">
+      <span class="gl-other-label-1 sr-only">Custom amount in {currencyNamePlural}:</span>
+      <div class="gl-other-label-2">
+        Donation amount<span class="sr-only"> in {currencyNamePlural}</span>:
+      </div>
+      <div class="gl-focus-container">
+        <span aria-hidden="true">{currencySymbol}</span>
+        <input type="text" id={otherAmountEntryId} inputmode="numeric" name="otherAmount" required={!hasAmountButtons}
+          value={(!hasAmountButtons && amountButtons?.[0])? amountButtons[0].value : undefined}
+        />
+        <span aria-hidden="true">{currencyCode}</span>
+      </div>
     </label>
-    ))}
 
-    <label for={otherAmountId}>
-      <input type="radio" id={otherAmountId} name="amount" value="other" required/>
-      Custom Amount
-    </label>
-  </fieldset>
-  )}
-
-  <label for={otherAmountEntryId} class="gl-other-entry">
-    <span class="gl-other-label-1 sr-only">Custom amount in {currencyNamePlural}:</span>
-    <div class="gl-other-label-2">
-      Donation amount<span class="sr-only"> in {currencyNamePlural}</span>:
+    <div class="gl-err">
+      <svg aria-hidden="true">
+        <!-- https://tabler.io/icons?icon=alert-triangle -->
+        <symbol id={alertIconId} viewBox="0 0 24 24">
+          <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path d="M12 9v4" />
+            <path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0" />
+            <path d="M12 16h.01" />
+          </g>
+        </symbol>
+        <use href={"#"+alertIconId}/>
+      </svg>
+      <span aria-live="polite"/>
     </div>
-    <div class="gl-focus-container">
-      <span aria-hidden="true">{currencySymbol}</span>
-      <input type="text" id={otherAmountEntryId} inputmode="numeric" name="otherAmount" required={!hasAmountButtons}
-        value={(!hasAmountButtons && amountButtons?.[0])? amountButtons[0].value : undefined}
-      />
-      <span aria-hidden="true">{currencyCode}</span>
-    </div>
-  </label>
-
-  {/* Donate Button and Modal */}
-  <div class="gl-submit">
-    <svg aria-hidden="true">
-      <symbol id={warningId} viewBox="0 0 24 24">
-        <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-          <path d="M12 9v4" />
-          <path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0" />
-          <path d="M12 16h.01" />
-        </g>
-      </symbol>
-      <use href={"#"+warningId}/>
-    </svg>
-    <span class="gl-error" id={errBoxId} aria-live="polite"/>
-    <button type="submit" class="primary">
-      Donate
-      <span aria-hidden="true"/>
-      <span class="sr-only"/>
-    </button>
   </div>
 
-  <dialog class="gl-payment-modal" closedby="any">
-    <iframe allow="payment" src="about:blank"></iframe>
-  </dialog>
+  {/* Dedication Button and Modal */}
+  {/*WIP*/ doDedication && (
+  <button type="button" class="gl-ded-button gl-secondary" data-state="new" commandfor={dedModalId} command="show-modal">
+    <svg aria-hidden="true" viewBox="0 0 24 24" stroke="currentColor">
+      <!-- https://tabler.io/icons?icon=heart -->
+      <path d="M6.979 3.074a6 6 0 0 1 4.988 1.425l.037 .033l.034 -.03a6 6 0 0 1 4.733 -1.44l.246 .036a6 6 0 0 1 3.364 10.008l-.18 .185l-.048 .041l-7.45 7.379a1 1 0 0 1 -1.313 .082l-.094 -.082l-7.493 -7.422a6 6 0 0 1 3.176 -10.215z" />
+    </svg>
+    <span class="gl-ded-button-new">Dedicate This Gift</span>
+    <span class="gl-ded-button-edit">Edit Dedication</span>
+  </button>
 
-  { /*WIP*/doDedication && (
-  <dialog class="gl-dedication-modal" closedby="any">
+  <dialog id={dedModalId} class="gl-dedication-modal" closedby="any">
+    <button type="button" class="gl-ded-close gl-ghost" commandfor={dedModalId} command="close">
+      <svg aria-hidden="true" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M18 6l-12 12" /><path d="M6 6l12 12" />
+      </svg>
+      <span class="sr-only">Close</span>
+    </button>
+
     <form novalidate aria-label="Dedication">
       <fieldset class="gl-focus-container">
         <legend class="sr-only">Dedication Type</legend>
@@ -213,21 +222,47 @@ const dedEmailDescription = uniqueId(Astro.url, "gl-ded-email-desc");
         ))}
       </fieldset>
 
-      <label for={dedNameId}>
-        Dedicatee's Name
-        <input id={dedNameId} type="text" autocomplete="name" spellcheck="false" autocapitalize="words" autocorrect="off" maxlength="255"/>
-      </label>
+      <div class="gl-err-group">
+        <label for={dedNameId}>
+          Dedicatee's Name
+          <input id={dedNameId} type="text" autocomplete="name" spellcheck="false" autocapitalize="words" autocorrect="off" maxlength="255"/>
+        </label>
 
-      <label for={dedEmailId}>
-        Recipient Email
-        <input id={dedEmailId} aria-describedby={dedEmailDescription} type="email" autocomplete="email" maxlength="255"/>
-        <div aria-hidden="true">
-          <span>Notify someone about your gift. The email will identify you as the donor, but does not specify the amount of your gift.</span>
+        <div class="gl-err">
+          <svg aria-hidden="true"><use href={"#"+alertIconId}/></svg>
+          <span aria-live="polite"/>
         </div>
-      </label>
+      </div>
+
+      <div class="gl-err-group">
+        <label for={dedEmailId}>
+          Recipient Email
+          <input id={dedEmailId} type="email" autocomplete="email" maxlength="255"/>
+          <span>Notify someone about your gift. The email will identify you as the donor, but does not specify the amount of your gift.</span>
+        </label>
+
+        <div class="gl-err">
+          <svg aria-hidden="true"><use href={"#"+alertIconId}/></svg>
+          <span aria-live="polite"/>
+        </div>
+      </div>
+
+      <button type="button" class="gl-ded-remove gl-secondary">Remove</button>
+
+      <button type="submit" class="gl-ded-save gl-primary">Save</button>
     </form>
   </dialog>
   )}
+
+  {/* Donate Button and Modal */}
+  <button type="submit" class="gl-donate-button gl-primary">
+    <span>Donate <span aria-hidden="true"/></span>
+    <span class="sr-only"/>
+  </button>
+
+  <dialog class="gl-donate-modal" closedby="any">
+    <iframe allow="payment" src="about:blank"></iframe>
+  </dialog>
 </form>
 
 
@@ -256,7 +291,7 @@ const dedEmailDescription = uniqueId(Astro.url, "gl-ded-email-desc");
   max-width: 40ch;
   width: 100%;
   font-family: Avenir, Montserrat, Corbel, 'URW Gothic', source-sans-pro, sans-serif; /* Geometric Humanist - modernfontstacks.com */
-  font-size: 1.05em;
+  font-size: 1rem;
   color: var(--gl-color-fg);
   background-color: var(--gl-color-bg);
 
@@ -293,6 +328,15 @@ const dedEmailDescription = uniqueId(Astro.url, "gl-ded-email-desc");
     align-items: center;
     border: 1px solid var(--gl-color-accent);
     border-radius: var(--gl-radius);
+
+    &:has(input:not([type="radio"])) {
+      font-size: 1.06em;
+      font-weight: 500;
+      & > :is(input,.gl-focus-container) {
+        font-weight: 400;
+        margin-block-start: var(--gl-spacing-2xs);
+      }
+    }
   }
 
   /* Reset all input styles to undecorated. */
@@ -304,6 +348,10 @@ const dedEmailDescription = uniqueId(Astro.url, "gl-ded-email-desc");
   }
 
   button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1ch;
     cursor: pointer;
     width: 100%;
     transition: var(--gl-duration) background-color ease-in-out;
@@ -316,7 +364,7 @@ const dedEmailDescription = uniqueId(Astro.url, "gl-ded-email-desc");
       margin-block-start: var(--gl-spacing-sm);
     }
 
-    &.primary {
+    &.gl-primary {
       padding-block: var(--gl-spacing-sm);
       color: var(--gl-color-bg);
       border: none;
@@ -327,7 +375,7 @@ const dedEmailDescription = uniqueId(Astro.url, "gl-ded-email-desc");
       }
     }
 
-    &.secondary {
+    &.gl-secondary {
       padding-block: var(--gl-spacing-2xs);
       color: var(--gl-color-fg);
       border: 3px solid color-mix(in oklch, var(--gl-color-fg), var(--gl-color-bg) 30%);
@@ -337,9 +385,50 @@ const dedEmailDescription = uniqueId(Astro.url, "gl-ded-email-desc");
         background-color: var(--gl-color-checked);
       }
     }
+
+    &.gl-ghost {
+      padding-block: var(--gl-spacing-2xs);
+      transition: var(--gl-duration) color ease-in-out;
+
+      color: color-mix(in oklch, var(--gl-color-fg), var(--gl-color-bg) 30%);
+      &:hover, &:focus-visible {
+        color: color-mix(in oklch, var(--gl-color-fg), var(--gl-color-bg) 10%);
+        background-color: var(--gl-color-checked);
+      }
+    }
+
+    &.gl-ded-button {
+      &[data-state="new"] {
+        svg { fill: transparent; }
+        .gl-ded-button-new { display: inline; }
+        .gl-ded-button-edit { display: none; }
+      }
+      &[data-state="edit"] {
+        svg { fill: currentColor; }
+        .gl-ded-button-new { display: none; }
+        .gl-ded-button-edit { display: inline; }
+      }
+    }
+
+    &.gl-ded-close {
+      font-size: 0.9em;
+      padding: var(--gl-spacing-sm);
+      margin-left: auto;
+    }
   }
 
-  /* Radio button groups, where each radio button just looks like a regular button */
+  /* Set spacing between any combination of fieldsets and error groups. */
+  :is(fieldset, .gl-err-group) + :is(fieldset, .gl-err-group) {
+    margin-block-start: var(--gl-spacing-md);
+  }
+
+  /* Set spacing between a fieldset/error group and a subsequent button (also the reverse). */
+  :is(fieldset, .gl-err-group) + button,
+  button + :is(fieldset, .gl-err-group) {
+    margin-block-start: var(--gl-spacing-md);
+  }
+
+  /* Fieldset: a radio button group, where each radio button just looks like a regular button */
   fieldset {
     display: flex;
     flex-wrap: wrap;
@@ -347,10 +436,6 @@ const dedEmailDescription = uniqueId(Astro.url, "gl-ded-email-desc");
     justify-content: start;
     width: 100%;
     gap: var(--gl-spacing-xs); /* space button radio buttons, in both dimensions */
-
-    & + & { /* space between fieldsets */
-      margin-block-start: var(--gl-spacing-md);
-    }
 
     /*
       Inputs in a fieldset are a radio button group.
@@ -369,7 +454,7 @@ const dedEmailDescription = uniqueId(Astro.url, "gl-ded-email-desc");
      */
     label {
       display: flex;
-      flex: 1 0 fit-content; /* don't shrink to fit text, grow to fill available space along row */
+      flex: 1 0 fit-content; /* don't shrink to fit text, grow to fill available space along row, use width of text content as basis */
       padding: var(--gl-spacing-xs);
       user-select: none; /* make text unselectable by user (since it functions as a button) */
 
@@ -378,7 +463,7 @@ const dedEmailDescription = uniqueId(Astro.url, "gl-ded-email-desc");
       background-color: var(--gl-color-bg);
       &:has(:checked) {
         box-shadow: 0 0 0 2px var(--gl-color-accent);
-        text-shadow: 0.1px 0 currentColor, -0.1px 0 currentColor; /* simulate slight bold, without changing letter spacing or position*/
+        text-shadow: 0.1px 0 currentColor, -0.1px 0 currentColor; /* simulate a slight bold, without changing letter spacing or position*/
       }
       &:hover, &:has(:checked) {
         background-color: var(--gl-color-checked);
@@ -403,13 +488,49 @@ const dedEmailDescription = uniqueId(Astro.url, "gl-ded-email-desc");
     }
   }
 
-  fieldset.gl-amount {
-    & + label.gl-other-entry {
+  .gl-amount { /* Error group for amount input. */
+
+    & > label { /* Custom amount input field. */
+      width: 100%;
+    
+      /* Border around currency spans and the input box itself. */
+      .gl-focus-container {
+        display: flex;
+        background-color: var(--gl-color-bg);
+        align-items: center;
+        border: 2px solid var(--gl-color-accent);
+        border-radius: var(--gl-radius);
+        width: 100%;
+        padding: 0.35em 1em;
+        gap: 0.35em;
+
+        span { /* gray out the currency prefix and suffix */
+          color: color-mix(in oklch, currentColor, transparent 20%);
+        }
+
+        input {
+          width: 100%;
+        }
+      }
+
+      /* If there's no fieldset right before this label, style it as a standalone input. */
+      &:not(fieldset + label) {
+        display: block;
+        border: none;
+
+        .gl-other-label-1 { display: none; }  /* turn off "Custom Amount:" sr-only text */
+        .gl-other-label-2 { display: block; } /* turn on "Donation Amount: text */
+      }
+    }
+
+    /* Custom amount input box, if it has a fieldset right before it (part of custom amount radio button). */
+    & > fieldset + label {
+      display: none;
+      .gl-other-label-1 { display: inline; } /* turn on "Custom Amount:" sr-only text */
+      .gl-other-label-2 { display: none; }   /* turn off "Donation Amount: text */
       padding: var(--gl-spacing-xs) var(--gl-spacing-sm);
 
-      /* If the custom amount input box is right after an amount selection fieldset,
-      * style it so that it looks like part of the selected custom amount radio button.
-      */
+      /* Set styles so that the label looks like part of the last button in the fieldset. */
       background-color: var(--gl-color-checked);
       
       box-shadow:
@@ -420,65 +541,38 @@ const dedEmailDescription = uniqueId(Astro.url, "gl-ded-email-desc");
       border-start-end-radius: 0;
       border-start-start-radius: 0;
       border-block-start-color: transparent;
-
-      display: none;
     }
-    &:has(input[value="other"]:checked) + label.gl-other-entry {
+    /* Display the custom input box when the "Custom Amount" radio is selected. */
+    & > fieldset:has(input[value="other"]:checked) + label {
       display: inline-flex;
-      .gl-other-label-1 { display: inline; } /* turn on "Custom Amount:" sr-only text */
-      .gl-other-label-2 { display: none; }   /* turn off "Donation Amount: text */
     }
   }
-  :not(fieldset.gl-amount) + label.gl-other-entry {
-    display: block;
-    margin-block-start: var(--gl-spacing-sm);
-    border: none;
 
-    .gl-other-label-1 { display: none; }  /* turn off "Custom Amount:" sr-only text */
-    .gl-other-label-2 { display: block; } /* turn on "Donation Amount: text */
-  }
-
-  label.gl-other-entry {
+  .gl-err-group {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
     width: 100%;
-    
-    /* Border around currency spans and the input box itself. */
-    .gl-focus-container {
-      display: flex;
-      background-color: var(--gl-color-bg);
-      align-items: center;
-      border: 2px solid var(--gl-color-accent);
-      border-radius: var(--gl-radius);
+
+    .gl-err {
+      margin-block: var(--gl-spacing-2xs);
       width: 100%;
-      padding: 0.35em 1em;
-      gap: 0.35em;
-
-      span { /* gray out the currency prefix and suffix */
-        color: color-mix(in oklch, currentColor, transparent 20%);
-      }
-
-      input {
-        width: 100%;
-      }
-    }
-  }
-
-  div.gl-submit {
-    margin-block-start: var(--gl-spacing-md);
-    width: 100%;
-    text-align: center;
-
-    svg, span.gl-error {
+      text-align: center;
       font-size: 0.9em;
       color: var(--gl-color-error);
-    }
 
-    svg {
-      display: none;
-      pointer-events: none;
-      margin-block-end: 0.25em;
+      svg {
+        display: none;
+        pointer-events: none;
+        margin-inline-end: 0.25em;
+      }
+    }
+    &:has([aria-invalid="true"]) .gl-err svg {
+      display: inline;
     }
   }
-
+  
   iframe {
     width: 100%;
     height: 100%;
@@ -544,25 +638,15 @@ const dedEmailDescription = uniqueId(Astro.url, "gl-ded-email-desc");
     }}
   }
 
-  /* display icon in error message box, if there's an error. */
-  &:has([aria-invalid="true"]) {
-    div.gl-submit svg {
-      display: inline;
-    }
-  }
-
   /* error ring */
-  fieldset[aria-invalid="true"] {
+  [aria-invalid="true"]:not(.gl-focus-container *), /* I have aria-invalid="true" and I'm not inside a focus container, OR */
+  .gl-focus-container:has([aria-invalid="true"]) {  /* I'm a focus container and a descendant has aria-invalid="true" */
     outline: 3px solid var(--gl-color-error);
     outline-offset: 4px;
   }
-  label.gl-other-entry:has([aria-invalid="true"]) > .gl-focus-container {
-    border-color: var(--gl-color-error);
-    border-width: 3px;
-  }
 }}
 @layer theme { form.gl-simple-donation-widget {
-  /* focus ring - define in theme layer (lowest priority in Tailwind) so it can be overridden easily */
+  /* focus ring - define in theme layer (lowest priority in Tailwind) so it can be overridden easily by the embedding project */
   :focus-visible:not(.gl-focus-container *), /* I have focus-visible and I'm not within a focus container, OR */
   .gl-focus-container:has(:focus-visible) {  /* I'm a focus container and a descendant has focus-visible */
     outline: 0.1875rem solid var(--gl-color-focus);
@@ -582,15 +666,21 @@ const dedEmailDescription = uniqueId(Astro.url, "gl-ded-email-desc");
   const supports_closedby = (document.createElement("dialog") as any).closedBy === "none";
 
   document.querySelectorAll<HTMLFormElement>(".gl-simple-donation-widget").forEach((form) => {
-    const customInput = form.querySelector<HTMLInputElement>(".gl-other-entry input");
-    const paymentModal = form.querySelector<HTMLDialogElement>("dialog.gl-payment-modal");
-    const dedicationModal = form.querySelector<HTMLDialogElement>("dialog.gl-dedication-modal");
-    const iframe = paymentModal?.querySelector<HTMLIFrameElement>("iframe");
-    const errBox = form.querySelector<HTMLElement>(".gl-error");
-    const buttonSuffix = form.querySelector<HTMLElement>(".gl-submit button span[aria-hidden]");
-    const buttonSuffixAlt = form.querySelector<HTMLElement>(".gl-submit button span.sr-only");
-    const amountSet = form.querySelector<HTMLFieldSetElement>(".gl-amount");
-    if (!customInput || !paymentModal || !iframe || !errBox || !buttonSuffix || !buttonSuffixAlt) {
+    const qs = (query: string) => form.querySelector(query) as HTMLElement | null;
+
+    const customInput = qs(".gl-amount > label input") as HTMLInputElement | null;
+    const amountSet = qs(".gl-amount fieldset");
+    const amountErr = qs(".gl-amount span[aria-live]");
+
+    const donateSuffix = qs(".gl-donate-button span[aria-hidden]");
+    const donateSuffixAlt = qs(".gl-donate-button span.sr-only");
+    
+    const dedicationModal = qs(".gl-dedication-modal") as HTMLDialogElement | null;
+
+    const paymentModal = qs(".gl-donate-modal") as HTMLDialogElement | null;
+    const iframe = qs(".gl-donate-modal iframe") as HTMLIFrameElement | null;
+
+    if (!customInput || !amountErr || !donateSuffix || !donateSuffixAlt || !paymentModal || !iframe) {
       return;
     }
 
@@ -611,30 +701,30 @@ const dedEmailDescription = uniqueId(Astro.url, "gl-ded-email-desc");
     });
 
     // Helper utils.
-    const updateError = (msg?: string | null, culprit?: HTMLElement | null): void => {
+    const updateAmountError = (msg?: string | null, culprit?: HTMLElement | null): void => {
       /* calling postError() wiath an empty message resets to no-error state. */
-      errBox.replaceChildren(...(msg? [msg] : []));
+      amountErr.replaceChildren(...(msg? [msg] : []));
       [amountSet, customInput].forEach( elem => {
         if (elem) {
           const isErr = msg && elem === culprit;
           elem.ariaInvalid = isErr? "true" : null;
-          elem.ariaDescribedByElements = isErr? [errBox] : null;
+          elem.ariaDescribedByElements = isErr? [amountErr] : null;
         }
       });
     };
 
-    const updateSubmitButton = (): void => {
-      // Update submit button label based on currently selected donation amount and frequency.
+    const updateDonateButton = (): void => {
+      // Update donate button label based on currently selected amount and frequency.
       const formData = new FormData(form);
       const [amountStr] = getAmountDigits(formData);
 
       const freq = (formData.get("frequency") === "monthly")? " Monthly" : "";
 
-      buttonSuffix.replaceChildren(...(
+      donateSuffix.replaceChildren(...(
         amountStr? [currencyFormatter.format(amountStr as unknown as number) + freq] : []
       ));
 
-      buttonSuffixAlt.replaceChildren(...(
+      donateSuffixAlt.replaceChildren(...(
         amountStr? [currencyNameFormatter.format(amountStr as unknown as number) + freq] : []
       ));
     };
@@ -662,13 +752,13 @@ const dedEmailDescription = uniqueId(Astro.url, "gl-ded-email-desc");
 
     // Do an initial submit button label update when we first load, in case a default donation amount
     // was hard-coded in.
-    updateSubmitButton();
+    updateDonateButton();
 
     // When any fields in the form are modified: update submit button text to reflect chosen donation amount
-    form.addEventListener('input', () => updateSubmitButton());
+    form.addEventListener('input', () => updateDonateButton());
 
     // When the amount button selection is changed: clear all current errors.
-    amountSet?.addEventListener("change", () => updateError());
+    amountSet?.addEventListener("change", () => updateAmountError());
 
     // When the custom amount is edited:
     customInput.addEventListener('input', () => {
@@ -703,7 +793,7 @@ const dedEmailDescription = uniqueId(Astro.url, "gl-ded-email-desc");
       // Reset the form if the user's donation succeeded.
       if (message.includes("gl_checkout_complete")) {
         form.reset();
-        updateSubmitButton(); // needed because events aren't fired when form values are changed programmatically.
+        updateDonateButton(); // needed because events aren't fired when form values are changed programmatically.
       }
 
       // Close the modal window if the user asked the iframe to close.
@@ -739,7 +829,7 @@ const dedEmailDescription = uniqueId(Astro.url, "gl-ded-email-desc");
       } else if (amount > MAX_DONATION) {
         errMsg = `Enter a donation of ${currencyFormatter.format(MAX_DONATION)} or less.`;
       }
-      updateError(errMsg, (isCustom? customInput : amountSet)); // clears err state if errMsg is falsy
+      updateAmountError(errMsg, (isCustom? customInput : amountSet)); // clears err state if errMsg is falsy
       if (errMsg) {
         return;
       }
