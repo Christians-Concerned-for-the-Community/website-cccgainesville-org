@@ -123,6 +123,13 @@ const dedModalId = uniqueId(Astro.url, "gl-ded-modal");
 const dedNameId = uniqueId(Astro.url, "gl-ded-name");
 const dedEmailId = uniqueId(Astro.url, "gl-ded-email");
 
+let defaultValue, defaultSuffix, defaultSuffixAlt;
+if(!hasAmountButtons && amountButtons?.[0]) {
+  defaultValue = amountButtons[0].value;
+  defaultSuffix = currencyFormatter.format(defaultValue as unknown as number);
+  defaultSuffixAlt = currencyNameFormatter.format(defaultValue as unknown as number);
+}
+
 ---
 
 <form novalidate data-slug={slug} data-locale={locale} data-currency={currencyCode}
@@ -168,7 +175,7 @@ const dedEmailId = uniqueId(Astro.url, "gl-ded-email");
       <div class="gl-focus-container">
         <span aria-hidden="true">{currencySymbol}</span>
         <input type="text" id={otherAmountEntryId} inputmode="numeric" name="otherAmount" required={!hasAmountButtons}
-          value={(!hasAmountButtons && amountButtons?.[0])? amountButtons[0].value : undefined}
+          value={defaultValue}
         />
         <span aria-hidden="true">{currencyCode}</span>
       </div>
@@ -256,8 +263,8 @@ const dedEmailId = uniqueId(Astro.url, "gl-ded-email");
 
   {/* Donate Button and Modal */}
   <button type="submit" class="gl-donate-button gl-primary">
-    <span>Donate <span aria-hidden="true"/></span>
-    <span class="sr-only"/>
+    <span>Donate <span aria-hidden="true">{defaultSuffix}</span></span>
+    <span class="sr-only">{defaultSuffixAlt}</span>
   </button>
 
   <dialog class="gl-donate-modal" closedby="any">
@@ -749,10 +756,6 @@ const dedEmailId = uniqueId(Astro.url, "gl-ded-email");
         }
       }));
     }
-
-    // Do an initial submit button label update when we first load, in case a default donation amount
-    // was hard-coded in.
-    updateDonateButton();
 
     // When any fields in the form are modified: update submit button text to reflect chosen donation amount
     form.addEventListener('input', () => updateDonateButton());
