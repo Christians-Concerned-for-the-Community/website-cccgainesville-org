@@ -217,7 +217,7 @@ const dedicationButtons = [
   {/* Dedication Modal */}
   { doDedication && (
   <dialog id="gl-ded-modal" class="gl-ded-modal" closedby="any">
-    <button type="button" class="gl-ded-close gl-ghost" commandfor="gl-ded-modal" command="close">
+    <button type="button" class="gl-close" commandfor="gl-ded-modal" command="close">
       <svg aria-hidden="true" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
         <path d="M18 6l-12 12" /><path d="M6 6l12 12" />
       </svg>
@@ -228,9 +228,9 @@ const dedicationButtons = [
       <fieldset class="gl-focus-container">
         <legend class="sr-only">Dedication Type</legend>
 
-        { dedicationButtons.map((ded) => (
+        { dedicationButtons.map((ded, idx) => (
         <label for={ded.id}>
-          <input type="radio" id={ded.id} name="ded_type" value={ded.value} required/>
+          <input type="radio" id={ded.id} name="ded_type" value={ded.value} required checked={idx===0}/>
           {ded.title}
         </label>
         ))}
@@ -239,6 +239,7 @@ const dedicationButtons = [
       <div class="gl-err-group gl-ded-name">
         <label for="gl-ded-name">
           Dedicatee's Name
+          <span aria-hidden="true" class="gl-required"> (required)</span>
           <input type="text" id="gl-ded-name" name="ded_name" required
             autocomplete="name" spellcheck="false" autocapitalize="words" autocorrect="off" maxlength="255"
           />

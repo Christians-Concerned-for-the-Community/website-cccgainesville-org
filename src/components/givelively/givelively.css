@@ -65,33 +65,57 @@
     }
 
     label {
+      display: block;
       cursor: pointer;
       justify-content: center;
       align-items: center;
-      border: 1px solid var(--gl-color-accent);
-      border-radius: var(--gl-radius);
 
+      /* Style label for non-radio input fields. */
       &:has(input:not([type="radio"])) {
         font-size: 1.06em;
         font-weight: 500;
-        & > :is(input,.gl-focus-container) {
-          font-weight: 400;
-          margin-block-start: var(--gl-spacing-2xs);
-          & ~ div {
-            font-size: 0.85em;
-            font-weight: 300;
-            margin-block-start: var(--gl-spacing-2xs);
-          }
+        & > .gl-required {
+          font-size: 0.9em;
+          font-weight: 300;
+          color: color-mix(in oklch, currentColor, transparent 10%);
         }
       }
     }
 
-    /* Reset all input styles to undecorated. */
     input {
+      /* Reset all input styles to undecorated. */
       appearance: none;
       border: none;
       box-shadow: none;
       outline: none;
+    }
+    /* Styling for non-radio input fields. */
+    input:not([type="radio"]):not(.gl-focus-container *),
+    .gl-focus-container:not(:has(input[type="radio"]))  {
+      border: 2px solid var(--gl-color-accent);
+      border-radius: var(--gl-radius);
+      width: 100%;
+      padding: 0.35em 1em;
+      cursor: text;
+
+      font-weight: 400;
+      margin-block-start: var(--gl-spacing-2xs);
+
+      transition: 120ms box-shadow border-color ease-in-out;
+      &:hover, &:focus-visible {
+        --gl-focus-border: color-mix(in oklch, var(--gl-color-accent), var(--gl-color-bg) 40%);
+        box-shadow: 0 0 0 1px var(--gl-focus-border);
+        border-color: var(--gl-focus-border);
+      }
+      
+      /* style any explanatory text after the input box */
+      & ~ div {
+        color: color-mix(in oklch, currentColor, transparent 10%);
+        font-size: 0.75em;
+        font-weight: 300;
+        margin-block-start: var(--gl-spacing-2xs);
+        margin-inline: 1ch;
+      }
     }
 
     button {
@@ -114,7 +138,6 @@
       &.gl-primary {
         padding-block: var(--gl-spacing-sm);
         color: var(--gl-color-bg);
-        border: none;
 
         background-color: var(--gl-color-fg);
         &:hover, &:focus-visible {
@@ -133,11 +156,20 @@
         }
       }
 
-      &.gl-ghost {
-        padding-block: var(--gl-spacing-2xs);
+      &.gl-close {
+        border-radius: 0;
+        width: fit-content;
+        height: auto;
+
+        padding: 0.5em;
+        svg {
+          width: 1em;
+          height: 1em;
+        }
+
         transition: var(--gl-duration) color ease-in-out;
 
-        color: color-mix(in oklch, var(--gl-color-fg), var(--gl-color-bg) 30%);
+        color: color-mix(in oklch, var(--gl-color-fg), var(--gl-color-bg) 25%);
         &:hover, &:focus-visible {
           color: color-mix(in oklch, var(--gl-color-fg), var(--gl-color-bg) 10%);
           background-color: var(--gl-color-checked);
@@ -190,6 +222,7 @@
         user will be able to click on / keyboard focus the label instead.
       */
       input {
+        position: absolute;
         padding: none;
         margin: none;
         width: 0;
@@ -200,10 +233,14 @@
         Style the labels that wrap each radio button.
       */
       label {
-        display: flex;
+        position: relative;
+        text-align: center;
         flex: 1 0 fit-content; /* don't shrink to fit text, grow to fill available space along row, use width of text content as basis */
         padding: var(--gl-spacing-xs);
         user-select: none; /* make text unselectable by user (since it functions as a button) */
+        
+        border: 1px solid var(--gl-color-accent);
+        border-radius: var(--gl-radius);
 
         transition: var(--gl-duration) box-shadow background-color text-shadow ease-in-out;
         box-shadow: var(--gl-button-shadow);
@@ -239,16 +276,13 @@
 
       & > label { /* Custom amount input field. */
         width: 100%;
+        text-align: center;
       
         /* Border around currency spans and the input box itself. */
         .gl-focus-container {
           display: flex;
-          background-color: var(--gl-color-bg);
           align-items: center;
-          border: 2px solid var(--gl-color-accent);
-          border-radius: var(--gl-radius);
-          width: 100%;
-          padding: 0.35em 1em;
+          background-color: var(--gl-color-bg);
           gap: 0.35em;
 
           span { /* gray out the currency prefix and suffix */
@@ -262,9 +296,6 @@
 
         /* If there's no fieldset right before this label, style it as a standalone input. */
         &:not(fieldset + label) {
-          display: block;
-          border: none;
-
           .gl-other-label-1 { display: none; }  /* turn off "Custom Amount:" sr-only text */
           .gl-other-label-2 { display: block; } /* turn on "Donation Amount: text */
         }
@@ -279,19 +310,22 @@
 
         /* Set styles so that the label looks like part of the last button in the fieldset. */
         background-color: var(--gl-color-checked);
-        
+
         box-shadow:
           0 2px 0 0 var(--gl-color-accent),
           -2px 0 0 0 var(--gl-color-accent),
           2px 0 0 0 var(--gl-color-accent);
 
+        border: 1px solid var(--gl-color-accent);
+        border-radius: var(--gl-radius);
+        
         border-start-end-radius: 0;
         border-start-start-radius: 0;
         border-block-start-color: transparent;
       }
       /* Display the custom input box when the "Custom Amount" radio is selected. */
       & > fieldset:has(input[value="other"]:checked) + label {
-        display: inline-flex;
+        display: block;
       }
     }
 
@@ -337,21 +371,36 @@
       height: 100%;
       max-height: 94svh;
       width: 100%;
-      max-width: min(94svw, 500px);
       padding: 0;
       margin: 0;
-      border-radius: var(--gl-radius);
+      border: 1px solid var(--gl-color-accent);
+      border-radius: calc(var(--gl-radius) * 1.5);
       box-shadow: var(--gl-section-shadow);
 
       &.gl-donate-modal {
+        max-width: min(94svw, 500px);
         color-scheme: light;
       }
 
       &.gl-ded-modal {
-        padding: var(--gl-spacing-sm);
+        max-width: min(94svw, 38ch);
+        height: fit-content;
         background-color: var(--gl-color-bg);
-        display: flex;
         flex-direction: column;
+        &[open] {
+          display: flex;
+        }
+
+        form {
+          padding-inline: var(--gl-spacing-sm);
+          padding-block-end: var(--gl-spacing-sm);
+        }
+
+        .gl-close {
+          margin-block: 4px;
+          margin-inline-start: auto;
+          margin-inline-end: calc(var(--spacing-sm) - 0.5em);
+        }
       }
 
       /* Animate dialog entrance/exit. */

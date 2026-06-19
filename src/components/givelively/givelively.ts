@@ -55,11 +55,11 @@
   });
 
   // Helper utils.
-  const updateError = (errDest: HTMLElement, culprit?: HTMLElement | null, msg?: string | null): boolean => {
-    errDest.replaceChildren(...(msg? [msg] : []));
+  const updateError = (errDest?: HTMLElement | null, culprit?: HTMLElement | null, msg?: string | null): boolean => {
+    errDest?.replaceChildren(...(msg? [msg] : []));
     if (culprit) {
       culprit.ariaInvalid = msg? "true" : null;
-      culprit.ariaDescribedByElements = msg? [errDest] : null;
+      culprit.ariaDescribedByElements = msg && errDest? [errDest] : null;
     }
     /* Returns true if there was an error message to add, false if the message was empty (everything OK). */
     return !!msg;
@@ -166,6 +166,22 @@
     // Clear out the iframe.
     iframe.setAttribute("src", "about:blank");
     donateModal.toggleAttribute("data-loaded", false);
+  });
+
+  // When remove button is clicked on dedication modal:
+  qs(dedForm, ".gl-ded-remove")?.addEventListener("click", () => {
+    // Clear out dedication data. 
+    dedData = undefined;
+    dedForm?.reset();
+    // Clear errors.
+    updateError(dedNameErr, dedNameInput);
+    updateError(dedEmailErr, dedEmailInput);
+    // Reset to "no dedication" state.
+    if (dedButton) {
+      dedButton.dataset.state = "new";
+    }
+    // Go back to donation form.
+    dedModal?.close();
   });
 
   // When dedication form is submitted:
