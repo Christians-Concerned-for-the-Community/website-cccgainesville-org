@@ -224,6 +224,13 @@ const dedicationButtons = [
       <span class="sr-only">Close</span>
     </button>
 
+    <!--
+     Set various ignore attributes to prevent Bitwarden and other password managers from attempting
+     autofill - they can sometimes crash JS on forms that are located inside native dialogs, due to
+     browser security preventing DOM modifications.
+
+     (This is on the password manager authors, it's a silly bug)
+    -->
     <form novalidate aria-label="Dedication">
       <fieldset class="gl-focus-container">
         <legend class="sr-only">Dedication Type</legend>
@@ -242,6 +249,7 @@ const dedicationButtons = [
           <span aria-hidden="true" class="gl-required"> (required)</span>
           <input type="text" id="gl-ded-name" name="ded_name" required
             autocomplete="name" spellcheck="false" autocapitalize="words" autocorrect="off" maxlength="255"
+            data-lpignore="true" data-1p-ignore data-bwignore="true" data-protonpass-ignore="true"
           />
         </label>
 
@@ -254,7 +262,9 @@ const dedicationButtons = [
       <div class="gl-err-group gl-ded-email">
         <label for="gl-ded-email">
           Recipient Email
-          <input type="email" id="gl-ded-email" name="ded_email" required autocomplete="email" maxlength="255"/>
+          <input type="email" id="gl-ded-email" name="ded_email" required autocomplete="email" maxlength="255"
+            data-lpignore="true" data-1p-ignore data-bwignore="true" data-protonpass-ignore="true"
+          />
           <div>
             Notify someone about your gift. The email will identify you as the donor, but does not
             specify the amount of your gift.
