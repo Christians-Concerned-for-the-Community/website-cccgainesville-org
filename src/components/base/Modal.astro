@@ -214,12 +214,12 @@ const closeDefault = "base-modal-close absolute top-xs right-sm text-sm";
     to accurately detect if it's unsupported, we have to make a dummy dialog and then check
     to see if the attribute's default value got set properly.
   */
-  const supports_closedby = false/*(document.createElement("dialog") as any).closedBy === "none"*/;
+  const supports_closedby = (document.createElement("dialog") as any).closedBy === "none";
 
   // Fallback: Invoker Commands API is supported everywhere in baseline Dec 2025.
-  const supports_invoker = false/*(Object.hasOwn(HTMLButtonElement.prototype, 'command'))*/;
+  const supports_invoker = (Object.hasOwn(HTMLButtonElement.prototype, 'command'));
 
-  const isSafari = true/*document.documentElement.classList.contains("safari")*/;
+  const isSafari = document.documentElement.classList.contains("safari");
 
   // If fallback needed:
   if (!supports_invoker || !supports_closedby || isSafari) {
