@@ -428,7 +428,8 @@
           overlay var(--fade-duration) allow-discrete;
       }
 
-      &:not([open]), /*step 3: on the way out */
+      /* Step 3: on the way out */
+      &:not([open]),
       &.gl-is-closing { /* workaround for Safari bug - Safari hides the dialog immediately on close and does not perform the exit transition. */
         opacity: 0;
         transform: translate(-50%, -35%);
@@ -437,16 +438,18 @@
           backdrop-filter: blur(0px);
         }
       }
-      &[open]:not(.gl-is-closing) { /*step 2: open */
+
+      /* Step 2: open */
+      &[open]:not(.gl-is-closing) {
         opacity: 1;
         transform: translate(-50%, -50%);
         &::backdrop {
           background-color: rgba(0 0 0 0.6);
           backdrop-filter: blur(8px);
         }
-      }
-      @starting-style { /*step 1: on the way in */
-        &[open]:not(.gl-is-closing) {
+
+        /* Step 1: on the way in */
+        @starting-style {
           opacity: 0;
           transform: translate(-50%, -65%);
           &::backdrop {
