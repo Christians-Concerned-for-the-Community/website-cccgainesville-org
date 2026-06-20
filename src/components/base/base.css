@@ -78,7 +78,9 @@
     :root:not(.safari) & {
       @supports (position-anchor: --test) {
         outline: none;
-        anchor-name: --focus-anchor;
+        &:not(.sr-only) {
+          anchor-name: --focus-anchor;
+        }
       }
     }
   }

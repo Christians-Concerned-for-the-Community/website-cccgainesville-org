@@ -2,13 +2,79 @@
   const MIN_DONATION = 5;
   const MAX_DONATION = 100000;
   const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
-  // See if we need polyfill to mimic <dialog closedBy="any"> behavior on unsupported browsers.
-  //  Note: Safari is only major one not ready yet - support is still in tech preview as of 2026/06
-  const supports_closedby = (document.createElement("dialog") as any).closedBy === "none";
-
+  
+  // Shortcuts for querySelector calls (mostly nice just to prevent having to write as HTMLElement | null endlessly in Typescript).
   const qs = (target: ParentNode | HTMLElement | null | undefined, query: string) => target?.querySelector(query) as HTMLElement | null;
   const qsroot = (query: string) => qs(document, `.gl-simple-donation-widget ${query}`)
+
+  // Polyfills and bugfixes for native dialogs. -----
+  const donateModal = qsroot(".gl-donate-modal") as HTMLDialogElement | null;
+  const dedModal = qsroot(".gl-ded-modal") as HTMLDialogElement | null;
+
+  //    <dialog> closedBy attribute not yet newly available (still in TP on Safari).
+  const supports_closedby = (document.createElement("dialog") as any).closedBy === "none";
+  //    Invoker Commands API is supported everywhere in baseline Dec 2025.
+  const supports_invoker = (Object.hasOwn(HTMLButtonElement.prototype, 'command'));
+  //    Safari has some bugs of its own.
+  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
+  let closeDialog = (dialog: HTMLDialogElement | null) => dialog?.close();
+  if (!supports_invoker || !supports_closedby || isSafari) {
+    [donateModal, dedModal].forEach(dialog => {
+      if (isSafari) {
+        // Safari closes the dialog immediately, even if there are still CSS transitions pending.
+        // To fix exit transition animation, trigger them with an extra class, then only close the
+        // dialog once the transition is done.
+        closeDialog = (dialog: HTMLDialogElement | null) => {
+          // Add listener for end of closing animation, that actually closes the dialog.
+          dialog?.addEventListener("transitionend", () => {
+            dialog.close();
+            dialog.classList.remove("gl-is-closing");
+          }, { once: true });
+          // Trigger closing animation.
+          dialog?.classList.add("gl-is-closing");
+        };
+        
+        // Intercept escape key, back button, or requestClose(), and use our custom closeDialog function
+        // instead.
+        dialog?.addEventListener("cancel", (e) => {
+          e.preventDefault();
+          closeDialog(dialog);
+        });
+
+        // Unhide an empty div with tabindex=-1 and autofocus at the top of the dialog. This prevents
+        // Safari from showing a focus outline around the first focusable element when the dialog opens.
+        qs(dialog, "[autofocus]")?.toggleAttribute("hidden", false);
+      }
+
+      if (!supports_closedby) {
+        // Support "light dismiss" of modal (clicking outside it), if closedby attribute isn't available.
+        dialog?.addEventListener('click', (e) => {
+          const edges = dialog.getBoundingClientRect();
+          if (e.clientX < edges.left || e.clientX > edges.right ||
+              e.clientY < edges.top  || e.clientY > edges.bottom) {
+            e.preventDefault();
+            closeDialog(dialog);
+          }
+        });
+      }
+
+      if (!supports_invoker && dialog?.id) {
+        const invokers = document.querySelectorAll(`.gl-simple-donation-widget [commandfor="${dialog.id}"]`);
+        for (const invoker of invokers) {
+          const command = invoker.getAttribute("command");
+          invoker.removeAttribute("command");
+          invoker.removeAttribute("commandfor");
+          if (command === "show-modal") {
+            invoker.ariaHasPopup = "dialog";
+            invoker.addEventListener("click", () => dialog.showModal());
+          } else if (command == "request-close") {
+            invoker.addEventListener("click", () => closeDialog(dialog));
+          }
+        }
+      }
+    });
+  } // END polyfills and bugfixes for dialogs
 
   const donateForm = qsroot("> form") as HTMLFormElement;
 
@@ -20,11 +86,9 @@
   const donateSuffixAlt = qs(donateForm, ".gl-donate-button span.sr-only");
   
   const dedButton = qs(donateForm, ".gl-ded-button");
-  
-  const donateModal = qsroot(".gl-donate-modal") as HTMLDialogElement | null;
+
   const iframe = qs(donateModal, "iframe") as HTMLIFrameElement | null;
 
-  const dedModal = qsroot(".gl-ded-modal") as HTMLDialogElement | null;
   const dedForm = qs(dedModal, "form") as HTMLFormElement | null;
 
   const dedNameInput = qs(dedForm, ".gl-ded-name input");
@@ -90,18 +154,6 @@
     return ret;
   };
 
-  // Polyfill to mimic <dialog closedBy="any"> behavior on unsupported browsers.
-  if (!supports_closedby) {
-    [donateModal, dedModal].forEach(modal => modal?.addEventListener('click', (e) => {
-      const edges = modal.getBoundingClientRect();
-      if (e.clientX < edges.left || e.clientX > edges.right ||
-          e.clientY < edges.top  || e.clientY > edges.bottom) {
-        e.preventDefault();
-        modal.close();
-      }
-    }));
-  }
-
   // When any fields in the form are modified: update submit button text to reflect chosen donation amount
   donateForm.addEventListener('input', () => updateDonateButton());
 
@@ -150,7 +202,7 @@
 
     // Close the modal window if the user asked the iframe to close.
     if (message === "close_modal" && donateModal?.open) {
-      donateModal.close();
+      closeDialog(donateModal);
     }
   });
 
@@ -181,7 +233,7 @@
       dedButton.dataset.state = "new";
     }
     // Go back to donation form.
-    dedModal?.close();
+    closeDialog(dedModal);
   });
 
   // When dedication form is submitted:
@@ -214,7 +266,7 @@
       dedData = undefined;
     } else {
       dedButton.dataset.state = "edit";
-      dedModal?.close();
+      closeDialog(dedModal);
     }
   });
 

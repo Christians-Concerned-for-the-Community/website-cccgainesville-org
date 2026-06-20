@@ -418,7 +418,8 @@
           overlay var(--fade-duration) allow-discrete;
       }
 
-      &:not([open]) { /*step 3: on the way out */
+      &:not([open]), /*step 3: on the way out */
+      &.gl-is-closing { /* workaround for Safari bug - Safari hides the dialog immediately on close and does not perform the exit transition. */
         opacity: 0;
         transform: translate(-50%, -35%);
         &::backdrop {
@@ -426,7 +427,7 @@
           backdrop-filter: blur(0px);
         }
       }
-      &[open] { /*step 2: open */
+      &[open]:not(.gl-is-closing) { /*step 2: open */
         opacity: 1;
         transform: translate(-50%, -50%);
         &::backdrop {
@@ -434,14 +435,16 @@
           backdrop-filter: blur(8px);
         }
       }
-      @starting-style { &[open] { /*step 1: on the way in */
-        opacity: 0;
-        transform: translate(-50%, -65%);
-        &::backdrop {
-          background-color: transparent;
-          backdrop-filter: blur(0px);
+      @starting-style { /*step 1: on the way in */
+        &[open]:not(.gl-is-closing) {
+          opacity: 0;
+          transform: translate(-50%, -65%);
+          &::backdrop {
+            background-color: transparent;
+            backdrop-filter: blur(0px);
+          }
         }
-      }}
+      }
 
       /* Style the loading spinner, if any (only used for dialogs that embed an iframe). */
       &:has(.gl-spinner) {
