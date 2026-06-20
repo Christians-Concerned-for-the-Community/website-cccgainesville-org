@@ -413,12 +413,13 @@
         }
       }
 
-      /* Animate dialog entrance/exit. */
+      /* Animate dialog entrance/exit, and disable scrolling of main page while dialog is open. */
       transition:
         transform var(--fade-duration) ease-out,
         opacity var(--fade-duration) ease-in,
         display var(--fade-duration) allow-discrete,
         overlay var(--fade-duration) allow-discrete;
+      overscroll-behavior: contain;
 
       &::backdrop {
         transition:
@@ -426,6 +427,8 @@
           backdrop-filter var(--fade-duration) ease-in,
           display var(--fade-duration) allow-discrete,
           overlay var(--fade-duration) allow-discrete;
+        overflow: hidden;
+        overscroll-behavior: contain;
       }
 
       /* Step 3: on the way out */
