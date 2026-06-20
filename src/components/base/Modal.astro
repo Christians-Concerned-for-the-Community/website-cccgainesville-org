@@ -61,33 +61,24 @@ const {
 const dialogVariants = tv({
   base: [
     "overflow-y-auto scrollbar-gutter-auto",
-    "bg-background shadow-lg max-w-cw-md transition-discrete p-0 m-0",
+    "bg-background shadow-lg max-w-cw-md p-0 m-0",
     "open:flex not-open:hidden",
-    "open:animate-in open:duration-500",
-    "not-open:animate-out not-open:duration-300 not-open:fill-mode-forwards",
-
-    "backdrop:bg-black/55 backdrop:backdrop-blur-sm backdrop:transition-discrete",
-    "open:backdrop:animate-in open:backdrop:duration-500",
-    "not-open:backdrop:animate-out not-open:backdrop:duration-300 not-open:backdrop:fill-mode-forwards",
-    "open:backdrop:fade-in not-open:backdrop:fade-out",
   ],
   variants: {
     location: {
-      center: ["rounded-lg"],
-      right: ["rounded-l-lg",
-        "not-open:motion-safe:slide-out-to-right open:motion-safe:slide-in-from-right",
+      center: ["rounded-lg",
+        "top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2",
+      ],
+      right: ["rounded-l-lg base-right",
         "inset-y-0 right-0 left-auto h-full max-h-svh w-3/4 sm:max-w-cw-sm",
       ],
-      left: ["rounded-r-lg",
-        "not-open:motion-safe:slide-out-to-left open:motion-safe:slide-in-from-left",
+      left: ["rounded-r-lg base-left",
         "inset-y-0 right-auto left-0 h-full max-h-svh w-3/4 sm:max-w-cw-sm",
       ],
-      top: ["rounded-b-lg",
-        "not-open:motion-safe:slide-out-to-top open:motion-safe:slide-in-from-top",
+      top: ["rounded-b-lg base-top",
         "inset-x-0 top-0 bottom-auto h-auto w-full max-w-svw",
       ],
-      bottom: ["rounded-t-lg",
-        "not-open:motion-safe:slide-out-to-bottom open:motion-safe:slide-in-from-bottom",
+      bottom: ["rounded-t-lg base-bottom",
         "inset-x-0 top-auto bottom-0 h-auto w-full max-w-svw",
       ],
     }
@@ -135,11 +126,11 @@ const closeDefault = "base-modal-close absolute top-xs right-sm text-sm";
 
       Webkit bug: https://bugs.webkit.org/show_bug.cgi?id=247416
     */}
-    <div tabindex=-1 autofocus class="not-safari:hidden"/>
+    <div tabindex=-1 autofocus class="sr-only not-safari:hidden"/>
 
     <slot />
 
-    <Button type="button" commandfor={modalId} command="close"
+    <Button type="button" commandfor={modalId} command="request-close"
       alt="Close"
       variant="ghost"
       animation="rotate"
@@ -150,25 +141,117 @@ const closeDefault = "base-modal-close absolute top-xs right-sm text-sm";
 
 </div>
 
+<style is:global>
+  .base-modal > dialog {
+
+    --base-open-duration: 500ms;
+    --base-close-duration: 300ms;
+
+    --base-transform: none;
+    @media (prefers-reduced-motion: no-preference) {
+      &.base-right { --base-transform: translateX(100%); }
+      &.base-left {  --base-transform: translateX(-100%); }
+      &.base-top {   --base-transform: translateY(-100%); }
+      &.base-bottom {--base-transform: translateY(100%); }
+    }
+    
+    /* Common transition properties. */
+    transition-property:        transform, opacity,  display,        overlay;
+    transition-behavior:        normal,    normal,   allow-discrete, allow-discrete;
+    transition-timing-function: ease-out;
+    &::backdrop {
+      transition-property:        background-color, backdrop-filter, display,        overlay;
+      transition-behavior:        normal,           normal,          allow-discrete, allow-discrete;
+      transition-timing-function: ease-out;
+    }
+
+    /* Step #3: on the way out */
+    &:not([open]),
+    &.base-is-closing {
+      opacity: 0;
+      transition-duration: var(--base-close-duration);
+      transform: var(--base-transform);
+
+      &::backdrop {
+        background-color: transparent;
+        backdrop-filter: blur(0px);
+        transition-duration: var(--base-close-duration);
+      }
+    }
+
+    /* Step #2: open */
+    &[open]:not(.base-is-closing) {
+      opacity: 1;
+      transition-duration: var(--base-open-duration);
+
+      &::backdrop {
+        background-color: rgba(0 0 0 0.55);
+        backdrop-filter: blur(8px);
+        transition-duration: var(--base-open-duration);
+      }
+    }
+
+    /* Step #1: on the way in */
+    @starting-style {
+      &[open]:not(.base-is-closing) {
+        opacity: 0;
+        transform: var(--base-transform);
+
+        &::backdrop {
+          background-color: transparent;
+          backdrop-filter: blur(0px);
+        }
+      }
+    }
+  }
+</style>
+
 <script>
 {
-  // Fallback: Invoker Commands API is supported everywhere in baseline Dec 2025.
-  const supports_invoker = (Object.hasOwn(HTMLButtonElement.prototype, 'command'));
-
   /* Fallback: closedBy isn't supported in Safari, and other browsers are baseline July 2025.
 
     At one point, Safari added the attribute without implementing it (arggh), so in order
     to accurately detect if it's unsupported, we have to make a dummy dialog and then check
     to see if the attribute's default value got set properly.
   */
-  const supports_closedby = (document.createElement("dialog") as any).closedBy === "none";
+  const supports_closedby = false/*(document.createElement("dialog") as any).closedBy === "none"*/;
+
+  // Fallback: Invoker Commands API is supported everywhere in baseline Dec 2025.
+  const supports_invoker = false/*(Object.hasOwn(HTMLButtonElement.prototype, 'command'))*/;
+
+  const isSafari = true/*document.documentElement.classList.contains("safari")*/;
 
   // If fallback needed:
-  if (!supports_invoker || !supports_closedby) {
+  if (!supports_invoker || !supports_closedby || isSafari) {
     // Loop over each modal container on the page.
     document.querySelectorAll<HTMLElement>(".base-modal").forEach((container) => {
       const trigger = container.querySelector('button');
       const dialog = container.querySelector('dialog');
+
+      // Safari closes the dialog immediately, even if there are still CSS transitions pending.
+      // To fix exit transition animations, trigger them with an extra class, then only close the
+      // dialog once the transition is done.
+      const close = () => {
+        if (isSafari) {
+          // Add listener for end of closing animation, that actually closes the dialog.
+          dialog?.addEventListener("transitionend", () => {
+            dialog.close();
+            dialog.classList.remove("base-is-closing");
+          }, { once: true });
+          // Trigger closing animation.
+          dialog?.classList.add("base-is-closing");
+        } else {
+          dialog?.close();
+        }
+      };
+      if (isSafari) {
+        // Intercept escape key, back button, or requestClose(), and use our custom closeDialog function
+        // instead.
+        dialog?.addEventListener("cancel", (e) => {
+          e.preventDefault();
+          close();
+        });
+      }
 
       if (!supports_closedby && dialog) {
         // Support "light dismiss" of modal (clicking outside it), if closedby attribute isn't available.
@@ -177,7 +260,7 @@ const closeDefault = "base-modal-close absolute top-xs right-sm text-sm";
           if (e.clientX < edges.left || e.clientX > edges.right ||
               e.clientY < edges.top  || e.clientY > edges.bottom) {
             e.stopPropagation(); //only close the innermost dialog on each click outside.
-            dialog.close();
+            close();
           }
         });
       }
@@ -191,7 +274,7 @@ const closeDefault = "base-modal-close absolute top-xs right-sm text-sm";
 
         trigger.ariaHasPopup = "dialog";
         trigger.addEventListener("click", () => { dialog.showModal(); });
-        closer?.addEventListener('click', () => { dialog.close() });
+        closer?.addEventListener('click', () => { close() });
       }
     });
   } // END if fallback needed
