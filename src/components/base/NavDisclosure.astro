@@ -71,9 +71,9 @@ export const disclosure = tv({
   ],
   variants: {
     align: {
-      start: "top-[anchor(bottom)] left-[anchor(left)]",
-      center: "[position-area:bottom_center]",
-      end: "top-[anchor(bottom)] right-[anchor(right)]",
+      start: "base-start top-[anchor(bottom)] left-[anchor(left)]",
+      center: "base-center [position-area:bottom_center]",
+      end: "base-end top-[anchor(bottom)] right-[anchor(right)]",
     },
   },
   defaultVariants: {
@@ -258,17 +258,41 @@ if (window.CSS && !CSS.supports('position-area', 'bottom')) {
  */
 else if (document.documentElement.classList.contains("safari")) {
   document.querySelectorAll<HTMLElement>(".base-navdisclosure [popover]").forEach((popover) => {
+    const trigger = document.querySelector(`[commandfor="${popover.id}"]`);
     // Intercept popover hide event, trigger the closing animation manually, then hide the popover
     // once it's done.
+    let firstOpen = true;
     popover.addEventListener("beforetoggle", (e) => {
       if (e.newState === 'closed') {
         e.preventDefault();
+        firstOpen = false;
 
+        // Freeze the popover's absolute position, to prevent a separate Safari bug where
+        // anchor positions get lost/mangled during closing fade animations.
+        if (trigger) {
+          const rect = trigger.getBoundingClientRect();
+
+          popover.style.top = `${rect.bottom}px`;
+          if (popover.classList.contains("base-end")) {
+            popover.style.right = `${window.innerWidth - rect.right}px`;
+          } else if (popover.classList.contains("base-center")) {
+            popover.style.left = `${rect.left + (rect.width / 2)}px`;
+          } else {
+            popover.style.left = `${rect.left}px`;
+          }
+        }
+
+        // Initiate the close.
         popover.addEventListener("transitionend", () => {
           popover.hidePopover();
           popover.classList.remove("base-is-closing");
         }, { once: true} );
         popover.classList.add('base-is-closing');
+        
+      } else if (trigger && !firstOpen) {
+        popover.style.top = '';
+        popover.style.right = '';
+        popover.style.left = '';
       }
     });
   });
