@@ -25,6 +25,19 @@ export interface Props extends HTMLAttributes<"form"> {
   suggestedAmounts?: number[],
 
   /**
+   * What amounts to suggest to the donor for recurring donations, if you wish
+   * those amounts to be different.
+   * 
+   * If not provided, will just use the same suggestedAmounts as non-recurring.
+   * 
+   * If suggestedAmounts or suggestedRecurringAmounts has less than two elements, this is ignored (it only
+   * changes the buttons).
+   * 
+   * Default: same suggested amounts as non-recurring
+   */
+  suggestedRecurringAmounts?: number[],
+
+  /**
    * Whether or not to let donors dedicate their gifts.
    * 
    * This places an extra button above submit that shows the dedication dialog
@@ -66,6 +79,7 @@ export interface Props extends HTMLAttributes<"form"> {
 
 const {
   suggestedAmounts,
+  suggestedRecurringAmounts,
   doDedication = false,
   slug,
   locale = new Intl.DateTimeFormat().resolvedOptions().locale,
@@ -98,15 +112,29 @@ const currencyNamePlural = currencyNameFormatter
 // Settings and id's for radio buttons and other inputs.
 const frequencyButtons = [
   { title: "One-Time", value: "one-time", id: "gl-freq-onetime" },
-  { title: "Monthly",  value: "monthly",  id: "gl-freq-monthly" }
+  { title: "Monthly",  value: "monthly",  id: "gl-freq-monthly", className: "gl-freq-recurring" }
 ];
+
+const separateRecurring =
+  suggestedAmounts && suggestedAmounts.length >= 2 &&
+  suggestedRecurringAmounts && suggestedRecurringAmounts.length >= 2;
 
 const amountButtons = suggestedAmounts?.map(amount => { return {
   title: currencyFormatter.format(amount),
   alt: currencyNameFormatter.format(amount),
   value: String(amount),
   id: "gl-amt-" + amount,
+  className: separateRecurring? "gl-amt-value-onetime" : "gl-amt-value",
 }});
+if (separateRecurring) {
+  suggestedRecurringAmounts.forEach(amount => amountButtons?.push({
+    title: currencyFormatter.format(amount),
+    alt: currencyNameFormatter.format(amount),
+    value: String(amount),
+    id: "gl-amt-recurring-" + amount,
+    className: "gl-amt-value-recurring",
+  }));
+}
 const hasAmountButtons = amountButtons && amountButtons.length > 1;
 
 let defaultValue, defaultSuffix, defaultSuffixAlt;
@@ -126,10 +154,10 @@ const dedicationButtons = [
 <div class:list={["gl-simple-donation-widget", className]}>
   <form novalidate data-slug={slug} data-locale={locale} data-currency={currencyCode} {...rest}>
     {/* Gift Frequency */}
-    <fieldset class="gl-focus-container">
+    <fieldset class="gl-focus-container gl-frequency">
       <legend class="sr-only">Donation Frequency</legend>
       { frequencyButtons.map((freq, idx) => (
-      <label for={freq.id}>
+      <label for={freq.id} class={freq.className}>
         <input type="radio" id={freq.id} name="frequency" value={freq.value} checked={idx === 0} required/>
         {freq.title}
       </label>
@@ -142,7 +170,7 @@ const dedicationButtons = [
       <fieldset class="gl-focus-container">
         <legend class="sr-only">Donation Amount</legend>
         { amountButtons.map((amt) => (
-        <label for={amt.id}>
+        <label for={amt.id} class={amt.className}>
           <input type="radio" id={amt.id} name="amount" value={amt.value} required/>
           <span aria-hidden="true">{amt.title}</span>
           <span class="sr-only">{amt.alt}</span>

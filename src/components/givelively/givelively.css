@@ -233,6 +233,16 @@
         Style the labels that wrap each radio button.
       */
       label {
+        .gl-simple-donation-widget:has(label.gl-freq-recurring input:checked) & {
+          &.gl-amt-value-onetime {
+            display: none;
+          }
+        }
+        .gl-simple-donation-widget:not(:has(label.gl-freq-recurring input:checked)) & {
+          &.gl-amt-value-recurring {
+            display: none;
+          }
+        }
         position: relative;
         text-align: center;
         flex: 1 0 fit-content; /* don't shrink to fit text, grow to fill available space along row, use width of text content as basis */

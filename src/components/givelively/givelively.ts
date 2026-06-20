@@ -79,8 +79,12 @@
   const donateForm = qsroot("> form") as HTMLFormElement;
 
   const customInput = qs(donateForm, ".gl-amount > label input") as HTMLInputElement | null;
+  const freqSet = qs(donateForm, "fieldset.gl-frequency");
   const amountSet = qs(donateForm, ".gl-amount fieldset");
   const amountErr = qs(donateForm, ".gl-amount span[aria-live]");
+
+  const firstOnetime = qs(amountSet, ".gl-amt-value-onetime input") as HTMLInputElement | null;
+  const firstRecurring = qs(amountSet, ".gl-amt-value-recurring input") as HTMLInputElement | null;
 
   const donateSuffix = qs(donateForm, ".gl-donate-button span[aria-hidden]");
   const donateSuffixAlt = qs(donateForm, ".gl-donate-button span.sr-only");
@@ -156,6 +160,17 @@
 
   // When any fields in the form are modified: update submit button text to reflect chosen donation amount
   donateForm.addEventListener('input', () => updateDonateButton());
+
+  // When the frequency button selection is changed, and there are separate button sets for onetime vs
+  // recurring, choose the first element in the new set that just got revealed:
+  if (firstOnetime && firstRecurring) {
+    freqSet?.addEventListener("change", (e) => {
+      const btn = (e.target as HTMLInputElement).value === "one-time"? firstOnetime : firstRecurring;
+      btn.checked = true;
+      btn.dispatchEvent(new Event('change', {bubbles: true}));
+      donateForm.dispatchEvent(new Event("input", {bubbles: true}));
+    });
+  }
 
   // When the amount button selection is changed:
   amountSet?.addEventListener("change", () => {
