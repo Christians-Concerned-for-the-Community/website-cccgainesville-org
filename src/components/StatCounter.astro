@@ -80,7 +80,6 @@ import type { StatCounterRequest } from "./StatCounter.astro";
       || navigator.webdriver
       || navigator.userAgent.includes('HeadlessChrome')
     ) {
-      console.log("skipping analytics, local dev or bot"); //DEBUG_161
       return;
     }
 
