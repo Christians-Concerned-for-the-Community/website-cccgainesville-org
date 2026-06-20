@@ -65,12 +65,9 @@ type Props =
  */
 export const disclosure = tv({
   base: [
-    "mt-[0.25em] p-[0.35em] flex flex-col",
+    "exopen:block mt-[0.25em] p-[0.35em] flex flex-col",
     "bg-popover text-popover-foreground shadow-md border rounded-md",
-    "overflow-x-hidden overflow-y-auto transition-discrete duration-350",
-    "exopen:block not-exopen:hidden  exopen:fade-in not-exopen:fade-out",
-    "exopen:animate-in not-exopen:animate-out not-exopen:fill-mode-forwards",
-    "exopen:motion-safe:slide-in-from-top-4 not-exopen:motion-safe:slide-out-to-top-4",
+    "overflow-x-hidden overflow-y-auto",
   ],
   variants: {
     align: {
@@ -121,6 +118,48 @@ const {
   </ul>
 </div>
 
+<style is:global> @layer base {
+  /* Note: can remove the .base-popover and aria-expanded="true" parts of these selectors once
+   *       anchor positioning hits baseline widely available in Jun 2028.
+   */
+  .base-navdisclosure {
+    
+    [popover], .base-popover {
+      display: none;
+
+      --base-transform: none;
+      @media (prefers-reduced-motion: no-preference) {
+        --base-transform: translateY(calc(-1 * var(--spacing-sm)));
+      }
+
+      transition-property: transform, opacity,  display,        overlay;
+      transition-behavior: normal,    normal,   allow-discrete, allow-discrete;
+      transition-timing-function: ease-out;
+      transition-duration: 350ms;
+    }
+
+    /* Step #3: on the way out */
+    &:not(:has([aria-expanded="true"])) .base-popover, [popover]:not(:popover-open),
+    [popover].base-is-closing {
+      opacity: 0;
+      transform: var(--base-transform);
+    }
+
+    /* Step #2: open */
+    &:has([aria-expanded="true"]) .base-popover, [popover]:popover-open {
+      &:not(.base-is-closing) {
+        opacity: 1;
+
+        /* Step #1: on the way in */
+        @starting-style {
+          opacity: 0;
+          transform: var(--base-transform);
+        }
+      }
+    }
+  }
+}</style>
+
 <script>
 /* Fallback: if anchor positioning API isn't available, use Javascript to mimic
  *           popover behavior with an absolute-positioned body and manually
@@ -164,6 +203,7 @@ if (window.CSS && !CSS.supports('position-area', 'bottom')) {
       button.removeAttribute("command");
 
       disclosureBody.removeAttribute("popover");
+      disclosureBody.classList.add("base-popover");
       disclosureBody.classList.remove(
         "top-[anchor(bottom)]",
         "left-[anchor(left)]",
@@ -211,6 +251,26 @@ if (window.CSS && !CSS.supports('position-area', 'bottom')) {
         }
       });
     }
+  });
+}
+/* Bugfix: Safari doesn't handle closing animations properly for popovers, it removes the popover
+ *         immediately instead of waiting until the closing animation is finished.
+ */
+else if (document.documentElement.classList.contains("safari")) {
+  document.querySelectorAll<HTMLElement>(".base-navdisclosure [popover]").forEach((popover) => {
+    // Intercept popover hide event, trigger the closing animation manually, then hide the popover
+    // once it's done.
+    popover.addEventListener("beforetoggle", (e) => {
+      if (e.newState === 'closed') {
+        e.preventDefault();
+
+        popover.addEventListener("transitionend", () => {
+          popover.hidePopover();
+          popover.classList.remove("base-is-closing");
+        }, { once: true} );
+        popover.classList.add('base-is-closing');
+      }
+    });
   });
 }
 </script>
