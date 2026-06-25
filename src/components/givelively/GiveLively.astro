@@ -1,327 +1,81 @@
 ---
-import "./givelively.css";
-import { type HTMLAttributes } from "astro/types";
+/**
+ * Astro adapter for code from the Give Lively Simple project:
+ * https://github.com/stephen-sorley/give-lively-simple
+ * 
+ * To use this adapter, copy the following files from Give Lively Simple into
+ * your project, putting them all in the same directory.
+ *   GiveLively.astro (this file)
+ *   gl-simple-builder.ts
+ *   gl-simple-runtime.ts
+ *   gl-simple.css
+ * 
+ * See gl-simple-builder.ts for a description of the options that you can pass
+ * into this component.
+ * 
+ * NOTE: do not include this component more than once on the same page, or it
+ *       will fail with non-unique ID's.
+ */
 
-// Add the required CSP directives for Give Lively, but only on pages where
-// the donation widget is actually present.
+import { createHTML, type CreateHTMLOptions } from "./gl-simple-builder";
+
+import "./gl-simple.css";
+
+// If Astro's CSP support is enabled, add the required CSP directives for Give Lively,
+// but only on pages where the donation widget is actually present.
 Astro.csp?.insertDirective("frame-src https://secure.givelively.org");
 
-export interface Props extends HTMLAttributes<"form"> {
-  /**
-   * What amounts to suggest to the donor.
-   * 
-   * If not provided, an empty input box will be shown for the donor to type
-   * their amount into.
-   * 
-   * If only one suggested amount is provided, the input box will be preset
-   * to the given amount on load.
-   * 
-   * If more than one suggested amount is provided, an individual radio button
-   * will be shown for each option, as well as a "Custom Amount" option that
-   * shows the input box when clicked.
-   * 
-   * Default: no suggested amounts
-   */
-  suggestedAmounts?: number[],
+// Have this component accept the same options as createHTML from gl-simple-builder,
+// and pass those options along without modification.
+export interface Props extends CreateHTMLOptions {};
 
-  /**
-   * What amounts to suggest to the donor for recurring donations, if you wish
-   * those amounts to be different.
-   * 
-   * If not provided, will just use the same suggestedAmounts as non-recurring.
-   * 
-   * If suggestedAmounts or suggestedRecurringAmounts has less than two elements, this is ignored (it only
-   * changes the buttons).
-   * 
-   * Default: same suggested amounts as non-recurring
-   */
-  suggestedRecurringAmounts?: number[],
-
-  /**
-   * Whether or not to let donors dedicate their gifts.
-   * 
-   * This places an extra button above submit that shows the dedication dialog
-   * when clicked.
-   * 
-   * Default: false
-   */
-  doDedication?: boolean,
-
-  /**
-   * The slug that identifies your nonprofit.
-   * 
-   * If you want the donation widget to point at a campaign, the slug will
-   * include that too.
-   * 
-   * For example, an org named "My Nifty Nonprofit, Inc." might have the following
-   * URL when logging into Give Lively:
-   *    secure.givelively/org/nonprofits/my-nifty-profit-inc
-   * 
-   * In this case, you'd want to set the slug to:
-   *    my-nifty-nonprofit-inc
-   */
-  slug: string,
-
-  /**
-   * Locale to use for formatting strings.
-   * 
-   * Default: the locale of the server ("en-US", "de-DE", etc.)
-   */
-  locale?: string,
-
-  /**
-   * Currency code of the currency that donations will be made in.
-   * 
-   * Default: "USD"
-   */
-  currencyCode?: string,
-};
-
-const {
-  suggestedAmounts,
-  suggestedRecurringAmounts,
-  doDedication = false,
-  slug,
-  locale = new Intl.DateTimeFormat().resolvedOptions().locale,
-  currencyCode = "USD",
-  class: className,
-  ...rest
-} = Astro.props;
-
-// Currency formatting stuff.
-const settings: Intl.NumberFormatOptions = {
-  style:"currency",
-  currency:currencyCode,
-  minimumFractionDigits: 0,
-  maximumFractionDigits: 0,
-};
-const currencyFormatter = Intl.NumberFormat(locale, settings);
-const currencyNameFormatter = Intl.NumberFormat(locale, {
-  ...settings,
-  currencyDisplay: "name"
-});
-
-const currencySymbol = currencyFormatter
-  .formatToParts(2)
-  .find(part => part.type === "currency")?.value || "$";
-const currencyNamePlural = currencyNameFormatter
-  .formatToParts(2)
-  .find(part => part.type == "currency")?.value || "US dollars";
-
-
-// Settings and id's for radio buttons and other inputs.
-const frequencyButtons = [
-  { title: "One-Time", value: "one-time", id: "gl-freq-onetime" },
-  { title: "Monthly",  value: "monthly",  id: "gl-freq-monthly", className: "gl-freq-recurring" }
-];
-
-const separateRecurring =
-  suggestedAmounts && suggestedAmounts.length >= 2 &&
-  suggestedRecurringAmounts && suggestedRecurringAmounts.length >= 2;
-
-const amountButtons = suggestedAmounts?.map(amount => { return {
-  title: currencyFormatter.format(amount),
-  alt: currencyNameFormatter.format(amount),
-  value: String(amount),
-  id: "gl-amt-" + amount,
-  className: separateRecurring? "gl-amt-value-onetime" : "gl-amt-value",
-}});
-if (separateRecurring) {
-  suggestedRecurringAmounts.forEach(amount => amountButtons?.push({
-    title: currencyFormatter.format(amount),
-    alt: currencyNameFormatter.format(amount),
-    value: String(amount),
-    id: "gl-amt-recurring-" + amount,
-    className: "gl-amt-value-recurring",
-  }));
-}
-const hasAmountButtons = amountButtons && amountButtons.length > 1;
-
-let defaultValue, defaultSuffix, defaultSuffixAlt;
-if(!hasAmountButtons && amountButtons?.[0]) {
-  defaultValue = amountButtons[0].value;
-  defaultSuffix = currencyFormatter.format(defaultValue as unknown as number);
-  defaultSuffixAlt = currencyNameFormatter.format(defaultValue as unknown as number);
-}
-
-const dedicationButtons = [
-  { title: "In Honor Of",  value: "InHonorOfDedication",  id: "gl-ded-honor" },
-  { title: "In Memory Of", value: "InMemoryOfDedication", id: "gl-ded-memory" },
-];
+const donationWidgetHTML = createHTML(Astro.props);
 
 ---
 
-<div class:list={["gl-simple-donation-widget", className]}>
-  <form novalidate data-slug={slug} data-locale={locale} data-currency={currencyCode} {...rest}>
-    {/* Gift Frequency */}
-    <fieldset class="gl-focus-container gl-frequency">
-      <legend class="sr-only">Donation Frequency</legend>
-      { frequencyButtons.map((freq, idx) => (
-      <label for={freq.id} class={freq.className}>
-        <input type="radio" id={freq.id} name="frequency" value={freq.value} checked={idx === 0} required/>
-        {freq.title}
-      </label>
-      ))}
-    </fieldset>
+<Fragment set:html={donationWidgetHTML} />
 
-    {/* Gift Amount */}
-    <div class="gl-err-group gl-amount">
-      { hasAmountButtons && (
-      <fieldset class="gl-focus-container">
-        <legend class="sr-only">Donation Amount</legend>
-        { amountButtons.map((amt) => (
-        <label for={amt.id} class={amt.className}>
-          <input type="radio" id={amt.id} name="amount" value={amt.value} required/>
-          <span aria-hidden="true">{amt.title}</span>
-          <span class="sr-only">{amt.alt}</span>
-        </label>
-        ))}
+<script src="./gl-simple-runtime.ts" /></script>
 
-        <label for="gl-amt-other">
-          <input type="radio" id="gl-amt-other" name="amount" value="other" required/>
-          Custom Amount
-        </label>
-      </fieldset>
-      )}
+<!--
+  To override the default CSS styles, uncomment the style tag below, then
+  modify it as you see fit. You may also add this style tag elsewhere on the
+  page, if you prefer.
+-->
+<!--
+<style is:global>
+.gl-simple-donation-widget {
+  /* ---------------------------- */
+  /* Common settings to override. */
+  font-family: Avenir, Montserrat, Corbel, 'URW Gothic', source-sans-pro, sans-serif; /* Geometric Humanist - modernfontstacks.com */
+  font-size: 1rem;
 
-      <label for="gl-other-input" class="gl-other-entry">
-        <span class="gl-other-label-1 sr-only">Custom amount in {currencyNamePlural}:</span>
-        <div class="gl-other-label-2">
-          Donation amount<span class="sr-only"> in {currencyNamePlural}</span>:
-        </div>
-        <div class="gl-focus-container">
-          <span aria-hidden="true">{currencySymbol}</span>
-          <input type="text" id="gl-other-input" inputmode="numeric" name="otherAmount" required={!hasAmountButtons}
-            value={defaultValue}
-          />
-          <span aria-hidden="true">{currencyCode}</span>
-        </div>
-      </label>
+  --gl-color-fg: light-dark(#4A4A4A, #E2E8F0);     /* foreground color */
+  --gl-color-bg: light-dark(#FFF, #164046);        /* background color */
+  --gl-color-accent: light-dark(#0CA1B3, #00CBBC); /* accent color - used for borders and shadows */
 
-      <div class="gl-err">
-        <svg aria-hidden="true">
-          <!-- https://tabler.io/icons?icon=alert-triangle -->
-          <symbol id="gl-icon-warning" viewBox="0 0 24 24">
-            <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-              <path d="M12 9v4" />
-              <path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0" />
-              <path d="M12 16h.01" />
-            </g>
-          </symbol>
-          <use href="#gl-icon-warning"/>
-        </svg>
-        <span aria-live="polite"/>
-      </div>
-    </div>
+  /* --------------------------------------------------------------------- */
+  /* Uncommon/advanced settings that you probably don't need to mess with. */
+  --gl-color-focus: light-dark(#F2853A, #F9C727); /* color of ring applied when keyboard is focused */
+  --gl-color-error: light-dark(#9f0712, #ff6467); /* color used for form error messages */
 
-    {/* Dedication Button */}
-    { doDedication && (
-    <button type="button" class="gl-ded-button gl-secondary" data-state="new" commandfor="gl-ded-modal" command="show-modal">
-      <svg aria-hidden="true" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-        <!-- https://tabler.io/icons?icon=heart -->
-        <path d="M6.979 3.074a6 6 0 0 1 4.988 1.425l.037 .033l.034 -.03a6 6 0 0 1 4.733 -1.44l.246 .036a6 6 0 0 1 3.364 10.008l-.18 .185l-.048 .041l-7.45 7.379a1 1 0 0 1 -1.313 .082l-.094 -.082l-7.493 -7.422a6 6 0 0 1 3.176 -10.215z" />
-      </svg>
-      <span class="gl-ded-button-new">Dedicate This Gift</span>
-      <span class="gl-ded-button-edit">Edit Dedication</span>
-    </button>
-    )}
+  --gl-color-shadow: color-mix(in oklch, var(--gl-color-accent), rgba(0,0,0,0.05) 85%);
+  --gl-color-checked: color-mix(in oklch, var(--gl-color-accent), transparent 95%);
 
-    {/* Donate Button */}
-    <button type="submit" class="gl-donate-button gl-primary">
-      <span>Donate <span aria-hidden="true">{defaultSuffix}</span></span>
-      <span class="sr-only">{defaultSuffixAlt}</span>
-    </button>
-  </form>
+  --gl-radius: 0.5rem; /* border radius, used for all borders */
 
-  {/* Donate Modal */}
-  <dialog class="gl-donate-modal" closedby="any">
-    <svg stroke="currentColor" viewBox="0 0 24 24" class="gl-spinner">
-      <g><circle cx="12" cy="12" r="9.5" fill="none" stroke-width="2"/></g>
-    </svg>
-    <iframe allow="payment" src="about:blank"></iframe>
-  </dialog>
+  --gl-spacing-2xs: 0.25em;
+  --gl-spacing-xs: 0.5em;
+  --gl-spacing-sm: 1em;
+  --gl-spacing-md: 1.5em;
 
-  {/* Dedication Modal */}
-  { doDedication && (
-  <dialog id="gl-ded-modal" class="gl-ded-modal" closedby="any">
-    {/*
-      This div is a workaround to fix a 4 year old bug in Safari, where it triggers
-      :focus-visible on modal open when the keyboard was not used to trigger
-      the modal button. Setting pointer-events to none on the button's svg does
-      not work around this issue.
+  --gl-duration: 120ms;
+  --gl-duration-long: calc(2.5 * var(--gl-duration)); /* used for dialog open/close transitions */
 
-      The hidden attribute will be removed via Javascript if it detects we're on Safari.
-
-      Webkit bug: https://bugs.webkit.org/show_bug.cgi?id=247416
-    */}
-    <div tabindex="-1" autofocus class="sr-only" hidden/>
-    <button type="button" class="gl-close" commandfor="gl-ded-modal" command="request-close">
-      <svg aria-hidden="true" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M18 6l-12 12" /><path d="M6 6l12 12" />
-      </svg>
-      <span class="sr-only">Close</span>
-    </button>
-
-    <!--
-     Set various ignore attributes to prevent Bitwarden and other password managers from attempting
-     autofill - they can sometimes crash JS on forms that are located inside native dialogs, due to
-     browser security preventing DOM modifications.
-
-     (This is on the password manager authors, it's a silly bug)
-    -->
-    <form novalidate aria-label="Dedication">
-      <fieldset class="gl-focus-container">
-        <legend class="sr-only">Dedication Type</legend>
-
-        { dedicationButtons.map((ded, idx) => (
-        <label for={ded.id}>
-          <input type="radio" id={ded.id} name="ded_type" value={ded.value} required checked={idx===0}/>
-          {ded.title}
-        </label>
-        ))}
-      </fieldset>
-
-      <div class="gl-err-group gl-ded-name">
-        <label for="gl-ded-name">
-          Dedicatee's Name
-          <span aria-hidden="true" class="gl-required"> (required)</span>
-          <input type="text" id="gl-ded-name" name="ded_name" required
-            autocomplete="name" spellcheck="false" autocapitalize="words" autocorrect="off" maxlength="255"
-            data-lpignore="true" data-1p-ignore data-bwignore="true" data-protonpass-ignore="true"
-          />
-        </label>
-
-        <div class="gl-err">
-          <svg aria-hidden="true"><use href="#gl-icon-warning"/></svg>
-          <span aria-live="polite"/>
-        </div>
-      </div>
-
-      <div class="gl-err-group gl-ded-email">
-        <label for="gl-ded-email">
-          Recipient Email
-          <input type="email" id="gl-ded-email" name="ded_email" required autocomplete="email" maxlength="255"
-            data-lpignore="true" data-1p-ignore data-bwignore="true" data-protonpass-ignore="true"
-          />
-          <div>
-            Notify someone about your gift. The email will identify you as the donor, but does not
-            specify the amount of your gift.
-          </div>
-        </label>
-
-        <div class="gl-err">
-          <svg aria-hidden="true"><use href="#gl-icon-warning"/></svg>
-          <span aria-live="polite"/>
-        </div>
-      </div>
-
-      <button type="button" class="gl-ded-remove gl-secondary">Remove</button>
-
-      <button type="submit" class="gl-ded-save gl-primary">Save</button>
-    </form>
-  </dialog>
-  )}
-</div>
-
-<script src="./givelively.ts"/>
+  --gl-section-shadow: /* applied to whole widget, and to dialog windows */
+    0 4px 6px -1px var(--gl-color-shadow),
+    0 2px 4px -2px var(--gl-color-shadow);
+  --gl-button-shadow: 0 4px 4px -2px var(--gl-color-shadow);
+}
+</style>
+-->
