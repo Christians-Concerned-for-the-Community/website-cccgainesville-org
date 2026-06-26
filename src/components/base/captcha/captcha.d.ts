@@ -46,7 +46,7 @@ declare global {
 
   // Google reCAPTCHA Enterprise API:
   // https://docs.cloud.google.com/recaptcha/docs/api-ref-checkbox-keys
-  declare const grecaptcha: {
+  const grecaptcha: {
     enterprise: {
       ready: (callback: () => MaybePromise<void>) => MaybePromise<void>,
       execute: (sitekey: string, action: {action: string}) => Promise<string>
