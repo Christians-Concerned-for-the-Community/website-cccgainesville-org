@@ -2,6 +2,10 @@
 import PageLayout from '@/layouts/PageLayout.astro'
 import GiveLively from '@/components/givelively/GiveLively.astro'
 import Feat from '@/assets/media/give-feat.jpg'
+
+import { uniqueId } from "@base/utils/ids";
+
+const suffix = uniqueId(Astro.url, "gl-simple").replaceAll("gl-simple", "");
 ---
 
 <PageLayout title="Give" subtitle="Help us serve our community." featuredImage={Feat}
@@ -18,6 +22,7 @@ import Feat from '@/assets/media/give-feat.jpg'
         suggestedAmounts={[100,250,500,1000]},
         suggestedRecurringAmounts={[25,50,100,250]},
         doDedication={true},
+        suffix={suffix},
         class:list={["grow"]}
       />
     </section>
