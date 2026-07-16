@@ -48,7 +48,7 @@
     --gl-spacing-md: 1.5em;
 
     --gl-duration: 120ms;
-    --gl-duration-long: calc(2.5 * var(--gl-duration)); /* used for dialog open/close transitions */
+    --gl-duration-long: calc(2 * var(--gl-duration)); /* used for dialog open/close transitions */
     
     --gl-widget-border: 2px solid var(--gl-color-accent);
     --gl-widget-shadow: /* applied to whole widget, and to dialog windows */
@@ -117,6 +117,12 @@
          */
         outline-offset: -0.1875rem;
       }
+    }
+
+    /* Add an additional ring around radio group fieldsets that contain focus.  */
+    fieldset:has([type="radio"]:focus-visible) {
+      outline: 1px solid color-mix(in oklch, var(--gl-color-focus), var(--gl-color-bg) 30%);
+      outline-offset: 0.5rem;
     }
   }
 
@@ -298,20 +304,26 @@
     }
   }
 
-  /* Fieldset: a radio button group, where each radio button just looks like a regular button */
-  fieldset {
+  /* Fieldset: a radio button group, may also contain a text input for dependent questions. */
+  fieldset:not(:has([type="text"])), div.gl-radios {
     display: flex;
-    flex-wrap: wrap;
     align-items: center;
     justify-content: start;
     width: 100%;
+    flex-wrap: wrap;
+    flex-wrap: balance; /* only supported in Chrome so far, will fall back to wrap if unsupported */
     gap: var(--gl-spacing-xs); /* space button radio buttons, in both dimensions */
+  }
+  fieldset:has([type="text"]) {
+    display: block;
+    width: 100%;
+  }
 
-    /*
-      Inputs in a fieldset are a radio button group.
-      Hide the radio buttons completely, only show the label that wraps them - the
-      user will be able to click on / keyboard focus the label instead.
-    */
+  /* Radio buttons and labels. */
+  label:has([type="radio"]) {
+    /* Hide the radio buttons completely, only show the label that wraps them - the
+     * user will be able to click on / keyboard focus the label instead.
+     */
     input {
       position: absolute;
       padding: none;
@@ -320,65 +332,60 @@
       height: 0;
     }
 
-    /*
-      Style the labels that wrap each radio button.
-    */
-    label {
-      /* If a recurring frequency is checked, and there's a separate list of 
-       * recurring amounts, hide the one-time donation amounts.
-       * Note: the class gl-amt-value-onetime is only present if we generated
-       *       the form with different suggested amounts for recurring donations.
-       */
-      .gl-simple-donation-widget:has(label.gl-freq-recurring input:checked) & {
-        &.gl-amt-value-onetime {
-          display: none;
-        }
+    /* If a recurring frequency is checked, and there's a separate list of 
+     * recurring amounts, hide the one-time donation amounts.
+     * Note: the class gl-amt-value-onetime is only present if we generated
+     *       the form with different suggested amounts for recurring donations.
+     */
+    .gl-simple-donation-widget:has(label.gl-freq-recurring input:checked) & {
+      &.gl-amt-value-onetime {
+        display: none;
       }
-      /* If a recurring frequency is not checked, hide the recurring donation amounts. */
-      .gl-simple-donation-widget:not(:has(label.gl-freq-recurring input:checked)) & {
-        &.gl-amt-value-recurring {
-          display: none;
-        }
+    }
+    /* If a recurring frequency is not checked, hide the recurring donation amounts. */
+    .gl-simple-donation-widget:not(:has(label.gl-freq-recurring input:checked)) & {
+      &.gl-amt-value-recurring {
+        display: none;
       }
-      position: relative;
-      text-align: center;
-      flex: 1 0 fit-content; /* don't shrink to fit text, grow to fill available space along row, use width of text content as basis */
-      padding: var(--gl-spacing-xs);
-      user-select: none; /* make text unselectable by user (since it functions as a button) */
-      
-      border: 1px solid var(--gl-color-accent);
-      border-radius: var(--gl-radius);
+    }
+    position: relative;
+    text-align: center;
+    flex: 1 0 fit-content; /* don't shrink to fit text, grow to fill available space along row, use width of text content as basis */
+    padding: var(--gl-spacing-xs);
+    user-select: none; /* make text unselectable by user (since it functions as a button) */
+    
+    border: 1px solid var(--gl-color-accent);
+    border-radius: var(--gl-radius);
 
-      transition-property: background-color, text-shadow, transform;
-      transition-duration: var(--gl-duration);
-      transition-timing-function: ease-out;
-      box-shadow: var(--gl-button-shadow);
-      background-color: var(--gl-color-bg);
-      transform: translateZ(0);
+    transition-property: background-color, text-shadow, transform;
+    transition-duration: var(--gl-duration);
+    transition-timing-function: ease-out;
+    box-shadow: var(--gl-button-shadow);
+    background-color: var(--gl-color-bg);
+    transform: translateZ(0);
+    &:has(:checked) {
+      box-shadow: 0 0 0 2px var(--gl-color-accent);
+      text-shadow: 0.1px 0 currentColor, -0.1px 0 currentColor; /* simulate a slight bold, without changing letter spacing or position*/
+      transform: translateZ(0); /* force hardware accel to keep text antialiasing when applying text-shadow */
+    }
+    &:hover, &:has(:checked) {
+      background-color: var(--gl-color-checked);
+    }
+
+    /* Specific styling for the "Custom Amount" radio button. */
+    &.gl-amt-other {
+      flex-basis: 100%; /* Force custom button onto its own line. */
+
       &:has(:checked) {
-        box-shadow: 0 0 0 2px var(--gl-color-accent);
-        text-shadow: 0.1px 0 currentColor, -0.1px 0 currentColor; /* simulate a slight bold, without changing letter spacing or position*/
-        transform: translateZ(0); /* force hardware accel to keep text antialiasing when applying text-shadow */
-      }
-      &:hover, &:has(:checked) {
-        background-color: var(--gl-color-checked);
-      }
-
-      /* Specific styling for the "Custom Amount" radio button. */
-      &.gl-amt-other {
-        flex-basis: 100%; /* Force custom button onto its own line. */
-
-        &:has(:checked) {
-          padding-block-end: 0;
-          /* When checked, remove bottom border so we can combine seamlessly with the amount input field. */
-          box-shadow:
-            0 -2px 0 0 var(--gl-color-accent),
-            -2px 0 0 0 var(--gl-color-accent),
-            2px 0 0 0 var(--gl-color-accent);
-          border-end-end-radius: 0;
-          border-end-start-radius: 0;
-          border-block-end-color: transparent;
-        }
+        padding-block-end: 0;
+        /* When checked, remove bottom border so we can combine seamlessly with the amount input field. */
+        box-shadow:
+          0 -2px 0 0 var(--gl-color-accent),
+          -2px 0 0 0 var(--gl-color-accent),
+          2px 0 0 0 var(--gl-color-accent);
+        border-end-end-radius: 0;
+        border-end-start-radius: 0;
+        border-block-end: none;
       }
     }
   }
@@ -404,18 +411,9 @@
       }
     }
 
-    /* By default, style the field as a standalone input. */
-    :not(fieldset) + & {
-      .gl-other-label-1 { display: none; }  /* turn off "Custom Amount:" sr-only text */
-      .gl-other-label-2 { display: block; } /* turn on "Donation Amount: text */
-    }
-
-    /* If there are amount radio buttons before me, style it so that it looks like the
-        bottom half of the custom amount radio button.
-      */
-    fieldset + & {
-      .gl-other-label-1 { display: inline; } /* turn on "Custom Amount:" sr-only text */
-      .gl-other-label-2 { display: none; }   /* turn off "Donation Amount: text */
+    /* If I'm inside a fieldset, style myself so that I look like the bottom half of the
+       custom amount radio button. */
+    fieldset & {
       padding: var(--gl-spacing-xs) var(--gl-spacing-sm);
 
       /* Set styles so that the label looks like part of the last button in the fieldset. */
@@ -431,11 +429,11 @@
       
       border-start-end-radius: 0;
       border-start-start-radius: 0;
-      border-block-start-color: transparent;
+      border-block-start: none;
     }
 
-    /* If there are amount radio buttons, show myself when the custom amount button is selected. */
-    fieldset:not(:has(.gl-amt-other input:checked)) + & {
+    /* If I'm inside a fieldset, and the custom amount button isn't checked, hide myself. */
+    fieldset:not(:has(.gl-amt-other input:checked)) & {
       display: none;
     }
   }
@@ -458,7 +456,7 @@
     width: 100%;
 
     .gl-err {
-      margin-block: var(--gl-spacing-2xs);
+      margin-block: var(--gl-spacing-xs);
       width: 100%;
       text-align: center;
       font-size: 0.9em;
@@ -539,7 +537,7 @@
     &:not([open]),
     &.gl-is-closing { /* workaround for Safari bug - Safari hides the dialog immediately on close and does not perform the exit transition. */
       opacity: 0;
-      transform: translate(-47%, -50%);
+      transform: translate(-50%, -50%) scale(0.95);
       &::backdrop {
         background-color: transparent;
         backdrop-filter: blur(0px);
@@ -549,7 +547,7 @@
     /* Step 2: open */
     &[open]:not(.gl-is-closing) {
       opacity: 1;
-      transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%) scale(1);
       &::backdrop {
         background-color: rgba(0, 0, 0, 0.7);
         backdrop-filter: blur(3px);
@@ -561,7 +559,7 @@
       /* Step 1: on the way in */
       @starting-style {
         opacity: 0;
-        transform: translate(-53%, -50%);
+        transform: translate(-50%, -50%) scale(0.95);
         &::backdrop {
           background-color: transparent;
           backdrop-filter: blur(0px);
@@ -601,8 +599,11 @@
   /* error ring */
   [aria-invalid="true"]:not(.gl-focus-container *), /* I have aria-invalid="true" and I'm not inside a focus container, OR */
   .gl-focus-container:has([aria-invalid="true"]) {  /* I'm a focus container and a descendant has aria-invalid="true" */
-    outline: 3px solid var(--gl-color-error);
-    outline-offset: 4px;
+    /* don't show error ring when visibly focused */
+    &:not(:focus-visible):not(:has(:focus-visible)) {
+      outline: 0.1875rem solid var(--gl-color-error);
+      outline-offset: 0.25rem;
+    }
   }
 } /*END .gl-simple-donation-widget */
 
