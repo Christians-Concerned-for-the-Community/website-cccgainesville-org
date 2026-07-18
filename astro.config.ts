@@ -1,5 +1,6 @@
 import tailwindcss from "@tailwindcss/vite";
 import browserslistToEsbuild from "browserslist-to-esbuild";
+import { Features } from "lightningcss";
 import { defineConfig } from "astro/config";
 import { fileURLToPath } from "url";
 
@@ -9,8 +10,6 @@ import cloudflare from "@astrojs/cloudflare";
 const abspath = (path: string) => {
   return fileURLToPath(new URL(path, import.meta.url));
 };
-
-const blist = browserslistToEsbuild();
 
 // https://astro.build/config
 //
@@ -62,8 +61,14 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
     build: {
-      target: blist,
-      cssTarget: blist,
+      target: browserslistToEsbuild(),
+    },
+    css: {
+      lightningcss: {
+        // Disable light-dark() polyfill. It doesn't really work right, and this feature
+        // will hit baseline-widely-available pretty soon (Nov 2026).
+        exclude: Features.LightDark,
+      },
     },
     resolve: {
       alias: {
