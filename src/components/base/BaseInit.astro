@@ -45,6 +45,10 @@ const title = (pageTitle? `${pageTitle} - ` : "") + siteTitle;
 
   Also sets the 'js' class so that we can detect Javascript with CSS.
   See: src/styles/globals.css (js custom variant)
+
+  Finally, detects ios/webkit browsers (Safari), sets a CSS class to allow
+  safari-specific styling, and adds code to <head> to prevent form control
+  zooming on iOS.
 */}
 <script>
 {
@@ -67,6 +71,19 @@ const title = (pageTitle? `${pageTitle} - ` : "") + siteTitle;
   // webkit engine.
   if (/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) {
     cl.add("safari");
+
+    // Add maximum-scale=1.0 to meta/viewport tag - prevents auto-zoom when form
+    // controls are focused. Only do this on iOS/Webkit - on android, may prevent
+    // user from pinch zooming.
+    // See: https://stackoverflow.com/a/57527009
+    const el = document.querySelector('meta[name="viewport"]');
+    if (el) {
+      const contentList = (el.getAttribute("content") || "")
+        .split(',')
+        .filter(item => !item.includes("maximum-scale"));
+      contentList.push("maximum-scale=1.0");
+      el.setAttribute("content", contentList.join(","));
+    }
   }
 }
 </script>
