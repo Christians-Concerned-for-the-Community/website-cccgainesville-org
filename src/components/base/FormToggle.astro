@@ -97,7 +97,7 @@ const errId = uniqueId(Astro.url, `form-${name}-err`);
   {/* Checkbox. */}
     <input type="checkbox" id={inputId} name={name} data-name={name} aria-describedby={errId} data-err={errId} required={required}
       class={twMerge(
-        "base-form-field shrink-0 mr-2xs",
+        "base-form-field shrink-0 me-2xs",
         fieldClass)}
       {...rest}
     />
