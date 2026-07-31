@@ -65,14 +65,14 @@
       padding: 0;
       border: 0 solid;
     }
-    html, :host {
-      line-height: 1.5;
-      -webkit-text-size-adjust: 100%;
-      tab-size: 4;
-      font-feature-settings: normal;
-      font-variation-settings: normal;
-      -webkit-tap-highlight-color: transparent;
-    }
+
+    line-height: 1.5;
+    -webkit-text-size-adjust: 100%;
+    tab-size: 4;
+    font-feature-settings: normal;
+    font-variation-settings: normal;
+    -webkit-tap-highlight-color: transparent;
+
     :-moz-focusring {
       outline: auto;
     }
@@ -478,22 +478,21 @@
     overflow-x: hidden;
     overflow-y: auto;
     scrollbar-gutter: auto;
+    max-height: 94dvh;
     height: 100%;
-    max-height: 94svh;
     width: 100%;
     padding: 0;
-    margin: 0;
     border: 1px solid var(--gl-color-accent);
     border-radius: calc(var(--gl-radius) * 1.5);
     box-shadow: var(--gl-widget-shadow);
 
     &.gl-donate-modal {
-      max-width: min(94svw, 500px);
+      max-width: min(94dvw, 500px);
       color-scheme: light;
     }
 
     &.gl-ded-modal {
-      max-width: min(94svw, 38ch);
+      max-width: min(94dvw, 38ch);
       height: fit-content;
       background-color: var(--gl-color-bg);
       flex-direction: column;
