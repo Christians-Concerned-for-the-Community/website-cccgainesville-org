@@ -32,13 +32,14 @@ export const onRequest = defineMiddleware(async (context, next) => {
 
       // sveltia-specific stuff:
       // see: https://sveltiacms.app/en/docs/security#setting-up-content-security-policy
-      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-      "font-src 'self' https://fonts.gstatic.com",
+      "style-src 'self' 'unsafe-inline'",
+      "font-src 'self' https://cdn.jsdelivr.net",
       "img-src 'self' blob: data: https://*.githubusercontent.com",
       "media-src blob:",
       "frame-src blob:",
+      "manifest-src blob:",
       "script-src 'self' https://unpkg.com",
-      "connect-src blob: data: https://unpkg.com https://api.github.com https://*.githubstatus.com",
+      "connect-src 'self' blob: data: https://unpkg.com https://api.github.com https://*.githubstatus.com https://api.cloudflare.com",
     ];
     response.headers.set('Content-Security-Policy', directives.join(";") + ";");
 
