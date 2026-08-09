@@ -118,15 +118,13 @@ const {
       transition-duration: 350ms;
 
       &.base-start {
-        top: anchor(bottom);
-        left: anchor(left);
+        position-area: block-end span-inline-end;
       }
       &.base-center {
-        position-area: bottom_center;
+        position-area: block-end center;
       }
       &.base-end {
-        top: anchor(bottom);
-        right: anchor(right);
+        position-area: block-end span-inline-start;
       }
     }
 
@@ -139,12 +137,11 @@ const {
         z-index: 50;
         min-width: 0;
 
-        top: initial;
+        position-area: none;
         &.base-start {
           left: 0;
         }
         &.base-center, &.base-end {
-          position-area: initial;
           right: 0;
         }
       }
@@ -207,7 +204,7 @@ const {
  * triggering button in the DOM, as in this component.
  */
 const isSafari = document.documentElement.classList.contains("safari");
-if (isSafari || !CSS?.supports("position-area", "bottom")) {
+if (isSafari || !CSS?.supports("position-area", "bottom span-left")) {
   // Loop over each navdisclosure container on the page.
   document.querySelectorAll<HTMLElement>(".base-navdisclosure").forEach((container) => {
     const button = container.querySelector("button");
