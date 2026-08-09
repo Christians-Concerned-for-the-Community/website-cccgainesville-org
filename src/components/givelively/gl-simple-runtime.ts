@@ -12,38 +12,13 @@
   const supports_closedby = (document.createElement("dialog") as any).closedBy === "none";
   //    Invoker Commands API is supported everywhere in baseline Dec 2025.
   const supports_invoker = (Object.hasOwn(HTMLButtonElement.prototype, 'command'));
-  //    Safari has some bugs of its own.
-  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+  //    Safari has some bugs of its own - add CSS class so we can detect when we're on Safari.
+  if (/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) {
+    document.documentElement.classList.add("safari");
+  }
 
-  let closeDialog = (dialog: HTMLDialogElement | null) => dialog?.close();
-  if (!supports_invoker || !supports_closedby || isSafari) {
+  if (!supports_invoker || !supports_closedby) {
     document.querySelectorAll<HTMLDialogElement>(`${WIDGET_ROOT} dialog`).forEach(dialog => {
-      if (isSafari) {
-        // Safari closes the dialog immediately, even if there are still CSS transitions pending.
-        // To fix exit transition animation, trigger them with an extra class, then only close the
-        // dialog once the transition is done.
-        closeDialog = (dialog: HTMLDialogElement | null) => {
-          // Add listener for end of closing animation, that actually closes the dialog.
-          dialog?.addEventListener("transitionend", () => {
-            dialog.close();
-            dialog.classList.remove("gl-is-closing");
-          }, { once: true });
-          // Trigger closing animation.
-          dialog?.classList.add("gl-is-closing");
-        };
-        
-        // Intercept escape key, back button, or requestClose(), and use our custom closeDialog function
-        // instead.
-        dialog.addEventListener("cancel", (e) => {
-          e.preventDefault();
-          closeDialog(dialog);
-        });
-
-        // Unhide an empty div with tabindex=-1 and autofocus at the top of the dialog. This prevents
-        // Safari from showing a focus outline around the first focusable element when the dialog opens.
-        qs(dialog, "[autofocus]")?.toggleAttribute("hidden", false);
-      }
-
       if (!supports_closedby) {
         // Support "light dismiss" of modal (clicking outside it), if closedby attribute isn't available.
         dialog.addEventListener('click', (e) => {
@@ -51,7 +26,7 @@
           if (e.clientX < edges.left || e.clientX > edges.right ||
               e.clientY < edges.top  || e.clientY > edges.bottom) {
             e.preventDefault();
-            closeDialog(dialog);
+            dialog.close();
           }
         });
       }
@@ -66,8 +41,8 @@
           if (command === "show-modal") {
             invoker.ariaHasPopup = "dialog";
             invoker.addEventListener("click", () => dialog.showModal());
-          } else if (command == "request-close") {
-            invoker.addEventListener("click", () => closeDialog(dialog));
+          } else if (command == "close") {
+            invoker.addEventListener("click", () => dialog.close());
           }
         }
       }
@@ -231,7 +206,7 @@
 
       // Close the modal window if the user asked the iframe to close.
       if (message === "close_modal" && donateModal?.open) {
-        closeDialog(donateModal);
+        donateModal.close();
       }
     });
 
@@ -262,7 +237,7 @@
         dedButton.dataset.state = "new";
       }
       // Go back to donation form.
-      closeDialog(dedModal);
+      dedModal?.close();
     });
 
     // When dedication form is submitted:
@@ -296,7 +271,7 @@
         dedData = undefined;
       } else {
         dedButton.dataset.state = "edit";
-        closeDialog(dedModal);
+        dedModal?.close();
       }
     });
 

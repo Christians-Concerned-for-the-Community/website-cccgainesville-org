@@ -130,7 +130,7 @@ const closeDefault = "base-modal-close absolute top-xs right-sm text-sm";
 <style is:global>
 @layer components {
   /* Workaround for Safari not preventing scrolling with overscroll-behavior: contain. */
-  .safari:has(:is(.base-modal,.gl-simple-donation-widget) dialog[open]) body {
+  .safari:has(.base-modal dialog[open]) body {
     overscroll-behavior: none;
     touch-action: none;
     overflow: hidden;

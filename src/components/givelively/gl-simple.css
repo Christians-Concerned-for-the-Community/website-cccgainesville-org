@@ -48,7 +48,7 @@
     --gl-spacing-md: 1.5em;
 
     --gl-duration: 120ms;
-    --gl-duration-long: calc(2 * var(--gl-duration)); /* used for dialog open/close transitions */
+    --gl-duration-long: calc(1.5 * var(--gl-duration)); /* used for dialog open/close transitions */
     
     --gl-widget-border: 2px solid var(--gl-color-accent);
     --gl-widget-shadow: /* applied to whole widget, and to dialog windows */
@@ -158,6 +158,10 @@
     clip-path: inset(50%);
     white-space: nowrap;
     border-width: 0;
+  }
+
+  .safari-only {
+    display: none;
   }
 
   svg {
@@ -532,8 +536,7 @@
     }
 
     /* Step 3: on the way out */
-    &:not([open]),
-    &.gl-is-closing { /* workaround for Safari bug - Safari hides the dialog immediately on close and does not perform the exit transition. */
+    &:not([open]) {
       opacity: 0;
       transform: translate(-50%, -50%) scale(0.95);
       &::backdrop {
@@ -543,7 +546,7 @@
     }
 
     /* Step 2: open */
-    &[open]:not(.gl-is-closing) {
+    &[open] {
       opacity: 1;
       transform: translate(-50%, -50%) scale(1);
       &::backdrop {
@@ -624,3 +627,16 @@
     stroke-dashoffset: -59;
   }
 }
+
+/* BEGIN Safari-specific fixes. */
+/* Enable the sr-only div that eats focus at the beginning of the dedication modal. */
+.safari .gl-simple-donation-widget .safari-only {
+  display: block;
+}
+/* Prevent scrolling of background page when modals are open. */
+.safari:has(.gl-simple-donation-widget dialog[open]) body {
+  overscroll-behavior: none;
+  touch-action: none;
+  overflow: hidden;
+}
+/* END Safari-specific fixes. */

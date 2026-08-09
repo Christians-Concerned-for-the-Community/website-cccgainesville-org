@@ -413,22 +413,22 @@ const makeDedicationModal = (iopt: CreateHTMLOptions): string => {
   ].join(" ");
 
   /*
-    Explanation for the hidden div with tabindex=-1 at the top of the dialog:
+    Explanation for the div with tabindex=-1 at the top of the dialog:
 
     This is a workaround to fix a 4 year old bug in Safari, where it triggers
     :focus-visible on modal dialog open when the keyboard was not used to trigger
     the modal button.
 
-    The hidden attribute will be removed via Javascript if it detects we're on Safari.
+    This div will only be present if we're on Safari.
 
     Webkit bug: https://bugs.webkit.org/show_bug.cgi?id=247416
    */
 
   return `
   <dialog id="gl-ded-modal${iopt.suffix}" class="gl-ded-modal" closedby="any" aria-label="Dedicate Gift">
-    <div tabindex="-1" autofocus class="sr-only" hidden></div>
+    <div tabindex="-1" autofocus class="sr-only safari-only"></div>
 
-    <button type="button" class="gl-close" commandfor="gl-ded-modal${iopt.suffix}" command="request-close">
+    <button type="button" class="gl-close" commandfor="gl-ded-modal${iopt.suffix}" command="close">
       <svg aria-hidden="true" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
         <path d="M18 6l-12 12" /><path d="M6 6l12 12" />
       </svg>
