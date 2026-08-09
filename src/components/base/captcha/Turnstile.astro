@@ -40,7 +40,9 @@ const {
 ---
 
 <div class:list={["cf-turnstile", className]}
-  data-sitekey={process.env.PUBLIC_CAPTCHA_KEY || ""}
+  data-sitekey={import.meta.env.DEV?
+    "1x00000000000000000000AA" : (process.env.PUBLIC_CAPTCHA_KEY || "")
+  }
   {...rest}
 />
 
