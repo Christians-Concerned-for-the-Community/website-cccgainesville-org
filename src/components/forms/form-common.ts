@@ -127,9 +127,26 @@ export const zc = {
   ),
 
   // Pick one value from a list of options.
-  single_pick: (options: Record<string,string>, msg: string) => safe(z
-    .enum(Object.keys(options), msg)
+  single_pick: (options: Record<string,string>) => safe(z
+    .enum(Object.keys(options))
   ),
+
+  // Pick any number of values from a list of options.
+  multi_pick: (options: Record<string,string>) => z
+    .enum(Object.keys(options)).array()
+  ,
+
+  multi_pick_min: (options: Record<string,string>, min: number, msg: string) => z
+    .enum(Object.keys(options)).array().min(min, msg)
+  ,
+
+  multi_pick_max: (options: Record<string,string>, max: number, msg: string) => z
+    .enum(Object.keys(options)).array().max(max, msg)
+  ,
+
+  multi_pick_minmax: (options: Record<string,string>, min: number, max: number, msg: string) => z
+    .enum(Object.keys(options)).array().min(min, msg).max(max, msg)
+  ,
 
   /*
     Fixes up form data by trimming whitespace, then replacing empty strings

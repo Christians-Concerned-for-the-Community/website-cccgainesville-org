@@ -16,6 +16,13 @@ type Props = Omit<
   HTMLAttributes<"div">,
   "id" | "aria-describedby"
 > & {
+  /**
+   * Whether to present the options as a select drop-down, or a list of
+   * radio/checkbox buttons.
+   * 
+   * @default "select"
+   */
+  type?: "select" | "buttons",
 
   /**
    * Display name of the field, visible to the user.
@@ -41,13 +48,6 @@ type Props = Omit<
    * }
    */
   options: Record<string,string>,
-
-  /**
-   * Is this field required for a succcessful form submission?
-   *
-   * @default false
-   */
-  required?: boolean,
 
   /**
    * Additional classes to apply to the field label, which also acts
@@ -89,11 +89,11 @@ type Props = Omit<
 );
 
 const {
+  type = "select",
   label,
   name,
   options,
   startWith,
-  required = false,
   multiple = false,
   class: className,
   fieldClass,
@@ -106,6 +106,21 @@ const {
 const inputId = uniqueId(Astro.url, `form-${name}`);
 const errId = uniqueId(Astro.url, `form-${name}-err`);
 
+type OptionWithId = {
+  value: string,
+  label: string,
+  id: string,
+}
+let optionsIds: OptionWithId[] = [];
+if (type==="buttons") {
+  optionsIds = Object.entries(options).map(([value, label]) => {return {
+    value: value,
+    label: label,
+    id: uniqueId(Astro.url, `form-${name}-${value}`),
+  }});
+}
+
+
 const multipleVal = multiple? "true" : undefined;
 
 // Convert starting values to array, filter out those that aren't present in the
@@ -114,7 +129,7 @@ let defaults: string[] = [];
 if (startWith) {
   defaults = (typeof startWith === "string"? [startWith] : startWith).filter(
     val => {
-      const ret = options.keys.includes(val);
+      const ret = Object.keys(options).includes(val);
       if (!ret) {
         console.warn(`FormPick - ${inputId} - requested default value ${val} is not in list of options.`);
       }
@@ -123,38 +138,61 @@ if (startWith) {
   );
 }
 
+// If no default value was given and we're doing single selection, just use the
+// first listed option.
+if (defaults.length === 0 && !multiple) {
+  defaults.push(Object.keys(options)[0]);
+}
+
 ---
 
-{/*
-  We nest the error message and input field inside the label for a couple of reasons:
+{type==="buttons" && (
+<fieldset data-name={name} data-err={errId} class={twMerge(
+  "base-form-field group/field has-aria-invalid:border-l-error-accent has-aria-invalid:border-l-3",
+  "text-lg px-xs py-2xs w-full rounded-sm",
+  className
+)}>
+  <legend class="float-left w-full">{label}</legend>
 
-  * Nesting causes the error message to be included in the label's clickable area.
-  This is helpful because we're showing the error messages above the field, right
-  below the label text, so that they don't get blocked by autocomplete boxes, and
-  it's awkward to have a gap in clickable area between the two.
+  {/* Error message. Always hide with aria-hidden, so that it's only read via aria-describedby. */}
+  <div aria-hidden="true" class={twMerge(
+    "hidden group-has-aria-invalid/field:block",
+    "w-full text-sm text-error ms-[0.5em]",
+    errorClass
+  )}>
+    <Icon name="tabler:alert-triangle" size="1lh" class="text-error me-[0.25em]"/>
+    <span id={errId}></span>
+  </div>
 
-  * Nesting the field as well makes it easier to avoid accidentally introducing
-  clickable area gaps through margins and such.
+  <div class="flex flex-col w-full">
+  { optionsIds.map( option => (
+    <label for={option.id} class={twMerge(
+      "base-focus-container w-full ps-xs pe-3xs py-2xs text-current/90 text-base cursor-pointer",
+      fieldClass)}
+    >
+      <span class="flex justify-start items-start">
+        <input id={option.id} type={multiple?"checkbox":"radio"} value={option.value} name={name}
+          aria-describedby={errId}
+          checked={defaults.includes(option.value)}
+          class="shrink-0 me-2xs"
+        />
+        {option.label}
+      </span>
+    </label>
+  ))}
+  </div>
+</fieldset>
+)}
 
-  * Finally, if we nest everything, we can use the label element as the overall
-  layout container for the field, too. This avoids having to add a wrapper div.
 
-  Because screen readers don't always interpret nesting properly, we still link
-  the label to the input field using "for", and we link the error message to it
-  using aria-describedby. The error message itself is marked with aria-hidden="true"
-  to prevent it from being read in any other context than through aria-describedby.
-*/}
-
+{type==="select" && (
 <label for={inputId} class={twMerge(
-  "group/field w-full px-xs py-2xs text-lg has-enabled:cursor-pointer",
+  "group/field w-full px-xs py-2xs text-lg cursor-pointer rounded-sm",
   "has-aria-invalid:border-l-error-accent has-aria-invalid:border-l-3",
   className)}
 >
   {/* Label text. */}
   {label}
-  {required && (
-    <span aria-hidden="true" class="font-light text-current/90 text-[90%]"> (required)</span>
-  )}
 
   {/* Error message. Always hide with aria-hidden, so that it's only read via aria-describedby. */}
   <div aria-hidden="true" class={twMerge(
@@ -168,18 +206,14 @@ if (startWith) {
 
   {/* Select box. */}
   <div class={twMerge("base-focus-container text-current/90 text-base", fieldClass)}>
-    <select id={inputId} name={name} data-name={name} multiple={multipleVal} required={required}
-      aria-describedby={errId} data-err={errId}
-      class="base-form-field",
+    <select id={inputId} name={name} data-name={name} multiple={multipleVal}
+      aria-describedby={errId} data-err={errId} class="base-form-field",
       {...rest}
     >
-      { (!required || defaults.length === 0) && (
-        <option value="" disabled={required} selected={defaults.length===0}
-          class="disabled:not-[selected]:hidden"/>
-      )}
       { Object.entries(options).map(([value, label]) => (
         <option value={value} selected={defaults.includes(value)}>{label}</option>
       ))}
     </select>
   </div>
 </label>
+)}

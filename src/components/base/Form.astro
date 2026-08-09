@@ -111,7 +111,7 @@ const actionUrl = getActionPath(actions[handlerAction]);
 >
   <section tabindex="-1" class:list={[
     "hidden not-group-data-[state=initial]/form:block",
-    "w-full p-[1em] rounded-sm border-3",
+    "w-full p-[1em] rounded-sm border-l-3",
     "group-data-[state=error]/form:border-error-accent",
     "group-data-[state=success]/form:border-success-accent",
   ]}>
@@ -165,22 +165,27 @@ const actionUrl = getActionPath(actions[handlerAction]);
     const fields = form.querySelectorAll<HTMLElement>('.base-form-field');
     const submitButton = form.querySelector<HTMLButtonElement>('.base-form-submit');
 
-    // On page load, pre-fill any single field values passed via URL query params.
+    // On page load, pre-fill any values passed via URL query params.
     const params = new URLSearchParams(window.location.search);
     for (const el of fields) {
-      const val = el.dataset.name? params.get(el.dataset.name) : null;
-      if (val == null) continue; // skip if null or undefined, keep going if empty string.
-
-      if (el instanceof HTMLTextAreaElement) {
-        el.replaceChildren(val);
-      } else if (el instanceof HTMLInputElement) {
-        if (el.type === "checkbox") {
-          el.checked = !["","false","off","0","null"].includes(val);
-        } else {
+      const vals = el.dataset.name? params.getAll(el.dataset.name) : [];
+      for (const val of vals) {
+        if (el instanceof HTMLTextAreaElement) {
+          el.replaceChildren(val);
+        } else if (el instanceof HTMLInputElement) {
+          if (el.type === "checkbox" || el.type === "radio") {
+            el.checked = !["","false","off","0","null"].includes(val);
+          } else {
+            el.value = val;
+          }
+        } else if (el instanceof HTMLSelectElement && el.querySelector(`option[value="${val}"]`)) {
           el.value = val;
+        } else if (el instanceof HTMLFieldSetElement) {
+          const opt = el.querySelector<HTMLInputElement>(`input[value="${val}"]`);
+          if (opt) {
+            opt.checked = true;
+          }
         }
-      } else if (el instanceof HTMLSelectElement && el.querySelector(`option[value="${val}"]`)) {
-        el.value = val;
       }
     }
     // Part of honeypot handling.
@@ -193,6 +198,14 @@ const actionUrl = getActionPath(actions[handlerAction]);
         submitButton.ariaDisabled === "true" //prevent clicks during processing
       ) {
         return;
+      }
+
+      // Clean any hash anchors off of the URL (these may have been added by
+      // clicking error links).
+      // Clean the URL by removing the hash (#anchor)
+      const loc = window.location;
+      if (loc.hash) {
+        window.history.replaceState({}, document.title, loc.pathname + loc.search);
       }
 
       const errs: HTMLLIElement[] = [];
@@ -237,9 +250,20 @@ const actionUrl = getActionPath(actions[handlerAction]);
         for (const el of fields) {
           const errDest = el.dataset.err? document.getElementById(el.dataset.err) : undefined;
           const errText = el.dataset.name? (result.fields?.[el.dataset.name]?.join(", ")) : undefined;
-          addErr(errText, el.id);
-          el.ariaInvalid = errText? "true" : "false";
           errDest?.replaceChildren(errText);
+
+          const invalidStr = errText? "true" : "false";
+          if (el instanceof HTMLFieldSetElement) {
+            addErr(errText, el.elements?.[0]?.id); // Make error link to first option in fieldset
+            // Can't set ariaInvalid on fieldset (won't be read by screen readers), so instead
+            // we're supposed to set it on every individual checkbox/radio button.
+            for (const opt of el.elements) {
+              opt.ariaInvalid = invalidStr;
+            }
+          } else {
+            addErr(errText, el.id);
+            el.ariaInvalid = invalidStr;
+          }
         };
 
         if (!response.ok && errs.length == 0) {
@@ -284,19 +308,21 @@ const actionUrl = getActionPath(actions[handlerAction]);
     scroll-margin-top: 2lh;
   }
 
-  input:not(.base-focus-container *),textarea:not(.base-focus-container *),.base-focus-container {
-    border: 1px solid var(--color-border-strong);
-    border-radius: var(--radius-md);
-    transition: 120ms box-shadow ease-in-out;
+  :is(input, textarea):not(.base-focus-container *), .base-focus-container {
     width: 100%;
-    cursor: inherit;
 
-    &:hover, &:focus-visible, &:has(:focus-visible) {
+    &:not(:has(:is([type="radio"],[type="checkbox"]))) {
+      border: 1px solid var(--color-border-strong);
+      border-radius: var(--radius-md);
+    }
+
+    transition: 120ms box-shadow ease-in-out;
+    &:hover {
       box-shadow: 0 0 0 1px var(--color-secondary-accent);
     }
   }
 
-  input,textarea {
+  input:not(:is([type="radio"],[type="checkbox"])), textarea {
     padding: 0.35em 1em;
   }
 
@@ -305,9 +331,10 @@ const actionUrl = getActionPath(actions[handlerAction]);
     display: var(--toggle);
   }
 
-  /* Default select styling. Requires wrapping the select in a div with a "select" class.
-  * See: https://moderncss.dev/custom-select-styles-with-pure-css/
-  */
+  /* Default select styling. Requires wrapping the select in a div with a custom named class
+   * (we use base-focus-container).
+   * See: https://moderncss.dev/custom-select-styles-with-pure-css/
+   */
   select {
     appearance: none;
     border: none;
@@ -368,10 +395,15 @@ const actionUrl = getActionPath(actions[handlerAction]);
     &[type="checkbox"],&[type="radio"] {
       appearance: none;
       background-color: transparent;
+      color: inherit;
+      font: inherit;
       margin: 0;
       padding: 0;
-      width: 1lh;
-      height: 1lh;
+      outline: none;
+      width: 0.8lh;
+      height: 0.8lh;
+      transform: translateY(0.1lh);
+      border: 0.1lh solid currentColor;
       display: grid;
       place-content: center;
 
@@ -381,10 +413,10 @@ const actionUrl = getActionPath(actions[handlerAction]);
 
       &::before {
         content: "";
-        width: 0.65lh;
-        height: 0.65lh;
+        width: 0.45lh;
+        height: 0.45lh;
         transform: scale(0);
-        box-shadow: inset 1lh 1lh currentcolor;
+        box-shadow: inset 0 0 0 9999px currentColor;
         background-color: CanvasText; /* for Windows High Contrast Mode */
         @media (prefers-reduced-motion: no-preference) {
           transition: 150ms transform ease-in-out;

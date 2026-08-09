@@ -110,8 +110,8 @@
 
   /* Add extra outer focus ring for fieldsets that contain radio buttons. */
   fieldset:has([type="radio"]:focus-visible) {
-    outline: 1px solid color-mix(in oklch, var(--color-focus-inner), transparent 30%);
-    outline-offset: 0.5rem;
+    outline: 2px solid color-mix(in oklch, var(--color-focus-inner), transparent 30%);
+    outline-offset: 0.15em;
   }
 
   /*

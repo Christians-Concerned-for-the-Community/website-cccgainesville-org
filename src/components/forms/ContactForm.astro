@@ -22,7 +22,7 @@ export const handleForm = webhookHandler("contact", "SECRET_CONTACT_FORM_DEST", 
   name: zc.full_name,
   email: zc.email,
   phone: zc.us_phone,
-  topic: zc.single_pick(topics, "Select a topic for your message."),
+  topic: zc.single_pick(topics),
   message: zc.safe(z
     .string("Type in your message to us.")
     .max(MAX_MESSAGE, {error: ({input}) =>
@@ -38,7 +38,7 @@ export const handleForm = webhookHandler("contact", "SECRET_CONTACT_FORM_DEST", 
   <FormInput name="email"   label="Email"   type="email"       required maxlength={zclimits.email} />
   <FormInput name="phone"   label="Phone"   type="tel"         required maxlength={zclimits.us_phone} />
   
-  <FormPick  name="topic" label="Topic" options={topics} required />
+  <FormPick  name="topic"   label="Topic"   type="select"      options={topics} />
   
   <FormInput name="message" label="Message" type="textarea"    required maxlength={MAX_MESSAGE} />
 
