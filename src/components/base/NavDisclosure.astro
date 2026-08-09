@@ -65,7 +65,7 @@ type Props =
  */
 export const disclosure = tv({
   base: [
-    "exopen:flex flex-col mt-[0.25em] p-[0.35em]",
+    "flex-col mt-[0.25em] p-[0.35em]",
     "bg-popover text-popover-foreground shadow-md border rounded-md",
     "overflow-x-hidden overflow-y-auto",
   ],
@@ -119,12 +119,12 @@ const {
 </div>
 
 <style is:global> @layer base {
-  /* Note: can remove the .base-popover and aria-expanded="true" parts of these selectors once
+  /* Note: can remove the "button + ul" parts of these selectors once
    *       anchor positioning hits baseline widely available in Jun 2028.
    */
   .base-navdisclosure {
     
-    [popover], .base-popover {
+    [popover], button + ul {
       display: none;
 
       --base-transform: none;
@@ -139,22 +139,20 @@ const {
     }
 
     /* Step #3: on the way out */
-    &:not(:has([aria-expanded="true"])) .base-popover, [popover]:not(:popover-open),
-    [popover].base-is-closing {
+    [popover]:not(:popover-open), button:not([aria-expanded="true"]) + ul:not([popover]) {
       opacity: 0;
       transform: var(--base-transform);
     }
 
     /* Step #2: open */
-    &:has([aria-expanded="true"]) .base-popover, [popover]:popover-open {
-      &:not(.base-is-closing) {
-        opacity: 1;
+    [popover]:popover-open,       button[aria-expanded="true"] + ul:not([popover]) {
+      display: flex;
+      opacity: 1;
 
-        /* Step #1: on the way in */
-        @starting-style {
-          opacity: 0;
-          transform: var(--base-transform);
-        }
+      /* Step #1: on the way in */
+      @starting-style {
+        opacity: 0;
+        transform: var(--base-transform);
       }
     }
   }
@@ -166,7 +164,12 @@ const {
  *           manipulating aria-* attributes on button click.
  * 
  * TODO: remove this once anchor positioning hits "baseline widely available", in Jun 2028.
- * 
+ *
+ * Safari still has some remaining bugs in anchor positioning that cause horizontal displacement
+ * during the closing animation. Switch to fallback for Safari until these bugs are resolved in
+ * the current version.
+ * TODO: reevaluate Safari when v27 is released in Sept 2026 (has applicable bugfixes)
+ *
  * Implementation Notes:
  * 
  * There's a lot of conflicting advice online about how to best implement nav
@@ -191,11 +194,12 @@ const {
  * This is especially true when the disclosure contents immediately follow the
  * triggering button in the DOM, as in this component.
  */
-if (window.CSS && !CSS.supports('position-area', 'bottom')) {
+const isSafari = document.documentElement.classList.contains("safari");
+if (!CSS?.supports("position-area", "bottom") || isSafari) {
   // Loop over each navdisclosure container on the page.
   document.querySelectorAll<HTMLElement>(".base-navdisclosure").forEach((container) => {
-    const button = container.querySelector('button');
-    const disclosureBody = container.querySelector('ul');
+    const button = container.querySelector("button");
+    const disclosureBody = container.querySelector("ul");
 
     if (button && disclosureBody) {
       // Remove popover-specific attributes and classes.
@@ -203,7 +207,6 @@ if (window.CSS && !CSS.supports('position-area', 'bottom')) {
       button.removeAttribute("command");
 
       disclosureBody.removeAttribute("popover");
-      disclosureBody.classList.add("base-popover");
       disclosureBody.classList.remove(
         "top-[anchor(bottom)]",
         "left-[anchor(left)]",
@@ -224,13 +227,13 @@ if (window.CSS && !CSS.supports('position-area', 'bottom')) {
       // Open when trigger button activated.
       // Catches mouse, touch, and keyboard activations.
       button.addEventListener("click", () => {
-        button.ariaExpanded = (button.ariaExpanded === 'true')? 'false' : 'true';
+        button.ariaExpanded = (button.ariaExpanded === "true")? "false" : "true";
       });
 
       // Close when escape key pressed, and focus is within the container (trigger and contents).
       container.addEventListener('keydown', (e: KeyboardEvent) => {
-        if(e.key === 'Escape' && button.ariaExpanded === 'true') {
-          button.ariaExpanded = 'false'; // Close the disclosure.
+        if(e.key === "Escape" && button.ariaExpanded === "true") {
+          button.ariaExpanded = "false"; // Close the disclosure.
           // Make sure focus winds up back on the trigger button.
           if (button != e.target) {
             button.focus({ focusVisible: true});
@@ -245,56 +248,21 @@ if (window.CSS && !CSS.supports('position-area', 'bottom')) {
 
       // Close when focus leaves the container (trigger and contents).
       // Catches tabbing out with the keyboard and clicking outside the disclosure.
-      container.addEventListener('focusout', (e: FocusEvent) => {
+      container.addEventListener("focusout", (e: FocusEvent) => {
         if (!container.contains(e.relatedTarget as Node) && button.ariaExpanded === 'true') {
-          button.ariaExpanded = 'false'; // Close the disclosure.
+          button.ariaExpanded = "false"; // Close the disclosure.
         }
       });
-    }
-  });
-}
-/* Bugfix: Safari doesn't handle closing animations properly for popovers, it removes the popover
- *         immediately instead of waiting until the closing animation is finished.
- */
-else if (document.documentElement.classList.contains("safari")) {
-  document.querySelectorAll<HTMLElement>(".base-navdisclosure [popover]").forEach((popover) => {
-    const trigger = document.querySelector(`[commandfor="${popover.id}"]`);
-    // Intercept popover hide event, trigger the closing animation manually, then hide the popover
-    // once it's done.
-    let firstOpen = true;
-    popover.addEventListener("beforetoggle", (e) => {
-      if (e.newState === 'closed') {
-        e.preventDefault();
-        firstOpen = false;
 
-        // Freeze the popover's absolute position, to prevent a separate Safari bug where
-        // anchor positions get lost/mangled during closing fade animations.
-        if (trigger) {
-          const rect = trigger.getBoundingClientRect();
-
-          popover.style.top = `${rect.bottom}px`;
-          if (popover.classList.contains("base-end")) {
-            popover.style.right = `${window.innerWidth - rect.right}px`;
-          } else if (popover.classList.contains("base-center")) {
-            popover.style.left = `${rect.left + (rect.width / 2)}px`;
-          } else {
-            popover.style.left = `${rect.left}px`;
+      if (isSafari) {
+        /* Safari bug: touches outside the disclosure don't always trigger a focusout event. */
+        document.addEventListener("click", (e: MouseEvent) => {
+          if (!container.contains(e.target as Node)) {
+            button.ariaExpanded = "false"; // Close the disclosure.
           }
-        }
-
-        // Initiate the close.
-        popover.addEventListener("transitionend", () => {
-          popover.hidePopover();
-          popover.classList.remove("base-is-closing");
-        }, { once: true} );
-        popover.classList.add('base-is-closing');
-        
-      } else if (trigger && !firstOpen) {
-        popover.style.top = '';
-        popover.style.right = '';
-        popover.style.left = '';
+        });
       }
-    });
+    }
   });
 }
 </script>

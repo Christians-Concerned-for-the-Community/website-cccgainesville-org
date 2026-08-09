@@ -98,21 +98,8 @@ const closeDefault = "base-modal-close absolute top-xs right-sm text-sm";
     icon={icon}
     iconBefore={iconBefore}
     iconClass={iconClass}
-    class={twMerge("[&_svg]:pointer-events-none",buttonClass)}
+    class:list={buttonClass}
   />
-  {/* Explanation for why we're setting pointer-events-none on any svg's inside
-    * the trigger button (see above).
-    *
-    * WebKit browsers (Safari, primarily) have a bug where they can trigger
-    * decorations guarded by focus-visible: when opening a dialog with
-    * a mouse click or touch. This is incorrect behavior - it should
-    * be setting the focus, but it shouldn't be displaying a focus ring
-    * unless the user triggered the dialog via keyboard.
-    *
-    * See here for mention of bug:
-    * https://github.com/radix-ui/primitives/issues/2953
-    * https://bugs.webkit.org/show_bug.cgi?id=247416
-    */}
 
   <dialog id={modalId} closedby="any"
     class={dialogVariants({ location, class: className })} {...rest}
@@ -129,7 +116,7 @@ const closeDefault = "base-modal-close absolute top-xs right-sm text-sm";
 
     <slot />
 
-    <Button type="button" commandfor={modalId} command="request-close"
+    <Button type="button" commandfor={modalId} command="close"
       alt="Close"
       variant="ghost"
       animation="rotate"
@@ -169,8 +156,7 @@ const closeDefault = "base-modal-close absolute top-xs right-sm text-sm";
     }
 
     /* Step #3: on the way out */
-    &:not([open]),
-    &.base-is-closing {
+    &:not([open]) {
       opacity: 0;
       transition-duration: var(--base-close-duration);
       transform: var(--base-transform);
@@ -183,7 +169,7 @@ const closeDefault = "base-modal-close absolute top-xs right-sm text-sm";
     }
 
     /* Step #2: open */
-    &[open]:not(.base-is-closing) {
+    &[open] {
       opacity: 1;
       transition-duration: var(--base-open-duration);
 
@@ -220,39 +206,12 @@ const closeDefault = "base-modal-close absolute top-xs right-sm text-sm";
   // Fallback: Invoker Commands API is supported everywhere in baseline Dec 2025.
   const supports_invoker = (Object.hasOwn(HTMLButtonElement.prototype, 'command'));
 
-  const isSafari = document.documentElement.classList.contains("safari");
-
   // If fallback needed:
-  if (!supports_invoker || !supports_closedby || isSafari) {
+  if (!supports_invoker || !supports_closedby) {
     // Loop over each modal container on the page.
     document.querySelectorAll<HTMLElement>(".base-modal").forEach((container) => {
       const trigger = container.querySelector('button');
       const dialog = container.querySelector('dialog');
-
-      // Safari closes the dialog immediately, even if there are still CSS transitions pending.
-      // To fix exit transition animations, trigger them with an extra class, then only close the
-      // dialog once the transition is done.
-      const close = () => {
-        if (isSafari) {
-          // Add listener for end of closing animation, that actually closes the dialog.
-          dialog?.addEventListener("transitionend", () => {
-            dialog.close();
-            dialog.classList.remove("base-is-closing");
-          }, { once: true });
-          // Trigger closing animation.
-          dialog?.classList.add("base-is-closing");
-        } else {
-          dialog?.close();
-        }
-      };
-      if (isSafari) {
-        // Intercept escape key, back button, or requestClose(), and use our custom closeDialog function
-        // instead.
-        dialog?.addEventListener("cancel", (e) => {
-          e.preventDefault();
-          close();
-        });
-      }
 
       if (!supports_closedby && dialog) {
         // Support "light dismiss" of modal (clicking outside it), if closedby attribute isn't available.
@@ -261,13 +220,13 @@ const closeDefault = "base-modal-close absolute top-xs right-sm text-sm";
           if (e.clientX < edges.left || e.clientX > edges.right ||
               e.clientY < edges.top  || e.clientY > edges.bottom) {
             e.stopPropagation(); //only close the innermost dialog on each click outside.
-            close();
+            dialog.close();
           }
         });
       }
 
       if (!supports_invoker && trigger && dialog) {
-        const closer = dialog.querySelector<HTMLButtonElement>('.base-modal-close');
+        const closer = dialog.querySelector<HTMLButtonElement>(".base-modal-close");
         for (const button of  [trigger, closer]) {
           button?.removeAttribute('command');
           button?.removeAttribute('commandfor');
@@ -275,7 +234,7 @@ const closeDefault = "base-modal-close absolute top-xs right-sm text-sm";
 
         trigger.ariaHasPopup = "dialog";
         trigger.addEventListener("click", () => { dialog.showModal(); });
-        closer?.addEventListener('click', () => { close() });
+        closer?.addEventListener("click", () => { dialog.close(); });
       }
     });
   } // END if fallback needed
