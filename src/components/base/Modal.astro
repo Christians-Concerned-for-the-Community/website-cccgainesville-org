@@ -60,7 +60,7 @@ const {
 
 const dialogVariants = tv({
   base: [
-    "open:flex overflow-y-auto scrollbar-gutter-auto",
+    "open:flex overflow-y-auto touch-pan-y scrollbar-gutter-auto",
     "bg-background shadow-lg max-w-cw-md p-0 m-0",
   ],
   variants: {
@@ -127,12 +127,19 @@ const closeDefault = "base-modal-close absolute top-xs right-sm text-sm";
 
 </div>
 
-<style is:global> @layer base {
+<style is:global>
+@layer components {
+  /* Workaround for Safari not preventing scrolling with overscroll-behavior: contain. */
+  .safari:has(:is(.base-modal,.gl-simple-donation-widget) dialog[open]) body {
+    overscroll-behavior: none;
+    touch-action: none;
+    overflow: hidden;
+  }
+
   .base-modal > dialog {
     display: none;
 
-    --base-open-duration: 500ms;
-    --base-close-duration: 300ms;
+    --base-duration: 300ms;
 
     --base-transform: none;
     @media (prefers-reduced-motion: no-preference) {
@@ -146,11 +153,19 @@ const closeDefault = "base-modal-close absolute top-xs right-sm text-sm";
     transition-property: transform, opacity,  display,        overlay;
     transition-behavior: normal,    normal,   allow-discrete, allow-discrete;
     transition-timing-function: ease-out;
+    transition-duration: var(--base-duration);
+
     overscroll-behavior: contain;
+
     &::backdrop {
-      transition-property:        background-color, backdrop-filter, display,        overlay;
-      transition-behavior:        normal,           normal,          allow-discrete, allow-discrete;
-      transition-timing-function: ease-out;
+      --base-backdrop-trans:
+        background-color var(--base-duration) ease-out,
+        display var(--base-duration) allow-discrete,
+        overlay var(--base-duration) allow-discrete;
+      transition:
+        var(--base-backdrop-trans),
+        backdrop-filter 0ms linear; /* remove delay - blur immediately removed at beginning of exit animation */
+      
       overflow: hidden;
       overscroll-behavior: contain;
     }
@@ -158,25 +173,24 @@ const closeDefault = "base-modal-close absolute top-xs right-sm text-sm";
     /* Step #3: on the way out */
     &:not([open]) {
       opacity: 0;
-      transition-duration: var(--base-close-duration);
       transform: var(--base-transform);
 
       &::backdrop {
         background-color: transparent;
         backdrop-filter: blur(0px);
-        transition-duration: var(--base-close-duration);
       }
     }
 
     /* Step #2: open */
     &[open] {
       opacity: 1;
-      transition-duration: var(--base-open-duration);
 
       &::backdrop {
-        background-color: rgba(0 0 0 0.55);
-        backdrop-filter: blur(8px);
-        transition-duration: var(--base-open-duration);
+        background-color: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(3px);
+        transition:
+          var(--base-backdrop-trans),
+          backdrop-filter 0ms linear var(--base-duration); /* for performance, delay blur until end of entrance animation */;
       }
 
       /* Step #1: on the way in */
