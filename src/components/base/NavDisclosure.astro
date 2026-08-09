@@ -26,7 +26,7 @@
  */
 
 import type { HTMLAttributes } from "astro/types";
-import { tv, type VariantProps } from "tailwind-variants";
+import { type VariantProps } from "tailwind-variants";
 import { twMerge } from 'tailwind-merge'
 import Button from "./Button.astro";
 import { uniqueId } from "./utils/ids.ts";
@@ -52,34 +52,6 @@ type Props =
    */
   containerClass?: string | string[];
 }
-
-/*
-  "exopen:" is a custom variant I wrote (see styles/globals.css). It checks all the
-  cases that Tailwind's built-in "open:" variant does, plus it checks to see if any
-  descendant of the group parent has "aria-expanded=true" set. This simplifies the
-  javascript code for the fallback, since all we really have to change on a click
-  is the value of aria-expanded on the button.
-
-  Once you don't need the fallback anymore (Jun 2028), you can change all the
-  "exopen:"/"not-exopen:" below back to "open:"/"not-open:".
- */
-export const disclosure = tv({
-  base: [
-    "flex-col mt-[0.25em] p-[0.35em]",
-    "bg-popover text-popover-foreground shadow-md border rounded-md",
-    "overflow-x-hidden overflow-y-auto",
-  ],
-  variants: {
-    align: {
-      start: "base-start top-[anchor(bottom)] left-[anchor(left)]",
-      center: "base-center [position-area:bottom_center]",
-      end: "base-end top-[anchor(bottom)] right-[anchor(right)]",
-    },
-  },
-  defaultVariants: {
-    align: "start",
-  },
-})
 
 const disclosureId = uniqueId(Astro.url, "base-nav-disclosure");
 
@@ -111,21 +83,29 @@ const {
   />
 
   <ul id={disclosureId} popover
-    class={disclosure({ align, class: className })}
+    class={twMerge(
+      `base-${align}`,
+      "mt-[0.25em] p-[0.35em] bg-popover text-popover-foreground shadow-md border rounded-md",
+      className
+    )}
     {...rest}
   >
     <slot />
   </ul>
 </div>
 
-<style is:global> @layer base {
-  /* Note: can remove the "button + ul" parts of these selectors once
+<style is:global> @layer components {
+  /* Note: can remove the "button + ul" and "&:not([popover])" parts of these selectors once
    *       anchor positioning hits baseline widely available in Jun 2028.
    */
   .base-navdisclosure {
     
     [popover], button + ul {
       display: none;
+
+      flex-direction: column;
+      overflow-x: hidden;
+      overflow-y: auto;
 
       --base-transform: none;
       @media (prefers-reduced-motion: no-preference) {
@@ -136,6 +116,38 @@ const {
       transition-behavior: normal,    normal,   allow-discrete, allow-discrete;
       transition-timing-function: ease-out;
       transition-duration: 350ms;
+
+      &.base-start {
+        top: anchor(bottom);
+        left: anchor(left);
+      }
+      &.base-center {
+        position-area: bottom_center;
+      }
+      &.base-end {
+        top: anchor(bottom);
+        right: anchor(right);
+      }
+    }
+
+    /* Positioning overrides for fallback code. */
+    &:not(:has([popover])) {
+      position: relative;
+
+      button + ul {
+        position: absolute;
+        z-index: 50;
+        min-width: 0;
+
+        top: initial;
+        &.base-start {
+          left: 0;
+        }
+        &.base-center, &.base-end {
+          position-area: initial;
+          right: 0;
+        }
+      }
     }
 
     /* Step #3: on the way out */
@@ -145,7 +157,7 @@ const {
     }
 
     /* Step #2: open */
-    [popover]:popover-open,       button[aria-expanded="true"] + ul:not([popover]) {
+    [popover]:popover-open, button[aria-expanded="true"] + ul:not([popover]) {
       display: flex;
       opacity: 1;
 
@@ -195,7 +207,7 @@ const {
  * triggering button in the DOM, as in this component.
  */
 const isSafari = document.documentElement.classList.contains("safari");
-if (!CSS?.supports("position-area", "bottom") || isSafari) {
+if (isSafari || !CSS?.supports("position-area", "bottom")) {
   // Loop over each navdisclosure container on the page.
   document.querySelectorAll<HTMLElement>(".base-navdisclosure").forEach((container) => {
     const button = container.querySelector("button");
@@ -205,24 +217,10 @@ if (!CSS?.supports("position-area", "bottom") || isSafari) {
       // Remove popover-specific attributes and classes.
       button.removeAttribute("commandfor");
       button.removeAttribute("command");
-
       disclosureBody.removeAttribute("popover");
-      disclosureBody.classList.remove(
-        "top-[anchor(bottom)]",
-        "left-[anchor(left)]",
-        "right-[anchor(right)]",
-        "[position-area:bottom_center]"
-      );
 
       // Add attributes, classes and listeners needed for the fallback.
-      container.classList.add("relative");
       button.ariaExpanded = "false";
-      disclosureBody.classList.add(
-        "absolute",
-        "z-50",
-        "min-w-0",
-        "right-0" //For fallback, just default to 'end' alignment, that's good enough
-      );
 
       // Open when trigger button activated.
       // Catches mouse, touch, and keyboard activations.
