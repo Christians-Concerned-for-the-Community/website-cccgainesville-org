@@ -38,7 +38,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
       "media-src blob:",
       "frame-src blob:",
       "manifest-src blob:",
-      "script-src 'self' https://unpkg.com",
+      "script-src 'self' 'unsafe-inline' https://unpkg.com",
       "connect-src 'self' blob: data: https://unpkg.com https://api.github.com https://*.githubstatus.com https://api.cloudflare.com",
     ];
     response.headers.set('Content-Security-Policy', directives.join(";") + ";");
