@@ -45,76 +45,10 @@ if (email) {
   <body>
     <div data-token={token}/>
     <script>
-import { init, type CmsConfig } from '@sveltia/cms';
-{
-  // If we have a Github PAT available to use, store it in localStorage where
-  // Sveltia puts its session data. This lets us log in without user interaction,
-  // using the PAT.
-  const token = document.querySelector<HTMLElement>("[data-token]")?.dataset.token;
-  if (token) {
-    const userKey = "sveltia-cms.user";
-    const userVal = localStorage.getItem(userKey);
-
-    const user: Record<string,any> = userVal? JSON.parse(userVal) : {};
-    user.backendName = "github";
-    user.token = token;
-
-    localStorage.setItem(userKey, JSON.stringify(user));
-  }
-
-  const config: CmsConfig = {
-    load_config_file: false,
-
-    app_title: "CCC Website Editor",
-    site_url: location.hostname,
-    logo: {
-      src: '/favicon.svg',
-      show_in_header: true,
-    },
-
-    backend: {
-      name: "github",
-      repo: "Christians-Concerned-for-the-Community/website-cccgainesville-org",
-    },
-
-    media_folder: "src/assets/media",
-  };
-
-  config.collections = [{
-    name: "config",
-    label: "Site Configuration",
-    editor: { preview: false },
-    files: [
-      
-      {
-        label: "Headers",
-        name: "headers",
-        file: "public/_headers",
-        format: "raw",
-        fields: [{
-          label: "Headers",
-          name: "body",
-          widget: "text",
-        }],
-      },
-
-      {
-        label: "Redirects",
-        name: "redirects",
-        file: "public/_redirects",
-        format: "raw",
-        fields: [{
-          label: "Redirects",
-          name: "body",
-          widget: "text",
-        }],
-      },
-
-    ],
-  }];
-
-  init({config: config});
-}
+      import { setupSveltia } from "@/utils/sveltia/main";
+      setupSveltia(
+        document.querySelector<HTMLElement>("[data-token]")?.dataset.token
+      );
     </script>
   </body>
 </html>
