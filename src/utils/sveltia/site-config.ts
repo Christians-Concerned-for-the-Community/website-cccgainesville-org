@@ -16,7 +16,6 @@ export const siteConfig: Collection = {
           {
             label: "Email",
             name: "email",
-            icon: "mail",
             widget: "string",
             comment: "Public email, leave empty to hide on website<br>Example: *office@example.<span>com</span>*",
             type: "email",
@@ -25,7 +24,6 @@ export const siteConfig: Collection = {
           {
             label: "Phone",
             name: "phone",
-            icon: "call",
             widget: "string",
             comment: "Public phone number, leave empty to hide on website<br>Example: *352-555-0132*",
             pattern: /^(tel:)?(\+1)?[\(]*[0-9]{3}[ .\-\)]*[0-9]{3}[ .\-]*[0-9]{4}$/,
@@ -34,7 +32,6 @@ export const siteConfig: Collection = {
           {
             label: "Mailing Address",
             name: "address",
-            icon: "mailbox",
             widget: "string",
             comment: "Public mailing address, leave empty to hide on website<br>Example: *PO Box 12345, Anytown, FL 12345*",
             required: false,
@@ -42,7 +39,6 @@ export const siteConfig: Collection = {
           {
             label: "Office Hours",
             name: "hours",
-            icon: "schedule",
             widget: "string",
             comment: "Public office hours, leave empty to hide on website<br>Example: *Tuesday - Thursday, 9:00AM - 5:00PM*",
             required: false,
