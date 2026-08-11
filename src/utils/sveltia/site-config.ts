@@ -48,7 +48,10 @@ export const siteConfig: Collection = {
         fields: [{
           label: "Headers",
           name: "body",
-          widget: "text",
+          widget: "code",
+          default_language: "apacheconf",
+          output_code_only: true,
+          allow_language_selection: false,
         }],
       },
 
@@ -61,7 +64,10 @@ export const siteConfig: Collection = {
         fields: [{
           label: "Redirects",
           name: "body",
-          widget: "text",
+          widget: "code",
+          default_language: "apacheconf",
+          output_code_only: true,
+          allow_language_selection: false,
         }],
       },
     ],
