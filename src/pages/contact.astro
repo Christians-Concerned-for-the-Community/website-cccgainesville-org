@@ -7,7 +7,13 @@ import Icon from '@base/Icon.astro';
 
 import ContactForm from '@/components/forms/ContactForm.astro'
 
+import contactInfo from "@/assets/contact-info.json";
+
 import feat from '@/assets/media/contact-feat.jpg'
+
+const emailLink = `mailto:${contactInfo.email}`;
+const phoneLink = `tel:+1${contactInfo.phone?.split("ext")[0].replace(/\D/g, "").slice(-10)}`;
+
 ---
 
 <PageLayout title="Contact" subtitle="Have a question? Get in touch with us!" featuredImage={feat}
@@ -34,38 +40,46 @@ import feat from '@/assets/media/contact-feat.jpg'
       back to you until we've returned to our desks. Sorry!
     </p>
 
+    { contactInfo.phone && (
     <div class="gap-2xs flex items-center">
       <Icon name="tabler:phone" size="1lh" />
       <p>
         <span class="font-bold">Phone:</span>
-        <Link href="tel:+13523581768">(352) 358-1768</Link>
+        <Link href={phoneLink}>{contactInfo.phone}</Link>
         <span>(voice or text)</span>
       </p>
     </div>
+    )}
 
+    { contactInfo.email && (
     <div class="gap-2xs flex items-center">
       <Icon name="tabler:mail" size="1lh" />
       <p>
         <span class="font-bold">Email:</span>
-        <Link href="mailto:office@cccgainesville.org">office@cccgainesville.org</Link>
+        <Link href={emailLink}>{contactInfo.email}</Link>
       </p>
     </div>
+    )}
 
+    { contactInfo.address && (
     <div class="gap-2xs flex items-center">
       <Icon name="tabler:map-pin" size="1lh" />
       <p>
         <span class="font-bold">Address:</span>
-        PO Box 358173, Gainesville, FL 32653
+        {contactInfo.address}
       </p>
     </div>
+    )}
 
+    { contactInfo.hours && (
     <div class="gap-2xs flex items-center">
       <Icon name="tabler:clock" size="1lh" />
       <p>
         <span class="font-bold">Office Hours:</span>
-        Tuesday - Thursday, 10:00 AM - 3:00 PM
+        {contactInfo.hours}
       </p>
     </div>
+    )}
 
     <ul class="flex flex-wrap gap-md text-lg">
       <li>
