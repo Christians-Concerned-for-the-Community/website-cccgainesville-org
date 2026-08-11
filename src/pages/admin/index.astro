@@ -1,0 +1,29 @@
+---
+import PageLayout from "@/layouts/PageLayout.astro";
+import Link from "@base/Link.astro";
+
+import Sveltia from "@/assets/icons/sveltia.svg"
+import GoatCounter from "@/assets/icons/goatcounter.svg"
+
+const links = [
+  {label:"Site Editor", href:"/admin/edit", logo:Sveltia},
+  {label:"Visitor Stats", href:"/admin/stats", logo:GoatCounter},
+];
+
+---
+
+<PageLayout title="Admin Hub" subtitle="Links to internal CCC resources." width="narrow">
+  <ul class="w-full flex flex-wrap justify-around gap-lg">
+    { links.map(({label, href, logo: Logo}) => (
+      <li class:list={[
+        "text-h3 rounded-sm shadow-md",
+        "border-border-strong border-t-2 border-l-6 dark:border-2"
+      ]}>
+        <Link href={href} class="flex flex-col gap-md p-sm">
+          <Logo width={150} height={150}/>
+          {label}
+        </Link>
+      </li>
+    ))}
+  </ul>
+</PageLayout>
