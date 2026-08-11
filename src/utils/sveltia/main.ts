@@ -21,7 +21,6 @@ export const setupSveltia = (githubToken: string | undefined) => {
     load_config_file: false,
 
     app_title: "CCC Website Editor",
-    site_url: location.hostname,
     logo: {
       src: '/favicon.svg',
       show_in_header: true,
