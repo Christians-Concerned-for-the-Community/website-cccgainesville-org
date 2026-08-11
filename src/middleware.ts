@@ -19,7 +19,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
            context.url.pathname.startsWith(path + "/");
   }
 
-  if (isPath("/admin/editor")) {
+  if (isPath("/admin/edit")) {
     const response = await next();
 
     // Completely override Astro's CSP settings for this server-rendered route.

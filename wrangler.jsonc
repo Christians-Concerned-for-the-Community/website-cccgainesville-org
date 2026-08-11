@@ -4,7 +4,7 @@
  */
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
-	"compatibility_date": "2026-05-18",
+	"compatibility_date": "2026-08-08",
 	"compatibility_flags": ["nodejs_compat"],
 	"name": "website-cccgainesville-org-staging",
 	"main": "@astrojs/cloudflare/entrypoints/server",
@@ -14,30 +14,30 @@
 		"not_found_handling": "404-page",
 		"run_worker_first": [
 			"/_actions/*",  // execute workers for Astro Actions endpoints
-			"/admin/editor/","/admin/editor", // execute worker for server-rendered admin editor
-			"/admin/stats/","/admin/stats", // execute worker for server-rendered stats page
-		], 
+			"/admin/edit/","/admin/edit", // execute worker for server-rendered admin editor
+			"/admin/stats/","/admin/stats" // execute worker for server-rendered stats page
+		]
 	},
 
 	"vars": {
 		"PUBLIC_GOATCOUNTER_ENDPOINT": "https://staging-cccgainesville.goatcounter.com",
 		//* // Turnstile (Cloudflare)
 		"PUBLIC_CAPTCHA_NAME": "Turnstile",
-		"PUBLIC_CAPTCHA_KEY": "0x4AAAAAAAc02UX-EFdbhc0N",
+		"PUBLIC_CAPTCHA_KEY": "0x4AAAAAAAc02UX-EFdbhc0N"
 		//*/
 		/* // RecaptchaScore (Google)
 		"PUBLIC_CAPTCHA_NAME": "RecaptchaScore",
 		"PUBLIC_CAPTCHA_ENDPOINT": "recaptcha-enterprise-endpoint", //gcloud project id
-		"PUBLIC_CAPTCHA_KEY": "6LccbdEsAAAAADxwH4nd0RWPqO3nzZKGja2R64CR",
+		"PUBLIC_CAPTCHA_KEY": "6LccbdEsAAAAADxwH4nd0RWPqO3nzZKGja2R64CR"
 		//*/
 		/* // FriendlyCaptcha
 		"PUBLIC_CAPTCHA_NAME": "FriendlyCaptcha",
-		"PUBLIC_CAPTCHA_KEY": "FCMLQFNHQOES71QN",
+		"PUBLIC_CAPTCHA_KEY": "FCMLQFNHQOES71QN"
 		//*/
 	},
 
 	"observability": {
-		"enabled": true,
+		"enabled": true
 	},
 
 	"route": {
@@ -59,18 +59,18 @@
 				"PUBLIC_GOATCOUNTER_ENDPOINT": "https://cccgainesville.goatcounter.com",
 				//* // Turnstile (Cloudflare)
 				"PUBLIC_CAPTCHA_NAME": "Turnstile",
-				"PUBLIC_CAPTCHA_KEY": "0x4AAAAAAAc02UX-EFdbhc0N",
+				"PUBLIC_CAPTCHA_KEY": "0x4AAAAAAAc02UX-EFdbhc0N"
 				//*/
 				/* // RecaptchaScore (Google)
 				"PUBLIC_CAPTCHA_NAME": "RecaptchaScore",
 				"PUBLIC_CAPTCHA_ENDPOINT": "recaptcha-enterprise-endpoint", //gcloud project id
-				"PUBLIC_CAPTCHA_KEY": "6LdcodEsAAAAAHC6KykkX6QVmf52WICLXAhxJieX",
+				"PUBLIC_CAPTCHA_KEY": "6LdcodEsAAAAAHC6KykkX6QVmf52WICLXAhxJieX"
 				//*/
 				/* // FriendlyCaptcha
 				"PUBLIC_CAPTCHA_NAME": "FriendlyCaptcha",
-				"PUBLIC_CAPTCHA_KEY": "FCMLQFNHQOES71QN",
+				"PUBLIC_CAPTCHA_KEY": "FCMLQFNHQOES71QN"
 				//*/
-			},
+			}
 		}
 	}
 }
